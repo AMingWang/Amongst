@@ -29,6 +29,70 @@
       max-width: 100%;
       height: auto;
     }
+
+    /* 設定標題區域的文字樣式 */
+    .hero {
+      text-align: center;
+      padding: 40px 10px;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    /* 使導航列在小螢幕上展開時更容易操作 */
+    @media (max-width: 767px) {
+      .navbar-collapse {
+        text-align: center;
+      }
+      
+      .navbar-nav .nav-item {
+        margin-bottom: 10px;
+      }
+
+      .navbar-toggler {
+        border: 1px solid #007bff;
+      }
+    }
+
+    /* 調整框架大小 */
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+
+    /* 調整各區塊的間距 */
+    .content {
+      padding: 20px;
+    }
+
+    .content-text h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .content-text p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      font-size: 0.9rem;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
   </style>
 </head>
 
@@ -59,7 +123,7 @@
   <section class="hero">
     <h1>探索星際，翱翔宇宙</h1>
     <p>星宇虛擬航空提供舒適的學習體驗，無論您程度如何，皆可感受到包容與平等。</p>
-    <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button">加入我們</a>
+    <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button btn btn-primary">加入我們</a>
   </section>
 
   <section class="content">
