@@ -37,27 +37,40 @@
     }
 
     .logo-container img {
-      width: 120px; /* 設定固定寬度 */
-      height: auto; /* 保持圖片比例 */
-      position: absolute; /* 固定位置 */
+      width: 120px;
+      height: auto;
+      position: absolute;
       top: 15px;
       left: 15px;
     }
 
-    /* 修改選單文字顏色為黑色並設定為標楷體 */
-    .navbar-nav .nav-link {
-      color: #000;
-      font-family: 'Microsoft JhengHei', '標楷體', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 500;
+    /* 修改選單顯示區域，縮小白色部分 */
+    .navbar-collapse {
+      max-width: 300px; /* 限制選單最大寬度 */
+      margin: auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 10px 20px;
     }
 
-    .navbar-nav .nav-link:hover {
-      color: #f4c430;
+    .navbar-nav {
+      align-items: center;
+      text-align: center;
     }
 
-    .navbar-nav .nav-link:active {
-      color: #f4c430;
+    .navbar-nav .nav-item {
+      margin: 5px 0;
+    }
+
+    .navbar-toggler {
+      margin-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-collapse {
+        max-width: 250px;
+        padding: 10px;
+      }
     }
 
     /* Hero 區域 */
@@ -65,10 +78,10 @@
       text-align: center;
       padding: 60px 20px;
       background-image: url('https://imgur.com/AqnIwkx.png');
-      background-size: contain; /* 讓圖片完全顯示，不會被拉伸 */
-      background-repeat: no-repeat; /* 避免圖片重複 */
-      background-position: center; /* 讓圖片置中 */
-      height: 400px; /* 固定區塊高度，防止背景變形 */
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 400px;
     }
 
     .hero h1 {
@@ -96,7 +109,6 @@
       background-color: #ffdd57;
     }
 
-    /* 響應式設計 */
     @media (max-width: 1024px) {
       .hero h1 {
         font-size: 2.5rem;
@@ -118,7 +130,7 @@
       }
 
       .logo-container img {
-        width: 100px; /* 縮小 Logo */
+        width: 100px;
       }
 
       .hero h1 {
