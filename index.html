@@ -41,43 +41,47 @@
       margin-right: 15px;
     }
 
-    /* 修改選單文字顏色為黑色並設定為標楷體 */
-    .navbar-nav .nav-link {
-      color: #000; /* 設置文字顏色為黑色 */
-      font-family: 'Microsoft JhengHei', '標楷體', sans-serif; /* 設置字體為標楷體 */
-      font-size: 1.1rem; /* 調整字體大小 */
-      font-weight: 500; /* 增加字體粗細 */
+    .navbar {
+      width: 100%;
     }
 
-    /* 當懸停在選單項目上時改變顏色 */
-    .navbar-nav .nav-link:hover {
-      color: #f4c430; /* 懸停時的顏色為金色 */
+    .navbar-nav {
+      justify-content: end;
+      width: 100%;
     }
 
-    /* 可選，當選擇某一選單項目時，文字顏色不會改變 */
-    .navbar-nav .nav-link:active {
-      color: #f4c430; /* 使按下選單項目時顯示為金色 */
+    .navbar-light .navbar-nav .nav-link {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .navbar-light .navbar-nav .nav-link:hover {
+      color: #f4c430;
     }
 
     /* Hero 區域 */
     .hero {
       text-align: center;
-      padding: 60px 20px;
+      padding: 100px 20px;
       background-image: url('https://imgur.com/AqnIwkx.png');
       background-size: cover;
       background-position: center;
       color: #f4c430;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .hero h1 {
       font-size: 3rem;
-      margin-bottom: 20px;
     }
 
     .hero p {
       font-size: 1.5rem;
       max-width: 90%;
-      margin-bottom: 20px;
     }
 
     .cta-button {
@@ -198,25 +202,26 @@
 </head>
 
 <body>
-  <header id="navbar">
+  <header>
     <div class="logo-container">
       <img src="https://imgur.com/sMLZYRO.png" alt="STARLUX VA">
     </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
-          <li class="nav-item"><a class="nav-link" href="#services">資源提供</a></li>
-          <li class="nav-item"><a class="nav-link" href="#destinations">各式資訊</a></li>
-          <li class="nav-item"><a class="nav-link" href="#membership">已認證飛行員</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://discord.gg/ckUTDYV8Ec">加入我們</a></li>
-          <li class="nav-item"><a class="nav-link login-button" href="https://newsky.app/home">飛行員登入</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
+            <li class="nav-item"><a class="nav-link" href="#services">資源提供</a></li>
+            <li class="nav-item"><a class="nav-link" href="#destinations">各式資訊</a></li>
+            <li class="nav-item"><a class="nav-link" href="#membership">已認證飛行員</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://discord.gg/ckUTDYV8Ec">加入我們</a></li>
+            <li class="nav-item"><a class="nav-link login-button" href="https://newsky.app/home">飛行員登入</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
   </header>
