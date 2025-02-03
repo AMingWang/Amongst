@@ -37,27 +37,26 @@
     }
 
     .logo-container img {
-      width: 120px; /* 設定固定寬度 */
-      height: auto; /* 保持圖片比例 */
-      position: absolute; /* 固定位置 */
-      top: 15px;
-      left: 15px;
+      height: 40px;
+      margin-right: 15px;
     }
 
     /* 修改選單文字顏色為黑色並設定為標楷體 */
     .navbar-nav .nav-link {
-      color: #000;
-      font-family: 'Microsoft JhengHei', '標楷體', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 500;
+      color: #000; /* 設置文字顏色為黑色 */
+      font-family: 'Microsoft JhengHei', '標楷體', sans-serif; /* 設置字體為標楷體 */
+      font-size: 1.1rem; /* 調整字體大小 */
+      font-weight: 500; /* 增加字體粗細 */
     }
 
+    /* 當懸停在選單項目上時改變顏色 */
     .navbar-nav .nav-link:hover {
-      color: #f4c430;
+      color: #f4c430; /* 懸停時的顏色為金色 */
     }
 
+    /* 可選，當選擇某一選單項目時，文字顏色不會改變 */
     .navbar-nav .nav-link:active {
-      color: #f4c430;
+      color: #f4c430; /* 使按下選單項目時顯示為金色 */
     }
 
     /* Hero 區域 */
@@ -65,10 +64,9 @@
       text-align: center;
       padding: 60px 20px;
       background-image: url('https://imgur.com/AqnIwkx.png');
-      background-size: contain; /* 讓圖片完全顯示，不會被拉伸 */
-      background-repeat: no-repeat; /* 避免圖片重複 */
-      background-position: center; /* 讓圖片置中 */
-      height: 400px; /* 固定區塊高度，防止背景變形 */
+      background-size: cover;
+      background-position: center;
+      color: #f4c430;
     }
 
     .hero h1 {
@@ -96,6 +94,54 @@
       background-color: #ffdd57;
     }
 
+    /* 內容區塊 */
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .content-text, .map-info, .flight-info {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #f4c430;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      text-align: center;
+      margin: 10px;
+    }
+
+    .content-text h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .content-text p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #222;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
     /* 響應式設計 */
     @media (max-width: 1024px) {
       .hero h1 {
@@ -110,6 +156,16 @@
         padding: 10px 25px;
         font-size: 1rem;
       }
+
+      .content {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .content-text, .map-info, .flight-info {
+        max-width: 100%;
+        margin-bottom: 20px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -118,7 +174,11 @@
       }
 
       .logo-container img {
-        width: 100px; /* 縮小 Logo */
+        height: 30px;
+      }
+
+      .navbar-nav .nav-link {
+        font-size: 1rem;
       }
 
       .hero h1 {
@@ -128,6 +188,10 @@
       .hero p {
         font-size: 1rem;
         padding: 0 10%;
+      }
+
+      iframe {
+        height: 250px;
       }
     }
   </style>
@@ -163,9 +227,28 @@
     <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button btn btn-primary">加入我們</a>
   </section>
 
+  <section class="content">
+    <div class="content-text">
+      <h2>快樂學習</h2>
+      <p>我們致力於提供學員快樂的學習環境</p>
+      <h2>新創公司</h2>
+      <p>現在加入我們，成為創始成員</p>
+      <h2>台灣本土</h2>
+      <p>成員由中文群體組成，不必擔心溝通問題</p>
+    </div>
+    <div class="map-info">
+      <h2>IVAO即時航班雷達</h2>
+      <iframe src="https://webeye.ivao.aero"></iframe>
+    </div>
+    <div class="flight-info">
+      <h2>VATSIM即時航班資訊</h2>
+      <iframe src="https://vatboard.estassinos.com/?icao=RCTP"></iframe>
+    </div>
+  </section>
+
   <footer>
     <p>&copy; 2025 星宇虛擬航空 STARLUX VA. All Rights Reserved.</p>
-    <p>免責聲明: 本網站上的所有內容，包括資料、商標、標誌、圖像連結等，僅限於學術研究與探討之用，無任何商業或營利目的，並且與任何真實航空公司無關。</p>
+    <p>免責聲明:本網站上的所有內容，包括資料、商標、標誌、圖像連結等，僅限於學術研究與探討之用，無任何商業或營利目的，並且與任何真實航空公司無關。</p>
     <p>Made by Cheng-En, Ou</p>
   </footer>
 
