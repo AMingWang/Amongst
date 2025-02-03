@@ -7,10 +7,13 @@
   <title>星宇虛擬航空 STARLUX VA</title>
   <link rel="icon" type="image/png" href="https://imgur.com/iTlUluy.png">
   <meta name="description" content="星宇虛擬航空，帶您翱翔星空，享受極致奢華的飛行體驗。">
-  
+
+  <!-- Google 字體 -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
   <style>
     /* 通用樣式 */
     body {
@@ -21,10 +24,10 @@
       padding: 0;
     }
 
-    /* 修正 Header */
+    /* 修正選單問題 */
     header {
       background: rgba(0, 0, 0, 0.9);
-      padding: 10px 20px;
+      padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -39,72 +42,47 @@
       height: 40px;
     }
 
-    /* Navbar */
     .navbar {
-      flex-grow: 1;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .navbar-toggler {
-      border: none;
-      background: none;
-    }
-
-    .navbar-toggler:focus {
-      box-shadow: none;
+      width: 100%;
     }
 
     .navbar-nav {
-      display: flex;
-      align-items: center;
+      justify-content: end;
+      width: 100%;
     }
 
-    .navbar-nav .nav-item {
-      margin: 0 10px;
-    }
-
-    .navbar-nav .nav-link {
-      color: #fff;
+    .navbar-light .navbar-nav .nav-link {
+      color: white;
       font-size: 1.1rem;
       font-weight: 500;
     }
 
-    .navbar-nav .nav-link:hover {
+    .navbar-light .navbar-nav .nav-link:hover {
       color: #f4c430;
-    }
-
-    .login-button {
-      background-color: #f4c430;
-      padding: 8px 15px;
-      border-radius: 5px;
-      color: #111;
-    }
-
-    .login-button:hover {
-      background-color: #ffdd57;
-      color: #111;
     }
 
     /* Hero 區域 */
     .hero {
       text-align: center;
-      padding: 80px 20px;
+      padding: 100px 20px;
       background-image: url('https://imgur.com/AqnIwkx.png');
       background-size: cover;
       background-position: center;
       color: #f4c430;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .hero h1 {
       font-size: 3rem;
-      margin-bottom: 20px;
     }
 
     .hero p {
       font-size: 1.5rem;
       max-width: 90%;
-      margin: auto;
     }
 
     .cta-button {
@@ -114,44 +92,32 @@
       font-size: 1rem;
       text-decoration: none;
       border-radius: 5px;
-      display: inline-block;
-      margin-top: 20px;
+      transition: background-color 0.3s;
     }
 
     .cta-button:hover {
       background-color: #ffdd57;
     }
 
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #222;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
     /* 響應式設計 */
-    @media (max-width: 992px) {
-      .navbar {
-        justify-content: flex-start;
-      }
-
-      .navbar-collapse {
-        background: rgba(0, 0, 0, 0.9);
-        padding: 10px;
-        border-radius: 5px;
-      }
-
-      .navbar-nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .navbar-nav .nav-item {
-        margin: 5px 0;
-      }
-
+    @media (max-width: 768px) {
       .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
       }
 
       .hero p {
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
     }
-
   </style>
 </head>
 
@@ -160,20 +126,22 @@
     <div class="logo-container">
       <img src="https://imgur.com/sMLZYRO.png" alt="STARLUX VA">
     </div>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
-          <li class="nav-item"><a class="nav-link" href="#services">資源提供</a></li>
-          <li class="nav-item"><a class="nav-link" href="#destinations">各式資訊</a></li>
-          <li class="nav-item"><a class="nav-link" href="#membership">已認證飛行員</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://discord.gg/ckUTDYV8Ec">加入我們</a></li>
-          <li class="nav-item"><a class="nav-link login-button" href="https://newsky.app/home">飛行員登入</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
+            <li class="nav-item"><a class="nav-link" href="#services">資源提供</a></li>
+            <li class="nav-item"><a class="nav-link" href="#destinations">各式資訊</a></li>
+            <li class="nav-item"><a class="nav-link" href="#membership">已認證飛行員</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://discord.gg/ckUTDYV8Ec">加入我們</a></li>
+            <li class="nav-item"><a class="nav-link login-button" href="https://newsky.app/home">飛行員登入</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
   </header>
@@ -181,11 +149,13 @@
   <section class="hero">
     <h1>探索星際，翱翔宇宙</h1>
     <p>星宇虛擬航空提供舒適的學習體驗，無論您程度如何，皆可感受到包容與平等。</p>
-    <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button">加入我們</a>
+    <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button btn btn-primary">加入我們</a>
   </section>
 
   <footer>
     <p>&copy; 2025 星宇虛擬航空 STARLUX VA. All Rights Reserved.</p>
+    <p>免責聲明: 本網站上的所有內容僅供學術研究與探討之用，無任何商業或營利目的，並且與任何真實航空公司無關。</p>
+    <p>Made by Cheng-En, Ou</p>
   </footer>
 
   <!-- Bootstrap JS -->
