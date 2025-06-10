@@ -140,6 +140,7 @@
       <tbody id="admin-table"></tbody>
     </table>
     <button onclick="exportCSV()">匯出 CSV</button>
+    <button onclick="returnToForm()">返回申請頁面</button>
   </div>
 
   <script>
@@ -250,6 +251,12 @@
       a.href = URL.createObjectURL(blob);
       a.download = "applications.csv";
       a.click();
+    }
+
+    function returnToForm() {
+      document.getElementById("admin-panel").style.display = "none";
+      document.getElementById("form-page").style.display = "block";
+      document.getElementById("admin-password").value = "";
     }
   </script>
 </body>
