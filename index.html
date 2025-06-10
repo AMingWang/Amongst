@@ -1,264 +1,256 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
+<html lang="zh-Hant">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>星宇虛擬航空 STARLUX VA</title>
-  <link rel="icon" type="image/png" href="https://imgur.com/iTlUluy.png">
-  <meta name="description" content="星宇虛擬航空，帶您翱翔星空，享受極致奢華的飛行體驗。">
-
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="aji.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    
+  <meta charset="UTF-8" />
+  <title>STARLUX 虛擬航空｜飛行員轉正考核申請</title>
   <style>
-    /* 通用樣式 */
     body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background-color: #111;
-      color: #fff;
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
       margin: 0;
       padding: 0;
     }
-
-    header {
-      background: rgba(0, 0, 0, 0.9);
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1000;
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
-
-    .logo-container img {
-      height: 40px;
-      margin-right: 15px;
-    }
-
-    .navbar {
-      width: 100%;
-    }
-
-    .navbar-nav {
-      justify-content: end;
-      width: 100%;
-    }
-
-    .navbar-light .navbar-nav .nav-link {
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-
-    .navbar-light .navbar-nav .nav-link:hover {
-      color: #f4c430;
-    }
-
-    /* Hero 區域 */
-    .hero {
+    h1 {
       text-align: center;
-      padding: 100px 20px;
-      background-image: url('https://imgur.com/AqnIwkx.png');
-      background-size: cover;
-      background-position: center;
-      color: #f4c430;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-    }
-
-    .hero p {
-      font-size: 1.5rem;
-      max-width: 90%;
-    }
-
-    .cta-button {
-      background-color: #f4c430;
-      padding: 12px 30px;
-      color: #111;
-      font-size: 1rem;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .cta-button:hover {
-      background-color: #ffdd57;
-    }
-
-    /* 內容區塊 */
-    .content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      padding: 20px;
-    }
-
-    .content-text, .map-info, .flight-info {
-      flex: 1;
-      padding: 15px;
-      border: 2px solid #f4c430;
-      border-radius: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
-      text-align: center;
-      margin: 10px;
-    }
-
-    .content-text h2 {
-      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2c2c2c;
       margin-bottom: 10px;
     }
-
-    .content-text p {
-      font-size: 1rem;
-      margin-bottom: 15px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
-      border-radius: 8px;
-    }
-
-    /* Footer */
-    footer {
+    h2 {
       text-align: center;
-      padding: 20px;
-      background-color: #222;
-      font-size: 0.9rem;
-      color: #bbb;
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
     }
-
-    footer p {
-      margin: 5px 0;
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
     }
-
-    /* 響應式設計 */
-    @media (max-width: 1024px) {
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero p {
-        font-size: 1.2rem;
-      }
-
-      .cta-button {
-        padding: 10px 25px;
-        font-size: 1rem;
-      }
-
-      .content {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .content-text, .map-info, .flight-info {
-        max-width: 100%;
-        margin-bottom: 20px;
-      }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
     }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 10px 20px;
-      }
-
-      .logo-container img {
-        height: 30px;
-      }
-
-      .navbar-nav .nav-link {
-        font-size: 1rem;
-      }
-
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .hero p {
-        font-size: 1rem;
-        padding: 0 10%;
-      }
-
-      iframe {
-        height: 250px;
-      }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      margin-top: 25px;
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #444;
+    }
+    .note {
+      font-size: 12px;
+      color: #777;
+    }
+    #result-page, #admin-login, #admin-panel {
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    .actions button {
+      margin-right: 5px;
     }
   </style>
 </head>
-
 <body>
-  <header>
-    <div class="logo-container">
-      <img src="https://imgur.com/sMLZYRO.png" alt="STARLUX VA">
-    </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-      <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
-            <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
-            <li class="nav-item"><a class="nav-link" href="#services">資源提供</a></li>
-            <li class="nav-item"><a class="nav-link" href="#destinations">各式資訊</a></li>
-            <li class="nav-item"><a class="nav-link" href="#membership">已認證飛行員</a></li>
-            <li class="nav-item"><a class="nav-link" href="https://discord.gg/ckUTDYV8Ec">加入我們</a></li>
-            <li class="nav-item"><a class="nav-link login-button" href="https://newsky.app/home">飛行員登入</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <div class="container" id="form-page">
+    <h1>STARLUX Virtual Aviation</h1>
+    <h2>飛行員轉正考核申請表</h2>
+    <div id="pilot-form">
+      <label for="name">姓名</label>
+      <input type="text" id="name" name="name" required />
 
-  <section class="hero">
-    <h1>探索星際，翱翔宇宙</h1>
-    <p>星宇虛擬航空提供舒適的學習體驗，無論您程度如何，皆可感受到包容與平等。</p>
-    <a href="https://discord.gg/ckUTDYV8Ec" class="cta-button btn btn-primary">加入我們</a>
-  </section>
+      <label for="discord">Discord ID（包含 #）</label>
+      <input type="text" id="discord" name="discord" required />
 
-  <section class="content">
-    <div class="content-text">
-      <h2>快樂學習</h2>
-      <p>我們致力於提供學員快樂的學習環境</p>
-      <h2>新創公司</h2>
-      <p>現在加入我們，成為創始成員</p>
-      <h2>台灣本土</h2>
-      <p>成員由中文群體組成，不必擔心溝通問題</p>
-    </div>
-    <div class="map-info">
-      <h2>IVAO即時航班雷達</h2>
-      <iframe src="https://webeye.ivao.aero"></iframe>
-    </div>
-    <div class="flight-info">
-      <h2>VATSIM即時航班資訊</h2>
-      <iframe src="https://vatboard.estassinos.com/?icao=RCTP"></iframe>
-    </div>
-  </section>
+      <label for="pilot-id">飛行員代號（例如：SJX001）</label>
+      <input type="text" id="pilot-id" name="pilot_id" required />
 
-  <footer>
-    <p>&copy; 2025 星宇虛擬航空 STARLUX VA. All Rights Reserved.</p>
-    <p>免責聲明:本網站上的所有內容，包括資料、商標、標誌、圖像連結等，僅限於學術研究與探討之用，無任何商業或營利目的，並且與任何真實航空公司無關。</p>
-    <p>Made by Cheng-En, Ou</p>
-  </footer>
+      <label for="current-rank">目前職級</label>
+      <select id="current-rank" name="current_rank" required>
+        <option value="">請選擇</option>
+        <option value="訓練成員">訓練成員</option>
+      </select>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <label for="self-assessment">自我評估 / 補充說明</label>
+      <textarea id="self-assessment" name="self_assessment" rows="4"></textarea>
+
+      <p class="note">※ 申請送出後，審核小組將於 3~5 個工作日內回覆。</p>
+
+      <button id="submit-btn" type="button">提交申請</button>
+      <button id="admin-access" type="button">管理員登入</button>
+    </div>
+  </div>
+
+  <div class="container" id="result-page">
+    <h1>申請結果</h1>
+    <h2>感謝您的申請，以下是您提交的資料：</h2>
+    <div id="result-content"></div>
+    <div id="exam-code"></div>
+  </div>
+
+  <div class="container" id="admin-login">
+    <h2>管理員登入</h2>
+    <input type="password" id="admin-password" placeholder="請輸入管理員密碼">
+    <button onclick="verifyAdmin()">登入</button>
+  </div>
+
+  <div class="container" id="admin-panel">
+    <h2>申請資料總覽</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>姓名</th><th>Discord ID</th><th>代號</th><th>階級</th><th>自評</th><th>考試代碼</th><th>狀態</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="admin-table"></tbody>
+    </table>
+    <button onclick="exportCSV()">匯出 CSV</button>
+  </div>
+
+  <script>
+    const webhookUrl = "https://discord.com/api/webhooks/1381616410752454666/FFS3owJKcEUw8uHH3U1ltrlzds9-AhiaH00pWD9MdqA7lMWBX-HK9ARZX1PEuv4eQkgN";
+
+    document.getElementById('submit-btn').addEventListener('click', function() {
+      const name = document.getElementById('name').value.trim();
+      const discord = document.getElementById('discord').value.trim();
+      const pilotId = document.getElementById('pilot-id').value.trim();
+      const currentRank = document.getElementById('current-rank').value;
+      const selfAssessment = document.getElementById('self-assessment').value.trim() || "無";
+      if (!name || !discord || !pilotId || !currentRank) return alert("請完整填寫所有欄位");
+      const randomNum = Math.floor(10000 + Math.random() * 90000);
+      const examCode = `考試代碼：${randomNum}`;
+
+      const data = { name, discord, pilotId, currentRank, selfAssessment, randomNum, status: "待審核" };
+      const records = JSON.parse(localStorage.getItem("applications") || "[]");
+      records.push(data);
+      localStorage.setItem("applications", JSON.stringify(records));
+
+      const discordMessage = {
+        content: "<@&1381628832041406595>",
+        allowed_mentions: { roles: ["1381628832041406595"] },
+        embeds: [{
+          title: "飛行員轉正考核申請表單",
+          color: 7506394,
+          fields: [
+            { name: "姓名", value: name },
+            { name: "Discord ID", value: discord },
+            { name: "飛行員代號", value: pilotId },
+            { name: "目前階級", value: currentRank },
+            { name: "自我評估", value: selfAssessment },
+            { name: "考試代碼", value: randomNum.toString() }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(discordMessage)
+      }).then(res => {
+        if (!res.ok) return alert("發送到 Discord 失敗！");
+        document.getElementById('form-page').style.display = 'none';
+        document.getElementById('result-page').style.display = 'block';
+        document.getElementById('result-content').innerHTML = `
+          <p><strong>姓名：</strong> ${name}</p>
+          <p><strong>DISCORD ID：</strong> ${discord}</p>
+          <p><strong>飛行員代號：</strong> ${pilotId}</p>
+          <p><strong>目前階級：</strong> ${currentRank}</p>
+          <p><strong>自我評估：</strong> ${selfAssessment}</p>`;
+        document.getElementById('exam-code').textContent = examCode;
+      });
+    });
+
+    document.getElementById("admin-access").onclick = () => {
+      document.getElementById("form-page").style.display = "none";
+      document.getElementById("admin-login").style.display = "block";
+    };
+
+    function verifyAdmin() {
+      const pw = document.getElementById("admin-password").value;
+      if (pw === "starlux123") {
+        document.getElementById("admin-login").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        loadAdminTable();
+      } else alert("密碼錯誤！");
+    }
+
+    function loadAdminTable() {
+      const tbody = document.getElementById("admin-table");
+      tbody.innerHTML = "";
+      const records = JSON.parse(localStorage.getItem("applications") || "[]");
+      records.forEach((r, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.name}</td><td>${r.discord}</td><td>${r.pilotId}</td><td>${r.currentRank}</td><td>${r.selfAssessment}</td><td>${r.randomNum}</td>
+          <td>${r.status}</td><td class="actions">
+          <button onclick="updateStatus(${i}, '通過')">通過</button>
+          <button onclick="updateStatus(${i}, '駁回')">駁回</button>
+          <button onclick="deleteRecord(${i})">刪除</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateStatus(index, status) {
+      const records = JSON.parse(localStorage.getItem("applications") || "[]");
+      records[index].status = status;
+      localStorage.setItem("applications", JSON.stringify(records));
+      loadAdminTable();
+    }
+
+    function deleteRecord(index) {
+      const records = JSON.parse(localStorage.getItem("applications") || "[]");
+      records.splice(index, 1);
+      localStorage.setItem("applications", JSON.stringify(records));
+      loadAdminTable();
+    }
+
+    function exportCSV() {
+      const records = JSON.parse(localStorage.getItem("applications") || "[]");
+      let csv = "姓名,Discord ID,代號,階級,自評,考試代碼,狀態\n";
+      records.forEach(r => {
+        csv += `${r.name},${r.discord},${r.pilotId},${r.currentRank},${r.selfAssessment},${r.randomNum},${r.status}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "applications.csv";
+      a.click();
+    }
+  </script>
 </body>
-
 </html>
