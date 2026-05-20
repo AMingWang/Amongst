@@ -212,9 +212,71 @@
                         <label>特徵描述 (例如: 碳纖維尾翼、蒙面)</label>
                         <input type="text" id="bolo-desc" placeholder="明顯特徵...">
                     </div>
+                    <!-- 智慧搜尋選單修改：使用 Datalist 機制讓警員可打字搜尋也可下拉選擇 -->
                     <div class="form-col" style="flex: 100%;">
-                        <label>涉犯法條 (例如: CVC 2800.2, PC 211)</label>
-                        <input type="text" id="bolo-law" placeholder="引用法條...">
+                        <label>涉犯法條 (輸入代號、中文字可自動過濾，也可手動自行輸入輸入)</label>
+                        <input type="text" id="bolo-law" list="law-list" placeholder="點擊選擇或輸入關鍵字搜尋... (例如: PC 187)">
+                        <datalist id="law-list">
+                            <!-- CVC 交通法規 -->
+                            <option value="CVC 4000(a)(1) 未註冊車輛">
+                            <option value="CVC 4454(a) 行車未攜帶行照">
+                            <option value="CVC 4463 偽造車牌/年檢標籤">
+                            <option value="CVC 5200(a) 未依規定懸掛車牌">
+                            <option value="CVC 12500(a) 無照駕駛">
+                            <option value="CVC 14601.1 駕照吊銷期間行駛">
+                            <option value="CVC 16028(a) 未能出示強制保險">
+                            <option value="CVC 21453(a) 違規闖紅燈">
+                            <option value="CVC 22450(a) 無視停止標誌 (Stop Sign)">
+                            <option value="CVC 21806 未禮讓緊急任務車輛">
+                            <option value="CVC 21651(b) 跨越雙黃線逆向行駛">
+                            <option value="CVC 21703 未保持安全距離 (逼車)">
+                            <option value="CVC 22348(b) 時速超過 100 英哩">
+                            <option value="CVC 23103 危險駕駛 (Reckless Driving)">
+                            <option value="CVC 23109(a) 非法公路競速 (Street Racing)">
+                            <option value="CVC 23152(a) 酒精影響下駕駛 (DUI)">
+                            <option value="CVC 23152(f) 毒品/藥物影響下駕駛">
+                            <option value="CVC 23153 酒駕/藥駕致人受傷">
+                            <option value="CVC 2800.1 逃避警方攔停盤查">
+                            <option value="CVC 2800.2 危險飛車逃捕 (重罪)">
+                            <option value="CVC 2800.4 逆向逃避警方追捕">
+                            <option value="CVC 20001(a) 肇事逃逸 (人員傷亡)">
+                            <!-- PC 刑事法規 -->
+                            <option value="PC 187 一級/二級謀殺罪 (Murder)">
+                            <option value="PC 664/187 謀殺未遂 (Attempted Murder)">
+                            <option value="PC 207 一般綁架罪 (Kidnapping)">
+                            <option value="PC 210.5 挾持平民人質抗法">
+                            <option value="PC 211 強盜強奪罪 (Robbery)">
+                            <option value="PC 215 武裝劫車罪 (Carjacking)">
+                            <option value="PC 236 非法拘禁 (False Imprisonment)">
+                            <option value="PC 242 非法毆打 (Battery)">
+                            <option value="PC 245(a)(1) 致命武器攻擊 (ADW)">
+                            <option value="PC 245(d)(1) 持致命武器襲警">
+                            <option value="PC 459 住宅/商業入室盜竊 (Burglary)">
+                            <option value="PC 487 重大竊盜罪 (Grand Theft)">
+                            <option value="PC 487(d)(1) 重大汽車竊盜 (Grand Theft Auto)">
+                            <option value="PC 451 故意縱火罪 (Arson)">
+                            <option value="PC 594 惡意破壞他人財產 (Vandalism)">
+                            <option value="PC 25400 非法隱蔽攜帶槍枝">
+                            <option value="PC 25850 公共場所攜帶上膛火器">
+                            <option value="PC 29800 重罪犯非法持有槍枝">
+                            <option value="PC 30605 持有黑名單突擊武器">
+                            <option value="PC 18710 非法持有軍用爆裂物">
+                            <option value="PC 246 黑夜飛車射擊 (Drive-by)">
+                            <option value="PC 417 亮出武器恐嚇 (Brandishing)">
+                            <!-- H&S管制藥物與其餘妨礙司法 -->
+                            <option value="H&S 11350 非法持有受控毒品">
+                            <option value="H&S 11351 意圖販賣而持有毒品">
+                            <option value="H&S 11352 街頭販賣與非法運輸">
+                            <option value="H&S 11379.6 非法經營地下製毒工廠">
+                            <option value="H&S 11550 受毒品影響神智不清">
+                            <option value="PC 148(a)(1) 一般拒捕妨礙公務">
+                            <option value="PC 69 暴力抵抗執法 (重罪)">
+                            <option value="PC 148.9 向警察提供虛假身分">
+                            <option value="PC 67 / 68 行賄與公職收賄">
+                            <option value="PC 113 非法竄改政府紀錄">
+                            <option value="PC 538d 假冒執法人員">
+                            <option value="PC 597 惡意傷害執法警犬 K9">
+                        </datalist>
                     </div>
                     <div class="form-col" style="flex: 100%;">
                         <label>行動指示與細節 (Action Plan)</label>
@@ -495,7 +557,7 @@
                         </div>
                     </div>
                     <div class="quiz-item" style="margin-top:30px;">
-                        <div class="quiz-q" id="q3-text">3. 你與搭檔正在路邊盤查形跡可疑男子。突然，該男子轉身朝著你的搭檔猛推一拳後拔腿就跑。作為掩護隊員，你的最佳反應為何？</div>
+                        <div class="quiz-q" id="q3-text">3. 你與搭檔正在路邊盤查形跡可疑男子。突然，該男子轉身朝著 your 搭檔猛推一拳後拔腿就跑。作為掩護隊員，你的最佳反應為何？</div>
                         <div class="quiz-options">
                             <label><input type="radio" name="q3" value="A"> A. 嫌犯涉嫌襲警，立刻拔出配槍向嫌犯背部或腿部射擊以阻止他逃跑。</label>
                             <label><input type="radio" name="q3" value="B"> B. 先口頭確認搭檔狀況，同時在無線電中清晰播報嫌犯逃跑方向、特徵，隨後展開徒步追捕。</label>
