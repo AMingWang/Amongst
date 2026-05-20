@@ -131,12 +131,12 @@
         .form-col input, .form-col select, .form-col textarea { width: 100%; padding: 10px; background-color: #121212; border: 1px solid #333; color: white; border-radius: 4px; font-size: 0.95rem; }
         .form-col input:focus, .form-col select:focus, .form-col textarea:focus { border-color: #ef4444; outline: none; }
 
-        /* 臨臨檢動態小抄與 10-Codes 速查 */
+        /* 臨檢動態小抄與 10-Codes 速查 */
         .scratchpad-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
         @media(max-width: 768px) { .scratchpad-container { grid-template-columns: 1fr; } }
         .scratch-box { background-color: #1e1e1e; border: 1px solid #333; border-radius: 6px; padding: 20px; }
-        .scratch-box h4 { color: #fff; margin-bottom: 10px; font-size: 1rem; border-left: 3px solid #1e40af; padding-left: 8px; }
         .scratch-box textarea { width: 100%; background-color: #121212; border: 1px solid #444; color: white; padding: 10px; border-radius: 4px; font-size: 0.9rem; resize: vertical; }
+        .scratch-box h4 { color: #fff; margin-bottom: 10px; font-size: 1rem; border-left: 3px solid #1e40af; padding-left: 8px; }
 
         /* 匿名情報檢舉信箱與官方起訴書生成器 */
         .tip-box { background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-top: 4px solid #f59e0b; margin-top: 40px; }
@@ -163,7 +163,6 @@
     <header>
         <div class="logo-area">
             <div class="logo">LA<span> PROJECT</span></div>
-            <!-- 核心功能實裝：洛杉磯即時執法時區 -->
             <div class="la-clock" id="la-time-display">LA TIME: LOADING...</div>
         </div>
         <nav>
@@ -258,8 +257,8 @@
                         <input type="text" id="bolo-desc" placeholder="明顯特徵...">
                     </div>
                     <div class="form-col" style="flex: 100%;">
-                        <label>涉犯法條 (輸入代號、中文字可自動過濾，也可手動自行輸入)</label>
-                        <input type="text" id="bolo-law" list="law-list" placeholder="點擊選擇或輸入關鍵字搜尋... (例如: PC 187)">
+                        <label>涉犯法條 (手動自行輸入)</label>
+                        <input type="text" id="bolo-law" placeholder="例如: PC 211, CVC 2800.2...">
                     </div>
                     <div class="form-col" style="flex: 100%;">
                         <label>行動指示與細節 (Action Plan)</label>
@@ -346,7 +345,7 @@
                 </div>
             </div>
 
-            <!-- 核心功能實裝：警界傳奇／榮譽殿堂與殉職官員紀念碑 -->
+            <!-- 警界榮譽殿堂與紀念碑 -->
             <div class="memorial-section">
                 <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 洛杉磯執法部門榮譽殿堂與紀念碑</h2>
                 <p style="color: #888; font-size: 0.9rem;">銘記歷史，致敬英豪。此處紀錄為洛杉磯付出卓越貢獻之傳奇官員，以及在捍衛正義中英勇獻身的殉職先烈。</p>
@@ -386,20 +385,20 @@
         </section>
     </div>
 
-    <!-- ================= 4. 加州/LA法規全書 (智慧搜尋、精算器、檢舉信箱) ================= -->
+    <!-- ================= 4. 加州/LA法規全書 ================= -->
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">全州法規大全 (California Codes)</h2>
             <p style="color: #aaa; margin-bottom: 20px;">本資料庫全面實裝。警員與法律人員在司法流程中應完整、精確引用以下法條與代碼。</p>
             
-            <!-- 核心功能實裝：智慧型法規關鍵字搜尋列 -->
+            <!-- 智慧搜尋框 -->
             <div class="search-container">
                 <input type="text" id="law-search-input" class="search-bar" placeholder="🔍 智慧法規檢索：請輸入法條代號或關鍵字（如：187、酒駕、槍枝、CVC...）" oninput="filterLaws()">
             </div>
 
-            <!-- 核心功能實裝：罰單與刑期保釋金連動精算面板 -->
+            <!-- 罰則加總精算面板 -->
             <div class="calc-panel">
-                <h3 style="color: #60a5fa; font-size: 1.1rem; margin-bottom: 10px;">📊 司法罰則連動精算終端 (勾選下方條文自動連動累加)</h3>
+                <h3 style="color: #60a5fa; font-size: 1.1rem; margin-bottom: 10px;">📊 司法罰則連動精算終端</h3>
                 <p style="color: #888; font-size: 0.85rem; margin-bottom: 10px;">點擊下方各法條右側的【➕ 納入計算】按鈕，系統將自動累計總數並生成保釋金（總額 10%）。</p>
                 <div class="calc-grid">
                     <div class="calc-box"><div style="color:#888; font-size:0.85rem;">累計總罰款</div><div class="calc-val text-orange" id="total-fine">$ 0</div></div>
@@ -408,135 +407,144 @@
                 </div>
                 <div style="margin-top: 15px; display: flex; gap: 10px;">
                     <button class="btn" style="margin-top:0; padding:8px 20px; background-color:#333;" onclick="clearCalculator()">重設精算器</button>
-                    <button class="btn" style="margin-top:0; padding:8px 20px; background-color:#166534;" onclick="copyCalcResult()">一鍵複製裁決公文</button>
+                    <button class="btn" style="margin-top:0; padding:8px 20px; background-color:#166534;" onclick="copyCalcResult()">一鍵複製裁決書</button>
                 </div>
             </div>
 
-            <!-- 130條完全體法規組 -->
+            <!-- 法規折疊選單區 (修復結構，避免按鈕衝突) -->
             <div id="law-accordion-group">
-                <!-- 1. CVC 行政與裝備 -->
-                <button class="accordion">📘 1. CVC - 車輛牌照行政與违規改裝處罰 (Admin & Tuning)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="1500" data-jail="0">CVC 4000(a)(1)</span> <span><strong>未註冊車輛：</strong> 駕駛未向監理站登記或牌照貼紙過期之車輛上書上路。</span> <button class="add-btn" onclick="toggleLaw(this, 1500, 0, 'CVC 4000(a)(1) 未註冊車輛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="800" data-jail="0">CVC 4454(a)</span> <span><strong>行車未攜帶行照：</strong> 駕駛機動車輛上路，卻無法當場出示有效的車輛註冊證明文件。</span> <button class="add-btn" onclick="toggleLaw(this, 800, 0, 'CVC 4454(a) 行車未攜帶行照')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="12000" data-jail="6">CVC 4463</span> <span><strong>偽造車牌/年檢標籤：</strong> 惡意偽造、變造、或使用虛假車牌與年檢貼紙意圖矇騙（重罪）。</span> <button class="add-btn" onclick="toggleLaw(this, 12000, 6, 'CVC 4463 偽造車牌/年檢標籤')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="2000" data-jail="0">CVC 5200(a)</span> <span><strong>未依規定懸掛車牌：</strong> 故意不懸掛前後車牌、或惡意遮蔽車牌規避警方巡邏辨識。</span> <button class="add-btn" onclick="toggleLaw(this, 2000, 0, 'CVC 5200(a) 未依規定懸掛車牌')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="5000" data-jail="0">CVC 12500(a)</span> <span><strong>無照駕駛：</strong> 在未持有合法、有效之加州汽機車駕駛執照的情況下操作機動載具。</span> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'CVC 12500(a) 無照駕駛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="7500" data-jail="3">CVC 14601.1</span> <span><strong>駕照吊銷期間行駛：</strong> 明知自身駕駛執照已被依法吊銷或凍結，仍違規強行開車上路。</span> <button class="add-btn" onclick="toggleLaw(this, 7500, 3, 'CVC 14601.1 駕照吊銷期間行駛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="1500" data-jail="0">CVC 16028(a)</span> <span><strong>未能出示強制保險：</strong> 遭遇警方攔停盤查時，駕駛人無法提供有效的汽車責任保險證明。</span> <button class="add-btn" onclick="toggleLaw(this, 1500, 0, 'CVC 16028(a) 未能出示強制保險')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="1000" data-jail="0">CVC 24250</span> <span><strong>夜間/暗處未開啟車燈：</strong> 於日落後至日出前，或因大霧、隧道內視線不良時，未依規開啟大燈。</span> <button class="add-btn" onclick="toggleLaw(this, 1000, 0, 'CVC 24250 夜間/暗處未開啟車燈')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="2500" data-jail="0">CVC 26708</span> <span><strong>非法車窗隔熱紙：</strong> 汽車前擋風玻璃、或駕駛座兩側車窗，黏貼透光率過低的深色隔熱紙。</span> <button class="add-btn" onclick="toggleLaw(this, 2500, 0, 'CVC 26708 非法車窗隔熱紙')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="6000" data-jail="0">CVC 27150</span> <span><strong>非法改裝直通排氣管：</strong> 故意拆除車輛消音器，或改裝直通管炸街，製造巨大噪音擾民。</span> <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'CVC 27150 非法改裝直通排氣管')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="4500" data-jail="0">CVC 24008</span> <span><strong>底盤改裝高度違規：</strong> 刻意改裝避震，導致車輛底盤最低點低於輪框下緣，危害安全。</span> <button class="add-btn" onclick="toggleLaw(this, 4500, 0, 'CVC 24008 底盤改裝高度違規')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">📘 1. CVC - 車輛牌照行政與违規改裝處罰 (Admin & Tuning)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">CVC 4000(a)(1)</span> <strong>未註冊車輛：</strong> 駕駛未向監理站登記或牌照貼紙過期之車輛上路。</p> <button class="add-btn" onclick="toggleLaw(this, 1500, 0, 'CVC 4000(a)(1) 未註冊車輛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 4454(a)</span> <strong>行車未攜帶行照：</strong> 駕駛機動車輛上路，卻無法當場出示有效的車輛註冊證明文件。</p> <button class="add-btn" onclick="toggleLaw(this, 800, 0, 'CVC 4454(a) 行車未攜帶行照')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 4463</span> <strong>偽造車牌/年檢標籤：</strong> 惡意偽造、變造、或使用虛假車牌與年檢貼紙意圖矇騙（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 12000, 6, 'CVC 4463 偽造車牌/年檢標籤')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 5200(a)</span> <strong>未依規定懸掛車牌：</strong> 故意不懸掛前後車牌、或惡意遮蔽車牌規避警方巡邏辨識。</p> <button class="add-btn" onclick="toggleLaw(this, 2000, 0, 'CVC 5200(a) 未依規定懸掛車牌')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 12500(a)</span> <strong>無照駕駛：</strong> 在未持有合法、有效之加州汽機車駕駛執照的情況下操作機動載具。</p> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'CVC 12500(a) 無照駕駛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 14601.1</span> <strong>駕照吊銷期間行駛：</strong> 明知自身駕駛執照已被依法吊銷或凍結，仍違規強行開車上路。</p> <button class="add-btn" onclick="toggleLaw(this, 7500, 3, 'CVC 14601.1 駕照吊銷期間行駛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 16028(a)</span> <strong>未能出示強制保險：</strong> 遭遇警方攔停盤查時，駕駛人無法提供有效的汽車責任保險證明。</p> <button class="add-btn" onclick="toggleLaw(this, 1500, 0, 'CVC 16028(a) 未能出示強制保險')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 24250</span> <strong>夜間/暗處未開啟車燈：</strong> 於日落後至日出前，或因大霧、隧道內視線不良時，未依規開啟大燈。</p> <button class="add-btn" onclick="toggleLaw(this, 1000, 0, 'CVC 24250 夜間/暗處未開啟車燈')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 26708</span> <strong>非法車窗隔熱紙：</strong> 汽車前擋風玻璃、或駕駛座兩側車窗，黏貼透光率過低的深色隔熱紙。</p> <button class="add-btn" onclick="toggleLaw(this, 2500, 0, 'CVC 26708 非法車窗隔熱紙')">➕ 納入計算</button></p></div>
+                        <div class="law-text"><p><span class="law-code">CVC 27150</span> <strong>非法改裝直通排氣管：</strong> 故意拆除車輛消音器，或改裝直通管炸街，製造巨大噪音擾民。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'CVC 27150 非法改裝直通排氣管')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 24008</span> <strong>底盤改裝高度違規：</strong> 刻意改裝避震，導致車輛底盤最低點低於輪框下緣，危害安全。</p> <button class="add-btn" onclick="toggleLaw(this, 4500, 0, 'CVC 24008 底盤改裝高度違規')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 2. CVC 行車路權與超速 -->
-                <button class="accordion">📘 2. CVC - 行車號誌、超速、路權與危險逼車 (Moving Violations)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="3000" data-jail="0">CVC 21453(a)</span> <span><strong>違規闖紅燈：</strong> 面對紅燈號誌未在停止線前完全煞停，強行穿越路口。</span> <button class="add-btn" onclick="toggleLaw(this, 3000, 0, 'CVC 21453(a) 違規闖紅燈')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="2000" data-jail="0">CVC 21461(a)</span> <span><strong>未遵守交通指示標誌：</strong> 無視公路明示之禁止左轉、禁止迴轉、單行道等限制標誌。</span> <button class="add-btn" onclick="toggleLaw(this, 2000, 0, 'CVC 21461(a) 未遵守交通指示標誌')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="2500" data-jail="0">CVC 22450(a)</span> <span><strong>無視停止標誌 (Stop Sign)：</strong> 遇「STOP」標誌未完全將車速歸零靜止至少 3 秒，即滑行通過。</span> <button class="add-btn" onclick="toggleLaw(this, 2500, 0, 'CVC 22450(a) 無視停止標誌')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="5000" data-jail="0">CVC 21806</span> <span><strong>未禮讓緊急任務車輛：</strong> 聽聞警笛或看見拉警燈之警網絡車輛時，未立即主動向右靠邊完全停車讓道。</span> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'CVC 21806 未禮讓緊急任務車輛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="4000" data-jail="0">CVC 21651(b)</span> <span><strong>跨越雙黃線逆向行駛：</strong> 惡意跨越實線分隔島或公路雙黃線，行駛於對向車道。</span> <button class="add-btn" onclick="toggleLaw(this, 4000, 0, 'CVC 21651(b) 跨越雙黃線逆向行駛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="3500" data-jail="0">CVC 21703</span> <span><strong>未保持安全距離 (逼車)：</strong> 於行駛途中高速緊貼前方車輛尾部，進行惡意逼車施壓 (Tailgating)。</span> <button class="add-btn" onclick="toggleLaw(this, 3500, 0, 'CVC 21703 未保持安全距離')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="12000" data-jail="0">CVC 22348(b)</span> <span><strong>時速超過 100 英哩：</strong> 於公路上狂飆時速達 100 mph (160 km/h) 以上，執警得當場扣留載具。</span> <button class="add-btn" onclick="toggleLaw(this, 12000, 0, 'CVC 22348(b) 時速超過 100 英哩')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="3500" data-jail="0">CVC 22349(a)</span> <span><strong>超過該路段最高速限：</strong> 駕駛速度明顯高於該公路標示之法定最高速度限制。</span> <button class="add-btn" onclick="toggleLaw(this, 3500, 0, 'CVC 22349(a) 超過該路段最高速限')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="3000" data-jail="0">CVC 22350</span> <span><strong>基本速度法違規 (超速)：</strong> 即使速度未超標，但對當時之大雨或濃霧路況而言屬魯莽超速。</span> <button class="add-btn" onclick="toggleLaw(this, 3000, 0, 'CVC 22350 基本速度法違規')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">📘 2. CVC - 行車號誌、超速、路權與危險逼車 (Moving Violations)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">CVC 21453(a)</span> <strong>違規闖紅燈：</strong> 面對紅燈號誌未在停止線前完全煞停，強行穿越路口。</p> <button class="add-btn" onclick="toggleLaw(this, 3000, 0, 'CVC 21453(a) 違規闖紅燈')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 21461(a)</span> <strong>未遵守交通指示標誌：</strong> 無視公路明示之禁止左轉、禁止迴轉、單行道等限制標誌。</p> <button class="add-btn" onclick="toggleLaw(this, 2000, 0, 'CVC 21461(a) 未遵守交通指示標誌')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 22450(a)</span> <strong>無視停止標誌 (Stop Sign)：</strong> 遇「STOP」標誌未完全將車速歸零靜止至少 3 秒，即滑行通過。</p> <button class="add-btn" onclick="toggleLaw(this, 2500, 0, 'CVC 22450(a) 無視停止標誌')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 21806</span> <strong>未禮讓緊急任務車輛：</strong> 聽聞警笛或看見拉警燈之警網絡車輛時，未立即主動向右靠邊完全停車讓道。</p> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'CVC 21806 未禮讓緊急任務車輛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 21651(b)</span> <strong>跨越雙黃線逆向行駛：</strong> 惡意跨越實線分隔島或公路雙黃線，行駛於對向車道。</p> <button class="add-btn" onclick="toggleLaw(this, 4000, 0, 'CVC 21651(b) 跨越雙黃線逆向行駛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 21703</span> <strong>未保持安全距離 (逼車)：</strong> 於行駛途中高速緊貼前方車輛尾部，進行惡意逼車施壓 (Tailgating)。</p> <button class="add-btn" onclick="toggleLaw(this, 3500, 0, 'CVC 21703 未保持安全距離')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 22348(b)</span> <strong>時速超過 100 英哩：</strong> 於公路上狂飆時速達 100 mph (160 km/h) 以上，執警得當場扣留載具。</p> <button class="add-btn" onclick="toggleLaw(this, 12000, 0, 'CVC 22348(b) 時速超過 100 英哩')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 22349(a)</span> <strong>超過該路段最高速限：</strong> 駕駛速度明顯高於該公路標示之法定最高速度限制。</p> <button class="add-btn" onclick="toggleLaw(this, 3500, 0, 'CVC 22349(a) 超過該路段最高速限')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 22350</span> <strong>基本速度法違規 (超速)：</strong> 即使速度未超標，但對當時之大雨或濃霧路況而言屬魯莽超速。</p> <button class="add-btn" onclick="toggleLaw(this, 3000, 0, 'CVC 22350 基本速度法違規')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 3. CVC 危險駕駛與逃避 -->
-                <button class="accordion">📘 3. CVC/H&N - 飛車競速、酒駕毒駕與逃避追捕 (Reckless & DUI)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="8000" data-jail="3">CVC 23103</span> <strong>危險駕駛 (Reckless Driving)：</strong> 在公共道路上肆意燒胎、轉圈甩尾或惡意無序切車，威脅公眾安全。 <button class="add-btn" onclick="toggleLaw(this, 8000, 3, 'CVC 23103 危險駕駛')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="6">CVC 23109(a)</span> <strong>非法公路競速 (Street Racing)：</strong> 兩台或多台車輛未經市政機關許可，在街道上進行直線加速競賽。 <button class="add-btn" onclick="toggleLaw(this, 15000, 6, 'CVC 23109(a) 非法公路競速')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="8000" data-jail="10">CVC 23152(a)</span> <strong>酒精影響下駕駛 (DUI)：</strong> 生理受酒精強烈影響，無法進行正常且安全的機動車輛操作。 <button class="add-btn" onclick="toggleLaw(this, 8000, 10, 'CVC 23152(a) 酒駕')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="8000" data-jail="10">CVC 23152(f)</span> <strong>毒品/藥物影響下駕駛：</strong> 受管制麻醉藥物、非法毒品或大麻影響致使神智受損行車。 <button class="add-btn" onclick="toggleLaw(this, 8000, 10, 'CVC 23152(f) 毒駕')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="18000" data-jail="15">CVC 23153</span> <strong>酒駕/藥駕致人受傷：</strong> 違反 DUI 狀態下駕駛車輛引發交通車禍，導致他人身體受到實質傷害（重罪）。 <button class="add-btn" onclick="toggleLaw(this, 18000, 15, 'CVC 23153 酒駕致傷')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="6000" data-jail="3">CVC 2800.1</span> <strong>逃避警方攔停盤查：</strong> 面對後方亮警燈警笛之執法車輛，故意加速逃逸抗拒攔停（輕罪）。 <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'CVC 2800.1 逃避攔停')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="15">CVC 2800.2</span> <strong>危險飛車逃捕 (重罪)：</strong> 逃捕途中伴隨 3 次以上嚴重交通違規（如連闖紅燈、逆向狂飆）（重罪）。 <button class="add-btn" onclick="toggleLaw(this, 15000, 15, 'CVC 2800.2 危險飛車逃捕')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="18000" data-jail="18">CVC 2800.4</span> <strong>逆向逃避警方追捕：</strong> 逃避追捕時，故意將車輛駛入設有分隔島之對向車道逆向狂飆，試圖逼退警車。 <button class="add-btn" onclick="toggleLaw(this, 18000, 18, 'CVC 2800.4 逆向逃捕')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="25000" data-jail="24">CVC 20001(a)</span> <strong>肇事逃逸 (人員傷亡)：</strong> 引發導致他人受傷或死亡之車禍後，未實施緊急救助便逃離現場。 <button class="add-btn" onclick="toggleLaw(this, 25000, 24, 'CVC 20001(a) 肇事逃逸')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">📘 3. CVC/H&N - 飛車競速、酒駕毒駕與逃避追捕 (Reckless & DUI)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">CVC 23103</span> <strong>危險駕駛 (Reckless Driving)：</strong> 在公共道路上肆意燒胎、轉圈甩尾或惡意無序切車，威脅公眾安全。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 3, 'CVC 23103 危險駕駛')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 23109(a)</span> <strong>非法公路競速 (Street Racing)：</strong> 兩台或多台車輛未經市政機關許可，在街道上進行直線加速競賽。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 6, 'CVC 23109(a) 非法公路競速')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 23152(a)</span> <strong>酒精影響下駕駛 (DUI)：</strong> 生理受酒精強烈影響，無法進行正常且安全的機動車輛操作。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 10, 'CVC 23152(a) 酒駕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 23152(f)</span> <strong>毒品/藥物影響下駕駛：</strong> 受管制麻醉藥物、非法毒品或大麻影響致使神智受損行車。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 10, 'CVC 23152(f) 毒駕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 23153</span> <strong>酒駕/藥駕致人受傷：</strong> 違反 DUI 狀態下駕駛車輛引發交通車禍，導致他人身體受到實質傷害（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 15, 'CVC 23153 酒駕致傷')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 2800.1</span> <strong>逃避警方攔停盤查：</strong> 面對後方亮警燈警笛之執法車輛，故意加速逃逸抗拒攔停（輕罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'CVC 2800.1 逃避攔停')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 2800.2</span> <strong>危險飛車逃捕 (重罪)：</strong> 逃捕途中伴隨 3 次以上嚴重交通違規（如連闖紅燈、逆向狂飆）（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 15, 'CVC 2800.2 危險飛車逃捕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 2800.4</span> <strong>逆向逃避警方追捕：</strong> 逃避追捕時，故意將車輛駛入設有分隔島之對向車道逆向狂飆，試圖逼退警車。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 18, 'CVC 2800.4 逆向逃捕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 20001(a)</span> <strong>肇事逃逸 (人員傷亡)：</strong> 引發導致他人受傷或死亡之車禍後，未實施緊急救助便逃離現場。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 24, 'CVC 20001(a) 肇事逃逸')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 4. PC 暴力犯罪 -->
-                <button class="accordion">📕 4. PC - 謀殺、武裝強盜、劫車、綁架與人身武力侵害 (Violent Crimes)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="100000" data-jail="120">PC 187</span> <strong>一級/二級謀殺罪 (Murder)：</strong> 非法、蓄意且具備事先預謀手段或極度魯莽無視生命地剥奪人類生命。 <button class="add-btn" onclick="toggleLaw(this, 100000, 120, 'PC 187 謀殺罪')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="60000" data-jail="60">PC 664/187</span> <strong>謀殺未遂 (Attempted Murder)：</strong> 已實施致死性攻擊（開槍射擊、揮刀砍刺），但受害者經急救後存活。 <button class="add-btn" onclick="toggleLaw(this, 60000, 60, 'PC 664/187 謀殺未遂')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="45000" data-jail="40">PC 207</span> <strong>一般綁架罪 (Kidnapping)：</strong> 使用實體武力、強迫或恐嚇手段，違反他人意願將其強行移動、帶離至其他地點。 <button class="add-btn" onclick="toggleLaw(this, 45000, 40, 'PC 207 綁架罪')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="55000" data-jail="50">PC 210.5</span> <strong>挾持平民人質抗法：</strong> 遭遇警方防線包圍時，強行將無辜市民、店員扣留作為阻擋警方攻堅之防盾。 <button class="add-btn" onclick="toggleLaw(this, 55000, 50, 'PC 210.5 挾持人質')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="35000" data-jail="30">PC 211</span> <strong>強盜強奪罪 (Robbery)：</strong> 面對面利用致命武器、暴力攻擊或言語恐嚇，強行奪取受害者、超商或銀行之財物。 <button class="add-btn" onclick="toggleLaw(this, 35000, 30, 'PC 211 強盜罪')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="40000" data-jail="35">PC 215</span> <strong>武裝劫車罪 (Carjacking)：</strong> 利用槍枝或利刃面對面恐嚇正在車內的駕駛，強行將其驅離並奪取車輛控制權。 <button class="add-btn" onclick="toggleLaw(this, 40000, 35, 'PC 215 劫車罪')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="10">PC 236</span> <strong>非法拘禁 (False Imprisonment)：</strong> 非法限制、剝奪他人人身移動自由（例如在搶劫時將店員鎖進倉庫）。 <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 236 非法拘禁')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="10000" data-jail="5">PC 242</span> <strong>非法毆打 (Battery)：</strong> 實際對他人身體進行任何非法、違反意願之暴力武力接觸，造成實質身體傷害。 <button class="add-btn" onclick="toggleLaw(this, 10000, 5, 'PC 242 非法毆打')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="25000" data-jail="20">PC 245(a)(1)</span> <strong>致命武器攻擊 (ADW)：</strong> 使用火器以外的致命性武器（如球棒、折刀、指虎，或故意開車撞人）猛烈攻擊他人。 <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 245(a)(1) 致命武器攻擊')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="45000" data-jail="35">PC 245(d)(1)</span> <strong>持致命武器襲警：</strong> 持刀、槍枝、致命重物或故意駕車衝撞明知正在執行職務的執警人員。 <button class="add-btn" onclick="toggleLaw(this, 45000, 35, 'PC 245(d)(1) 持刀槍襲警')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">📕 4. PC - 謀殺、武裝強盜、劫車、綁架與人身武力侵害 (Violent Crimes)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">PC 187</span> <strong>一級/二級謀殺罪 (Murder)：</strong> 非法、蓄意且具備事先預謀手段或極度魯莽無視生命地剥奪人類生命。</p> <button class="add-btn" onclick="toggleLaw(this, 100000, 120, 'PC 187 謀殺罪')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 664/187</span> <strong>謀殺未遂 (Attempted Murder)：</strong> 已實施致死性攻擊（開槍射擊、揮刀砍刺），但受害者經急救後存活。</p> <button class="add-btn" onclick="toggleLaw(this, 60000, 60, 'PC 664/187 謀殺未遂')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 207</span> <strong>一般綁架罪 (Kidnapping)：</strong> 使用實體武力、強迫或恐嚇手段，違反他人意願將其強行移動、帶離至其他地點。</p> <button class="add-btn" onclick="toggleLaw(this, 45000, 40, 'PC 207 綁架罪')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 210.5</span> <strong>挾持平民人質抗法：</strong> 遭遇警方防線包圍時，強行將無辜市民、店員扣留作為阻擋警方攻堅之防盾。</p> <button class="add-btn" onclick="toggleLaw(this, 55000, 50, 'PC 210.5 挾持人質')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 211</span> <strong>強盜強奪罪 (Robbery)：</strong> 面對面利用致命武器、暴力攻擊或言語恐嚇，強行奪取受害者、超商或銀行之財物。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 30, 'PC 211 強盜罪')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 215</span> <strong>武裝劫車罪 (Carjacking)：</strong> 利用槍枝或利刃面對面恐嚇正在車內的駕駛，強行將其驅離並奪取車輛控制權。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 35, 'PC 215 劫車罪')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 236</span> <strong>非法拘禁 (False Imprisonment)：</strong> 非法限制、剝奪他人人身移動自由（例如在搶劫時將店員鎖進倉庫）。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 236 非法拘禁')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 242</span> <strong>非法毆打 (Battery)：</strong> 實際對他人身體進行任何非法、違反意願之暴力武力接觸，造成實質身體傷害。</p> <button class="add-btn" onclick="toggleLaw(this, 10000, 5, 'PC 242 非法毆打')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 245(a)(1)</span> <strong>致命武器攻擊 (ADW)：</strong> 使用火器以外的致命性武器（如球棒、折刀、指虎，或故意開車撞人）猛烈攻擊他人。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 245(a)(1) 致命武器攻擊')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 245(d)(1)</span> <strong>持致命武器襲警：</strong> 持刀、槍枝、致命重物或故意駕車衝撞明知正在執行職務的執警人員。</p> <button class="add-btn" onclick="toggleLaw(this, 45000, 35, 'PC 245(d)(1) 持刀槍襲警')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 5. PC 財產犯罪 -->
-                <button class="accordion">📕 5. PC - 入室竊盜、汽車偷竊、偽造文書與洗錢 (Property & Fraud)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="20000" data-jail="15">PC 459</span> <strong>住宅/商業入室盜竊 (Burglary)：</strong> 非法潛入封閉住宅、上鎖店鋪或辦公大樓，意圖在內犯下竊盜或重罪。 <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 459 入室盜竊')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="10">PC 487</span> <strong>重大竊盜罪 (Grand Theft)：</strong> 盜取總價值超過 $950 美元的現金或財物；或者不限價值盜取槍枝。 <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 487 重大竊盜')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="18000" data-jail="12">PC 487(d)(1)</span> <strong>重大汽車竊盜 (Grand Theft Auto)：</strong> 未經車主合法授權，惡意撬開車鎖、接線啟動並偷走他人之機動載具。 <button class="add-btn" onclick="toggleLaw(this, 18000, 12, 'PC 487(d)(1) 偷竊汽車')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="10000" data-jail="5">PC 496</span> <strong>收受/藏匿贓物罪：</strong> 明知該物品為非法盜竊所得之贓物，仍故意購買、收受、藏匿或在黑市協助銷贓。 <button class="add-btn" onclick="toggleLaw(this, 10000, 5, 'PC 496 收受贓物')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="12000" data-jail="8">PC 470</span> <strong>偽造文書/身分證件 (Forgery)：</strong> 故意偽造他人簽名、使用虛假身分證件 (Fake ID) 意圖欺騙執法人員。 <button class="add-btn" onclick="toggleLaw(this, 12000, 8, 'PC 470 偽造證件')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="30000" data-jail="20">PC 186.10</span> <strong>重大洗錢犯罪 (Money Laundering)：</strong> 透過合法空殼公司或交易，試圖將不法犯罪所得轉換為合法資金。 <button class="add-btn" onclick="toggleLaw(this, 30000, 20, 'PC 186.10 重大洗錢')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="50000" data-jail="40">PC 451</span> <strong>故意縱火罪 (Arson)：</strong> 蓄意放火焚燒、引燃任何建築物、住宅、車輛、林地或他人財產。 <button class="add-btn" onclick="toggleLaw(this, 50000, 40, 'PC 451 故意縱火')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">📕 5. PC - 入室竊盜、汽車偷竊、偽造文書與洗錢 (Property & Fraud)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">PC 459</span> <strong>住宅/商業入室盜竊 (Burglary)：</strong> 非法潛入封閉住宅、上鎖店鋪或辦公大樓，意圖在內犯下竊盜或重罪。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 459 入室盜竊')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 487</span> <strong>重大竊盜罪 (Grand Theft)：</strong> 盜取總價值超過 $950 美元的現金或財物；或者不限價值盜取槍枝。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 487 重大竊盜')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 487(d)(1)</span> <strong>重大汽車竊盜 (Grand Theft Auto)：</strong> 未經車主合法授權，惡意撬開車鎖、接線啟動並偷走他人之機動載具。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 12, 'PC 487(d)(1) 偷竊汽車')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 496</span> <strong>收受/藏匿贓物罪：</strong> 明知該物品為非法盜竊所得之贓物，仍故意購買、收受、藏匿或在黑市協助銷贓。</p> <button class="add-btn" onclick="toggleLaw(this, 10000, 5, 'PC 496 收受贓物')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 470</span> <strong>偽造文書/身分證件 (Forgery)：</strong> 故意偽造他人簽名、使用虛假身分證件 (Fake ID) 意圖欺騙執法人員。</p> <button class="add-btn" onclick="toggleLaw(this, 12000, 8, 'PC 470 偽造證件')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 186.10</span> <strong>重大洗錢犯罪 (Money Laundering)：</strong> 透過合法空殼公司或交易，試圖將不法犯罪所得轉換為合法資金。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 20, 'PC 186.10 重大洗錢')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 451</span> <strong>故意縱火罪 (Arson)：</strong> 蓄意放火焚燒、引燃任何建築物、住宅、車輛、林地或他人財產。</p> <button class="add-btn" onclick="toggleLaw(this, 50000, 40, 'PC 451 故意縱火')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 6. PC 武器管制 -->
-                <button class="accordion">🔫 6. PC - 非法隱蔽攜槍、重罪犯持槍與武器管制 (Weapons Control)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="10">PC 25400</span> <strong>非法隱蔽攜帶槍枝：</strong> 未持有合法 CCW 持槍證，於衣服內藏匿、置於車輛置物箱攜帶手槍。 <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 25400 非法隱蔽攜槍')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="18000" data-jail="12">PC 25850</span> <strong>公共場所攜帶上膛火器：</strong> 在公共街道、公共廣場或車輛行駛中，隨身攜帶彈匣已上膛之火器。 <button class="add-btn" onclick="toggleLaw(this, 18000, 12, 'PC 25850 攜帶上膛槍枝')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="35000" data-jail="24">PC 29800</span> <strong>重罪犯非法持有槍枝：</strong> 曾被宣判過重罪(Felon)之人員，終身嚴禁購買、持有、攜帶任何機動槍枝。 <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'PC 29800 重罪犯持槍')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="40000" data-jail="30">PC 30605</span> <strong>持有黑名單突擊武器：</strong> 非法攜帶、運輸或持有未經註冊之全自動突擊步槍或微型衝鋒槍。 <button class="add-btn" onclick="toggleLaw(this, 40000, 30, 'PC 30605 持有突擊武器')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="12000" data-jail="6">PC 32310</span> <strong>持有大容量彈匣：</strong> 违规持有、進口或黑市製造超過 10 發子彈容量限制之高容量彈匣。 <button class="add-btn" onclick="toggleLaw(this, 12000, 6, 'PC 32310 持有大容量彈匣')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="60000" data-jail="50">PC 18710</span> <strong>非法持有軍用爆裂物：</strong> 非法持有、製造 C4 炸藥、管狀炸彈 (Pipe Bomb) 等爆裂裝置。 <button class="add-btn" onclick="toggleLaw(this, 60000, 50, 'PC 18710 非法持有軍用炸藥')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="45000" data-jail="30">PC 246</span> <strong>黑夜飛車射擊 (Drive-by)：</strong> 駕駛載具或乘車時，惡意朝有人居住的房屋大樓或被佔用的車輛開火。 <button class="add-btn" onclick="toggleLaw(this, 45000, 30, 'PC 246 飛車射擊罪')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="8000" data-jail="3">PC 417</span> <strong>亮出武器恐嚇 (Brandishing)：</strong> 非出於合法自衛，在他人面前以憤怒、威脅之姿態拔出或展示槍枝刀械。 <button class="add-btn" onclick="toggleLaw(this, 8000, 3, 'PC 417 拔槍恐嚇罪')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">🔫 6. PC - 非法隱蔽攜槍、重罪犯持槍與武器管制 (Weapons Control)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">PC 25400</span> <strong>非法隱蔽攜帶槍枝：</strong> 未持有合法 CCW 持槍證，於衣服內藏匿、置於車輛置物箱攜帶手槍。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 25400 非法隱蔽攜槍')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 25850</span> <strong>公共場所攜帶上膛火器：</strong> 在公共街道、公共廣場或車輛行駛中，隨身攜帶彈匣已上膛之火器。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 12, 'PC 25850 攜帶上膛槍枝')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 29800</span> <strong>重罪犯非法持有槍枝：</strong> 曾被宣判過重罪(Felon)之人員，終身嚴禁購買、持有、攜帶 any 機動槍枝。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'PC 29800 重罪犯持槍')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 30605</span> <strong>持有黑名單突擊武器：</strong> 非法攜帶、運輸或持有未經註冊之全自動突擊步槍或微型衝鋒槍。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 30, 'PC 30605 持有突擊武器')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 32310</span> <strong>持有大容量彈匣：</strong> 违规持有、進口或黑市製造超過 10 發子彈容量限制之高容量彈匣。</p> <button class="add-btn" onclick="toggleLaw(this, 12000, 6, 'PC 32310 持有大容量彈匣')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 18710</span> <strong>非法持有軍用爆裂物：</strong> 非法持有、製造 C4 炸藥、管狀炸彈 (Pipe Bomb) 等爆裂裝置。</p> <button class="add-btn" onclick="toggleLaw(this, 60000, 50, 'PC 18710 非法持有軍用炸藥')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 246</span> <strong>黑夜飛車射擊 (Drive-by)：</strong> 駕駛載具或乘車時，惡意朝有人居住的房屋大樓或被佔用的車輛開火。</p> <button class="add-btn" onclick="toggleLaw(this, 45000, 30, 'PC 246 飛車射擊罪')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 417</span> <strong>亮出武器恐嚇 (Brandishing)：</strong> 非出於合法自衛，在他人面前以憤怒、威脅之姿態拔出或展示槍枝刀械。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 3, 'PC 417 拔槍恐嚇罪')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 7. H&S 毒品管制 -->
-                <button class="accordion">🧪 7. H&S - 毒品持有、販賣與地下製毒 (Narcotics)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="10000" data-jail="6">H&S 11350</span> <strong>非法持有受控毒品：</strong> 非法隨身攜帶、持有古柯鹼、海洛因、冰毒等管制毒品。 <button class="add-btn" onclick="toggleLaw(this, 10000, 6, 'H&S 11350 持有受控毒品')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="25000" data-jail="18">H&S 11351</span> <strong>意圖販賣而持有毒品：</strong> 持有大劑量毒品，且伴隨分裝夾鏈袋、微型天平及大量零碎散鈔等證物。 <button class="add-btn" onclick="toggleLaw(this, 25000, 18, 'H&S 11351 意圖販賣毒品')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="35000" data-jail="24">H&S 11352</span> <strong>街頭販賣與非法運輸：</strong> 在街頭與他人實施毒品交易，或利用載具跨區運輸毒品物資。 <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'H&S 11352 販賣與運輸毒品')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="20000" data-jail="12">H&S 11358</span> <strong>非法大規模種植大麻：</strong> 未獲得州政府頒發之商業執照，私自開闢溫室大規模種植大麻。 <button class="add-btn" onclick="toggleLaw(this, 20000, 12, 'H&S 11358 私種大麻')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="80000" data-jail="60">H&S 11379.6</span> <strong>非法經營地下製毒工廠：</strong> 私自設立秘密實驗室 (Meth Lab) 提煉、製造甲基安非他命等（重罪）。 <button class="add-btn" onclick="toggleLaw(this, 80000, 60, 'H&S 11379.6 經營地下製毒廠')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="6000" data-jail="0">H&S 11550</span> <strong>受毒品影響神智不清：</strong> 在公共場合處於非法毒品影響狀態之下，表現出精神迷幻、狂躁，危害自身安全。 <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'H&S 11550 毒品吸食過量')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">🧪 7. H&S - 毒品持有、販賣與地下製毒 (Narcotics)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">H&S 11350</span> <strong>非法持有受控毒品：</strong> 非法隨身攜帶、持有古柯鹼、海洛因、冰毒等管制毒品。</p> <button class="add-btn" onclick="toggleLaw(this, 10000, 6, 'H&S 11350 持有受控毒品')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11351</span> <strong>意圖販賣而持有毒品：</strong> 持有大劑量毒品，且伴隨分裝夾鏈袋、微型天平及大量零碎散鈔等證物。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 18, 'H&S 11351 意圖販賣毒品')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11352</span> <strong>街頭販賣與非法運輸：</strong> 在街頭與他人實施毒品交易，或利用載具跨區運輸毒品物資。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'H&S 11352 販賣與運輸毒品')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11358</span> <strong>非法大規模種植大麻：</strong> 未獲得州政府頒發之商業執照，私自開闢溫室大規模種植大麻。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 12, 'H&S 11358 私種大麻')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11379.6</span> <strong>非法經營地下製毒工廠：</strong> 私自設立秘密實驗室 (Meth Lab) 提煉、製造甲基安非他命等（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 80000, 60, 'H&S 11379.6 經營地下製毒廠')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11550</span> <strong>受毒品影響神智不清：</strong> 在公共場合處於非法毒品影響狀態之下，表現出精神迷幻、狂躁，危害自身安全。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'H&S 11550 毒品吸食過量')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 8. PC 妨礙司法與貪污 -->
-                <button class="accordion">⚖️ 8. PC - 拒捕、公職收賄與竄改MDT紀錄 (Obstruction & Corruption)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="6000" data-jail="3">PC 148(a)(1)</span> <strong>一般拒捕妨礙公務：</strong> 故意抵抗逮捕、拔腿阻避追捕、或用言語粗暴阻撓警員執行職務。 <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'PC 148(a)(1) 一般拒捕')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="20000" data-jail="15">PC 69</span> <strong>暴力抵抗執法 (重罪)：</strong> 逮捕過程中與警員猛烈扭打、使用武力抵抗或言語威脅阻止警員（重罪）。 <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 69 暴力拒捕妨 builders')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="8000" data-jail="0">PC 148.9</span> <strong>向警察提供虛假身分：</strong> 為了逃避通緝、法律責任，故意向盤查警員報假假名、假身份證號。 <button class="add-btn" onclick="toggleLaw(this, 8000, 0, 'PC 148.9 報假假身分')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="30000" data-jail="20">PC 67 / 68</span> <strong>行賄與公職收賄：</strong> 市民向警員提供賄金，或警員主動索要、收取犯罪分子提供的賄賂與不法利益。 <button class="add-btn" onclick="toggleLaw(this, 30000, 20, 'PC 67/68 公職貪汙收賄')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="40000" data-jail="24">PC 113</span> <strong>非法竄改政府紀錄：</strong> 惡意登入警用電腦 MDT，竄改、抹除或偽造自身或幫派同夥之犯罪檔案。 <button class="add-btn" onclick="toggleLaw(this, 40000, 24, 'PC 113 竄改MDT紀錄')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="10">PC 538d</span> <strong>假冒執法人員：</strong> 私自配戴仿造警徽、穿警服、改裝假警車在市區盤查市民招搖撞騙。 <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 538d 冒充警察')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="20000" data-jail="15">PC 836.6</span> <strong>逃脫合法羈押：</strong> 被捕上手銬後、關押在警車後座或訊問室時，趁隙破壞鎖頭逃跑或成功脫逃。 <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 836.6 脫逃罪')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">⚖️ 8. PC - 拒捕、公職收賄與竄改MDT紀錄 (Obstruction & Corruption)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">PC 148(a)(1)</span> <strong>一般拒捕妨礙公務：</strong> 故意抵抗逮捕、拔腿阻避追捕、或用言語粗暴阻撓警員執行職務。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'PC 148(a)(1) 一般拒捕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 69</span> <strong>暴力抵抗執法 (重罪)：</strong> 逮捕過程中與警員猛烈扭打、使用武力抵抗或言語威脅阻止警員（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 69 暴力拒捕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 148.9</span> <strong>向警察提供虛假身分：</strong> 為了逃避通緝、法律責任，故意向盤查警員報假假名、假身份證號。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 0, 'PC 148.9 報假身分')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 67 / 68</span> <strong>行賄與公職收賄：</strong> 市民向警員提供賄金，或警員主動索要、收取犯罪分子提供的賄賂與不法利益。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 20, 'PC 67/68 公職貪汙收賄')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 113</span> <strong>非法竄改政府紀錄：</strong> 惡意登入警用電腦 MDT，竄改、抹除或偽造自身或幫派同夥之犯罪檔案。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 24, 'PC 113 竄改MDT紀錄')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 538d</span> <strong>假冒執法人員：</strong> 私自配戴仿造警徽、穿警服、改裝假警車在市區盤查市民招搖撞騙。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 538d 冒充警察')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 836.6</span> <strong>逃脫合法羈押：</strong> 被捕上手銬後、關押在警車後座或訊問室時，趁隙破壞鎖頭逃跑或成功脫逃。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 836.6 脫逃罪')">➕ 納入計算</button></div>
+                    </div>
                 </div>
 
-                <!-- 9. PC 公共秩序與特殊法規 -->
-                <button class="accordion">👥 9. PC - 幫派加重、傷害K9與公共秩序 (Public Order)</button>
-                <div class="panel">
-                    <p class="law-text"><span class="law-code" data-fine="25000" data-jail="20">PC 186.22</span> <strong>街頭幫派犯罪加重：</strong> 為促進或協助犯罪幫派組織利益而犯下重罪（法官得大幅加重刑期）。 <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 186.22 幫派加重')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="10">PC 404</span> <strong>煽動/參與暴動罪：</strong> 兩人或以上共同在街頭使用武力暴力，砸毀店家、破壞社會治安。 <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 404 參與暴動')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="5000" data-jail="0">PC 602</span> <strong>非法入侵管制領地：</strong> 未經允許擅自闖入私人土地，或強行侵入機場、軍事基地、LASD 管制區。 <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'PC 602 非法入侵')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="30000" data-jail="24">PC 597</span> <strong>惡意傷害執法警犬 K9：</strong> 在交火或搜捕中，故意開槍擊傷、砍殺執法部門之專職 K9 警犬（加重重罪）。 <button class="add-btn" onclick="toggleLaw(this, 30000, 24, 'PC 597 蓄意傷害K9')">➕ 納入計算</button></p>
-                    <p class="law-text"><span class="law-code" data-fine="15000" data-jail="0">PUC 21403</span> <strong>低空危險飛行：</strong> 駕駛航空器在市區上空低於 1000 英呎，危害地面平民安全。 <button class="add-btn" onclick="toggleLaw(this, 15000, 0, 'PUC 21403 低空違規飛行')">➕ 納入計算</button></p>
+                <div class="accordion-item-group">
+                    <button class="accordion">👥 9. PC - 幫派加重、傷害K9與公共秩序 (Public Order)</button>
+                    <div class="panel">
+                        <div class="law-text"><p><span class="law-code">PC 186.22</span> <strong>街頭幫派犯罪加重：</strong> 為促進或協助犯罪幫派組織利益而犯下重罪（法官得大幅加重刑期）。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 186.22 幫派加重')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 404</span> <strong>煽動/參與暴動罪：</strong> 兩人或以上共同在街頭使用武力暴力，砸毀店家、破壞社會治安。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 404 參與暴動')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 602</span> <strong>非法入侵管制領地：</strong> 未經允許擅自闖入私人土地，或強行侵入機場、軍事基地、LASD 管制區。</p> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'PC 602 非法入侵')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 597</span> <strong>惡意傷害執法警犬 K9：</strong> 在交火或搜捕中，故意開槍擊傷、砍殺執法部門之專職 K9 警犬（加重重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 24, 'PC 597 蓄意傷害K9')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PUC 21403</span> <strong>低空危險飛行：</strong> 駕駛航空器在市區上空低於 1000 英呎，危害地面平民安全。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 0, 'PUC 21403 低空違規飛行')">➕ 納入計算</button></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 核心功能實裝：市民線上加密匿名安全情資檢舉信箱（介接第 3 獨立 Webhook 埠） -->
+            <!-- 市民線上匿名安全情資檢舉信箱 -->
             <div class="tip-box">
                 <h2 class="section-title" style="border-left-color: #f59e0b;">📨 市民安全隱私匿名檢舉情報信箱 (Crime Stoppers)</h2>
                 <div class="tip-warning-box">
-                    <strong>🔒 司法端對端去識別安全聲明：</strong> 本加密投遞端完全去識別化，不紀錄市民真實 IP 與連線封包。所有數據按下提交後將直接穿透轉譯，以獨立情報 Embed 卡片即時廣播進入洛杉磯警察局與郡警長局的秘密情報 Discord 頻道。
+                    <strong>🔒 司法端對端去識別安全聲明：</strong> 本加密投遞端完全去識別化，不紀錄市民真實 IP。所有數據按下提交後將直接穿透轉譯，以獨立情報 Embed 卡片即時廣播進入洛杉磯警察局與郡警長局的秘密情報 Discord 頻道。
                 </div>
                 
                 <div class="form-row">
@@ -548,32 +556,32 @@
                             <option value="💰 武裝強盜超商/重大銀行洗錢網絡 (PC 211)">武裝強盜超商/重大銀行洗錢網絡 (PC 211)</option>
                             <option value="🏎️ 街頭大型非法飆車/甩尾非法聚集點 (CVC 23109)">街頭大型非法飆車/甩尾非法聚集點 (CVC 23109)</option>
                             <option value="👥 組織幫派非法聚集與犯罪犯罪預謀 (PC 186.22)">組織幫派非法聚集與犯罪犯罪預謀 (PC 186.22)</option>
-                            <option value="📝 其餘破壞天使之城社會治安之活動">其餘破壞天使之城社會治安之活動</option>
+                            <option value="📝 其餘影響社會治安之活動">其餘影響社會治安之活動</option>
                         </select>
                     </div>
                     <div class="form-col">
                         <label>犯罪/可疑活動發生具體地點</label>
-                        <input type="text" id="tip-location" placeholder="請詳細描述，如：威索廣場北側地下停車場、3號公路交流道旁...">
+                        <input type="text" id="tip-location" placeholder="請詳細描述，如：威索廣場北側地下停車場...">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-col" style="flex: 100%;">
                         <label>嫌疑人外觀特徵、幫派穿著服飾或涉案載具車款外觀</label>
-                        <input type="text" id="tip-suspect" placeholder="例如：身穿紫色夾克疑似巴勒幫成員、開消光藍大腳車、帶曲棍球假面...">
+                        <input type="text" id="tip-suspect" placeholder="例如：身穿紫色夾克疑似巴勒幫成員...">
                     </div>
                     <div class="form-col" style="flex: 100%;">
                         <label>具體情報內容詳情敘述</label>
-                        <textarea id="tip-content" rows="4" placeholder="請在此詳細寫下您所掌握的交易時間、藏匿地點、或軍火走私的具體情報細節..."></textarea>
+                        <textarea id="tip-content" rows="4" placeholder="請在此詳細寫下您所掌握的細節..."></textarea>
                     </div>
                     <div class="form-col" style="flex: 100%;">
-                        <label>現場可疑照片/證據 URL 連結 (非必填項目)</label>
+                        <label>現場可疑照片/證據 URL 連結 (非必填)</label>
                         <input type="text" id="tip-img" placeholder="https://...">
                     </div>
                 </div>
 
-                <button class="btn" onclick="submitAnonymousTip()" style="background-color: #b45309; width: 100%; font-size: 1.1rem; letter-spacing: 1px;">🔒 經由端對端去識別通道安全送出匿名舉報</button>
-                <p id="tip-success-msg" style="color: #4ade80; font-weight: bold; margin-top: 15px; text-align: center; display: none;">🔒 加密情報已成功穿透投遞至執法單位情報台後台頻道！感謝您對全州治安的卓越貢獻。</p>
+                <button class="btn" onclick="submitAnonymousTip()" style="background-color: #b45309; width: 100%; font-size: 1.1rem; letter-spacing: 1px;">🔒 經由去識別通道安全送出匿名舉報</button>
+                <p id="tip-success-msg" style="color: #4ade80; font-weight: bold; margin-top: 15px; text-align: center; display: none;">🔒 加密情報已成功投遞！感謝您對全州治安的卓越貢獻。</p>
             </div>
         </section>
     </div>
@@ -583,14 +591,13 @@
         <section style="padding-top: 20px;">
             <h2 class="section-title">洛杉磯執法部門標準作業程序 (SOP)</h2>
             
-            <!-- 核心功能實裝：臨檢動態筆記本 ＋ 10代碼智慧速查字典 -->
             <div class="scratchpad-container">
                 <div class="scratch-box">
                     <h4>📝 警員臨檢值勤動態小抄筆記本 (Session 暫存記憶)</h4>
-                    <textarea id="officer-scratchpad" rows="5" placeholder="警員雙螢幕值勤備忘錄：可隨手記下攔停市民名字、可疑車牌號碼、最後逃逸方向。本記憶不隨切換分頁消失..." oninput="saveScratch()"></textarea>
+                    <textarea id="officer-scratchpad" rows="5" placeholder="可隨手記下攔停市民名字、車牌號碼。切換分頁不消失..." oninput="saveScratch()"></textarea>
                 </div>
                 <div class="scratch-box">
-                    <h4>🗃️ 警用無線電語音 10-Codes 智慧解密字典</h4>
+                    <h4>🗃️ 警用無線電語音 10-Codes 智慧速查字典</h4>
                     <input type="text" id="codes-search" style="padding:8px; margin-bottom:8px;" placeholder="輸入無線電代號（如：10-15、10-80...）" oninput="lookupCode()">
                     <div id="code-lookup-result" style="font-size:0.9rem; color:#f59e0b; font-weight:bold; margin-top:5px; background-color:#121212; padding:10px; border-radius:4px; min-height:43px; border:1px dashed #333;">請輸入代碼進行智慧語音呼號解密...</div>
                 </div>
@@ -616,7 +623,6 @@
                     <ul class="sop-list">
                         <li><span class="sop-highlight">武力升級：</span> 警察展現 ➔ 口頭警告 ➔ 徒手控制 ➔ 低致命武器 (Taser/警棍) ➔ 致命武力 (配槍射擊)。</li>
                         <li><span class="sop-highlight">洛杉磯米蘭達警告：</span> 逮捕訊問前必須唸出：
-                            <!-- 核心功能實裝：米蘭達警告 AI 語音口頭朗讀 -->
                             <button onclick="readMirandaTTS()" style="background-color:#991b1b; color:white; border:none; padding:2px 8px; border-radius:3px; font-size:0.8rem; cursor:pointer; margin-left:10px; font-weight:bold;">🔊 啟動官方語音朗讀</button>
                             <br>
                         <em style="color:#aaa; font-size: 0.85rem;">「你有權保持緘默。你所說的一切都將在法庭上作為指控你的不利證據。你有權在受審時請律師...」</em></li>
@@ -639,10 +645,10 @@
                 </table>
             </div>
 
-            <!-- 核心功能實裝：加州地方法院官方標準刑事起訴公文生成器 -->
+            <!-- 法利法尼亞官方訴狀生成器 -->
             <div class="tip-box" style="border-top-color: #1e40af;">
                 <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 5px;">📂 加州地方法院官方標準起訴訴狀生成器</h2>
-                <p style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">提供市民行政救濟申訴、或是律師/警員撰寫開庭起訴願景公文之用。填寫完後可自動排版一鍵複製。</p>
+                <p style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">提供市民行政救濟申訴、或是律師撰寫起訴願景公文。填寫完可自動排版一鍵複製。</p>
                 
                 <div class="form-row">
                     <div class="form-col">
@@ -661,13 +667,13 @@
                 <div class="form-row">
                     <div class="form-col" style="flex: 100%;">
                         <label>現場 RP 執法情境具體事實敘述與申訴起訴理由</label>
-                        <textarea id="court-reason" rows="4" placeholder="請詳細寫下事發經過、警方執法程序瑕疵、或者是嫌犯具體犯罪意圖之論述事實..."></textarea>
+                        <textarea id="court-reason" rows="4" placeholder="請詳細寫下事發經過、警方執法程序瑕疵..."></textarea>
                     </div>
                 </div>
                 <button class="btn" onclick="generateCourtDocument()" style="width: 100%; background-color:#1e40af;">📄 排版並生成加州官方司法訴狀文書</button>
                 
                 <div id="court-result-area" style="display: none; margin-top: 20px;">
-                    <label style="font-weight:bold; color:white; display:block; margin-bottom:5px;">📋 官方起訴公文渲染結果 (格式已符合法庭公文標準)：</label>
+                    <label style="font-weight:bold; color:white; display:block; margin-bottom:5px;">📋 官方起訴公文渲染結果：</label>
                     <textarea id="court-text-box" rows="8" style="width:100%; font-family:monospace; background-color:#000; color:#4ade80;" readonly></textarea>
                     <button class="btn" onclick="copyCourtDoc()" style="background-color:#166534; margin-top:10px;">一鍵複製此訴狀公文</button>
                 </div>
@@ -691,7 +697,6 @@
                 </div>
 
                 <div id="quiz-questions-area">
-                    <!-- Q1 -->
                     <div class="quiz-item">
                         <div class="quiz-q" id="q1-text">1. 飛車追捕時嫌犯棄車逃進一條死巷。你是現場唯一的警員，當你追進巷子時，發現嫌犯雙手插在外套口袋裡，背對著你。此時你該怎麼做？</div>
                         <div class="quiz-options">
@@ -701,7 +706,6 @@
                         </div>
                     </div>
 
-                    <!-- Q2 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q2-text">2. 在高架橋上巡邏時，你目擊前方發生嚴重車禍，有市民卡在著火的車內慘叫，而肇事車輛正加速逃逸。此時無線電損壞，你無法聯絡任何人。你會怎麼做？</div>
                         <div class="quiz-options">
@@ -711,7 +715,6 @@
                         </div>
                     </div>
 
-                    <!-- Q3 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q3-text">3. 你與搭檔正在路邊盤查形跡可疑男子。突然，該男子轉身朝著你的搭檔猛推一拳後拔腿就跑。作為掩護隊員，你的最佳反應為何？</div>
                         <div class="quiz-options">
@@ -721,7 +724,6 @@
                         </div>
                     </div>
 
-                    <!-- Q4 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q4-text">4. 高級警長在無線電中命令全體警車在某個路口設立攔截防線。當你抵達該路口時，發現你的車身位置最適合堵住路口缺口，你該如何調整警車朝向？</div>
                         <div class="quiz-options">
@@ -731,7 +733,6 @@
                         </div>
                     </div>
 
-                    <!-- Q5 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q5-text">5. 某位市民因為不滿你開他交通罰單，在現場用極度惡劣、粗鄙的髒話連續辱罵你五分鐘，但其雙手一直高舉在清晰可見的地方，無任何肢體衝突意圖。你該如何應對？</div>
                         <div class="quiz-options">
@@ -741,7 +742,6 @@
                         </div>
                     </div>
 
-                    <!-- Q6 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q6-text">6. 你收到噪音擾民報案前往住宅。敲門後門開了，你發現客廳沙發上放著三把全自動步槍，屋主慌張地試圖擋住視線。這時你只有單人值勤，該如何處置？</div>
                         <div class="quiz-options">
@@ -751,7 +751,6 @@
                         </div>
                     </div>
 
-                    <!-- Q7 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q7-text">7. 執勤時遇到一名新手玩家，他因為不熟悉鍵盤按鍵操作，意外開車失控撞到了你的巡邏車頭。這時從 RP 扮演與社群長久品質出發，何種做法最佳？</div>
                         <div class="quiz-options">
@@ -761,7 +760,6 @@
                         </div>
                     </div>
 
-                    <!-- Q8 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q8-text">8. 在進行飛車追捕時，你的巡邏車在過彎時失控撞上了路邊電線桿，車頭冒煙受損無法前進。此時另外兩輛隊友的警車正從你身旁經過繼續追捕。你接下來應該？</div>
                         <div class="quiz-options">
@@ -771,7 +769,6 @@
                         </div>
                     </div>
 
-                    <!-- Q9 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q9-text">9. 你正在參與一場武裝匪徒劫持槍戰。嫌犯此時躲在掩體後盲目開槍，現場有四五名警員已經建立核心防線。作為團隊一員，你應該如何配合？</div>
                         <div class="quiz-options">
@@ -781,7 +778,6 @@
                         </div>
                     </div>
 
-                    <!-- Q10 -->
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q10-text">10. 角色扮演 (Roleplay) 在高級企劃中的核心真諦與最終目的是什麼？</div>
                         <div class="quiz-options">
@@ -813,7 +809,6 @@
 
     <!-- JavaScript 核心控制邏輯 -->
     <script>
-        // WEBHOOK 綁定三分流體系
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
@@ -821,10 +816,9 @@
         const BOLO_PASSWORD = "LA1080"; 
         const correctAnswers = { q1:"B", q2:"A", q3:"B", q4:"B", q5:"B", q6:"B", q7:"B", q8:"B", q9:"B", q10:"B" };
 
-        // 精算器狀態變數
         let selectedLawsForCalc = [];
 
-        // 智慧型洛杉磯太平洋時區時鐘機制 (考慮日光節約時間)
+        // 洛杉磯時間
         function updateLATime() {
             let options = { timeZone: "America/Los_Angeles", hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" };
             let formatter = new Intl.DateTimeFormat("en-US", options);
@@ -845,7 +839,32 @@
             window.scrollTo(0, 0); 
         }
 
-        /* ----- 核心實裝：智慧搜尋與過濾過濾法規法條 ----- */
+        // 重寫 Accordion 點擊監聽，避免與面板內部的納入計算按鈕衝突
+        function initAccordions() {
+            var acc = document.getElementsByClassName("accordion");
+            for (var i = 0; i < acc.length; i++) {
+                // 移除舊的監聽（防止重複綁定）
+                acc[i].replaceWith(acc[i].cloneNode(true));
+            }
+            
+            // 重新綁定乾淨的監聽
+            var freshAcc = document.getElementsByClassName("accordion");
+            for (var i = 0; i < freshAcc.length; i++) {
+                freshAcc[i].addEventListener("click", function(e) {
+                    this.classList.toggle("active-acc");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            }
+        }
+        // 初始化點擊選單
+        initAccordions();
+
+        /* ----- 智慧關鍵字搜尋與自動過濾邏輯 ----- */
         function filterLaws() {
             let filter = document.getElementById("law-search-input").value.toLowerCase().trim();
             let accordions = document.querySelectorAll("#law-accordion-group .accordion");
@@ -855,19 +874,20 @@
                 let lawItems = panel.querySelectorAll(".law-text");
                 let anyMatch = false;
 
-                lawItems.forEach(p => {
+                lawItems.forEach(item => {
+                    let p = item.querySelector("p");
                     let text = p.innerText.toLowerCase();
                     if (filter === "") {
                         p.innerHTML = p.innerHTML.replace(/<span class="highlight-text">(.*?)<\/span>/g, "$1");
-                        p.style.display = "flex";
+                        item.style.display = "flex";
                     } else if (text.includes(filter)) {
                         anyMatch = true;
-                        p.style.display = "flex";
+                        item.style.display = "flex";
                         let regex = new RegExp(`(${filter})`, "gi");
                         let cleanText = p.innerHTML.replace(/<span class="highlight-text">(.*?)<\/span>/g, "$1");
                         p.innerHTML = cleanText.replace(regex, '<span class="highlight-text">$1</span>');
                     } else {
-                        p.style.display = "none";
+                        item.style.display = "none";
                     }
                 });
 
@@ -879,9 +899,11 @@
                     button.style.display = "none"; panel.style.maxHeight = null; button.classList.remove("active-acc");
                 }
             });
+            // 搜尋完畢後重新計算滾動高度
+            initAccordions();
         }
 
-        /* ----- 核心功能實裝：連動加總精算器計算機制 ----- */
+        /* ----- 罰則精算器連動控制 ----- */
         function toggleLaw(btn, fine, jail, lawName) {
             btn.classList.toggle("selected");
             if (btn.classList.contains("selected")) {
@@ -892,6 +914,10 @@
                 selectedLawsForCalc = selectedLawsForCalc.filter(item => item.name !== lawName);
             }
             calculateTotals();
+            
+            // 重要：動態更新面板高度，防止展開內容跑版
+            var panel = btn.closest('.panel');
+            if (panel) { panel.style.maxHeight = panel.scrollHeight + "px"; }
         }
 
         function calculateTotals() {
@@ -916,11 +942,11 @@
             let bailStr = document.getElementById("total-bail").innerText;
             let lawsStr = selectedLawsForCalc.map(i => i.name).join("、");
 
-            let doc = `【洛杉磯加州地方法院 - 刑事裁決裁定處罰公文】\n\n涉案嫌疑人經精算判定違反以下加州法規全書條文：\n➔ 引用法條：${lawsStr}\n\n經裁決終端連動判定，最終合併處罰罪名成立如下：\n1. 處以法定基礎應繳罰款金額：${fineStr} 美元\n2. 處以司法建議應服有期徒刑：${jailStr}\n3. 經評估核准之法定假釋保釋金額度：${bailStr} 美元（容許保釋辦理）\n\n本公文格式已符合法務系統標準，請執法人員直接複製存檔。`;
-            navigator.clipboard.writeText(doc).then(() => alert("✅ 裁決書公文已一鍵複製至您的剪貼簿！"));
+            let doc = `【洛杉磯加州地方法院 - 刑事裁決處罰公文】\n\n嫌疑人經判定違反以下加州法規全書條文：\n➔ 引用法條：${lawsStr}\n\n合併裁處結果如下：\n1. 法定基礎應繳罰款金額：${fineStr} 美元\n2. 司法建議應服有期徒刑：${jailStr}\n3. 法定假釋保釋金額度：${bailStr} 美元\n\n本公文格式已符合法務系統標準，請執法人員複製存檔。`;
+            navigator.clipboard.writeText(doc).then(() => alert("✅ 裁決書公文已複製至您的剪貼簿！"));
         }
 
-        /* ----- 核心功能實裝：市民加密匿名安全檢舉信箱連動 ----- */
+        /* ----- 匿名情資信箱 ----- */
         function submitAnonymousTip() {
             let type = document.getElementById("tip-type").value;
             let location = document.getElementById("tip-location").value.trim();
@@ -933,7 +959,7 @@
             const payload = {
                 username: "洛杉磯 Crime Stoppers 匿名檢舉網絡",
                 avatar_url: "https://images.unsplash.com/photo-1453873531674-2151bcd01707?w=150",
-                content: "🔔 **[收到市民高度機密安全匿名檢舉情資]** 通訊埠已將來源特徵加密，請偵辦小組留意！",
+                content: "🔔 **[收到市民高度機密安全匿名檢舉情資]**",
                 embeds: [{
                     title: `📁 治安情資舉報分類：${type}`,
                     color: 16119819,
@@ -959,14 +985,14 @@
             }).catch(e => alert("加密通道發送失敗！"));
         }
 
-        /* ----- 核心功能實裝：10-Codes 智慧速查字典 ----- */
+        /* ----- 10代碼速查字典 ----- */
         const codesDict = {
             "10-4": "【10-4】收到/明白。調度台訊息確認無誤。",
             "10-6": "【10-6】目前正忙碌中。除非有緊急危及生命生命狀態，否則請保持無線電靜音。",
             "10-7": "【10-7】停止值勤/機械故障。載具車輛已停止值勤運作。",
             "10-8": "【10-8】開始值勤。目前正處於常規巡邏警戒狀態下。",
             "10-11": "【10-11】正在執行常規交通攔停 (Traffic Stop)。請回報代號與方位。",
-            "10-15": "【10-15】監禁/逮捕成功。嫌犯已被上銬，請確認搜身搜身程序並回報上銬人數。",
+            "10-15": "【10-15】監禁/逮捕成功。嫌犯已被上銬，請確認搜身程序並回報上銬人數。",
             "10-19": "【10-19】返回警察總局/調度基地。結束任務或回去接受訊問紀錄。",
             "10-20": "【10-20】請回報目前所在方位/路名/座標位置。",
             "10-22": "【10-22】取消先前的所有指令/狀況。任務已宣告終止。",
@@ -983,11 +1009,11 @@
             document.getElementById("code-lookup-result").innerText = codesDict[val] || "🔍 字典搜尋中：查無此代碼，請確認是否包含連字號（例如：10-15）";
         }
 
-        /* ----- 核心功能實裝：臨檢值勤動態小抄暫存功能 ----- */
+        /* ----- 臨檢小抄筆記功能 ----- */
         function saveScratch() { localStorage.setItem("la_scratchpad", document.getElementById("officer-scratchpad").value); }
         document.getElementById("officer-scratchpad").value = localStorage.getItem("la_scratchpad") || "";
 
-        /* ----- 核心功能實裝：加州官方標準法院起訴公文生成器 ----- */
+        /* ----- 法院起訴書生成器 ----- */
         function generateCourtDocument() {
             let name = document.getElementById("court-name").value.trim() || "匿名法律人";
             let target = document.getElementById("court-target").value.trim() || "不明執法人員/市民";
@@ -1003,13 +1029,13 @@
             navigator.clipboard.writeText(document.getElementById("court-text-box").value).then(() => alert("📄 官方司法訴狀公文已完整複製至您的剪貼簿！"));
         }
 
-        /* ----- 核心功能實裝：米蘭達警告 AI 語音口頭宣告朗讀 ----- */
+        /* ----- 米蘭達警告 AI 語音朗讀 ----- */
         function readMirandaTTS() {
             if ('speechSynthesis' in window) {
-                let msg = new SpeechSynthesisUtterance("你有權保持緘默。你所說的一切都將在法庭上作為指控你的不利證據。你有權在受審時請律師，如果你請不起，法庭將為你指派一名公設辯護人。你了解我剛才對你宣讀的這些權利嗎？");
+                let msg = new SpeechSynthesisUtterance("你有權保持緘默。你所說的一切都將在法庭上作為指控你的不利證據。你有權在受審時請律師，如果你請不起，法庭將為你指派一名公設辯護人。你了解我剛才對你宣宣讀的這些權利嗎？");
                 msg.lang = "zh-TW"; msg.rate = 0.95; msg.pitch = 0.9;
                 window.speechSynthesis.speak(msg);
-            } else { alert("您的瀏覽器不支援 Web Speech API 語音語音朗讀功能！"); }
+            } else { alert("您的瀏覽器不支援 Web Speech API 語音朗讀功能！"); }
         }
 
         /* ----- 招生考核測驗邏輯 ----- */
@@ -1058,7 +1084,7 @@
             }).catch(e => alert("答案傳送失敗！"));
         }
 
-        /* ----- BOLO 密碼驗證與發布 ----- */
+        /* ----- BOLO 發布 ----- */
         function checkBoloPassword() {
             let pwd = prompt("請輸入執法人員 BOLO 發布授權碼 (預設密碼為 LA1080)：");
             if (pwd === BOLO_PASSWORD) {
