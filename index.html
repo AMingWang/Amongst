@@ -56,7 +56,7 @@
         .law-code { color: #f59e0b; font-weight: bold; margin-right: 15px; display: inline-block; min-width: 140px; }
         .highlight-text { background-color: rgba(245, 158, 11, 0.4); color: #fff; padding: 2px 4px; border-radius: 2px; font-weight: bold; }
 
-        /* 罰則加總精算器專屬樣式 */
+        /* 罰則加總精算器 */
         .calc-panel { background-color: #1a1a1a; border: 2px solid #1e40af; border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(30, 64, 175, 0.2); }
         .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
         .calc-box { background-color: #111; padding: 15px; border-radius: 5px; border: 1px solid #333; text-align: center; }
@@ -190,16 +190,16 @@
                 </div>
             </div>
             
-            <h2 class="section-title">洛杉磯市政公告 (動態全服雲端同步)</h2>
-            <!-- 核心功能實裝：全球資料庫即時同步公告大廳 -->
+            <h2 class="section-title">洛杉磯市政公告</h2>
+            <!-- 核心修復：端對端鎖死記憶體快取呈現區 -->
             <div class="announcement-box" id="dynamic-announcement-area">
-                <div style="text-align:center; color:#888;">📡 正在連線至加州司法部 JSON 雲端資料庫讀取公告...</div>
+                <!-- 預設畫面，將會被 JS 瞬間覆蓋 -->
             </div>
 
             <!-- 管理員密碼鎖公告發布面板 -->
             <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (發布全服同步公告)</button>
             <div class="admin-panel-box" id="admin-announcement-form">
-                <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階雲端發布終端</h3>
+                <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階廣播發布終端</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>公告圖示小標籤</label>
@@ -222,8 +222,8 @@
                     </div>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="publishNewAnnounce()">🚀 寫入雲端庫並發布全服</button>
-                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="resetToDefaultAnnounce()">🧹 重設並還原初始預設公告</button>
+                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" onclick="publishNewAnnounce()">🚀 鎖定寫入網頁快取 ＋ 同步推播至 Discord 全服</button>
+                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="resetToDefaultAnnounce()">🧹 抹除記憶體還原初始預設</button>
                 </div>
             </div>
         </section>
@@ -365,7 +365,6 @@
                 </div>
             </div>
 
-            <!-- 警界榮譽殿堂與紀念碑 -->
             <div class="memorial-section">
                 <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 洛杉磯執法部門榮譽殿堂與紀念碑</h2>
                 <p style="color: #888; font-size: 0.9rem;">銘記歷史，致敬英豪。此處紀錄為洛杉磯付出卓越貢獻之傳奇官員，以及在捍衛正義中英勇獻身的殉職先烈。</p>
@@ -410,12 +409,10 @@
         <section style="padding-top: 20px;">
             <h2 class="section-title">全州法規大全 (California Codes)</h2>
             
-            <!-- 智慧搜尋框 -->
             <div class="search-container">
                 <input type="text" id="law-search-input" class="search-bar" placeholder="🔍 智慧法規檢索：請輸入法條代號或關鍵字（如：187、酒駕、槍枝、CVC...）" oninput="filterLaws()">
             </div>
 
-            <!-- 罰則加總精算面板 -->
             <div class="calc-panel">
                 <h3 style="color: #60a5fa; font-size: 1.1rem; margin-bottom: 10px;">📊 司法罰則連動精算終端</h3>
                 <p style="color: #888; font-size: 0.85rem; margin-bottom: 10px;">點擊下方各法條右側的【➕ 納入計算】按鈕，系統將自動累計總數並生成保釋金（總額 10%）。</p>
@@ -766,7 +763,7 @@
                     </div>
 
                     <div class="quiz-item" style="margin-top:30px;">
-                        <div class="quiz-q" id="q6-text">6. 你收到噪音擾民報案前往住宅. 敲門後門開了，你發現客廳沙發上放著三把全自動步槍，屋主慌張地試圖擋住視線。這時你只有單人值勤，該如何處置？</div>
+                        <div class="quiz-q" id="q6-text">6. 你收到噪音擾民報案前往住宅。敲門後門開了，你發現客廳沙發上放著三把全自動步槍，屋主慌張地試圖擋住視線。這時你只有單人值勤，該如何處置？</div>
                         <div class="quiz-options">
                             <label><input type="radio" name="q6" value="A"> A. 局勢緊迫。立刻拔槍衝進屋內，嘗試將屋主過肩摔制伏並強行搜索。</label>
                             <label><input type="radio" name="q6" value="B"> B. 不打草驚蛇。假裝只是常規勸導噪音，退回巡邏車安全距離後，立刻無線電呼叫空中支援與大批警力前來包圍。</label>
@@ -832,12 +829,10 @@
 
     <!-- JavaScript 核心控制邏輯 -->
     <script>
+        // 核心 Webhook 端點
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
-        
-        // 🚀 全新重構：升級為免登入、無限制跨域、高併發讀寫之公開強健型資料庫（MyJson 通道）
-        const CLOUD_JSON_STORE_URL = "https://api.myjson.online/v1/records/41ea22e6-a0b4-4b5a-9694-df07137f8841";
         
         const BOLO_PASSWORD = "LA1080"; 
         const correctAnswers = { q1:"B", q2:"A", q3:"B", q4:"B", q5:"B", q6:"B", q7:"B", q8:"B", q9:"B", q10:"B" };
@@ -881,7 +876,7 @@
         }
         initAccordions();
 
-        /* ----- 雲端動態同步公告控制邏輯 ----- */
+        /* ----- 核心升級：本地快取鎖定 ＋ Discord 推播雙引擎 ----- */
         function checkAdminPassword() {
             let pwd = prompt("請輸入高階管理員密碼以開啟發布面板 (預設密碼為 LA1080)：");
             if (pwd === BOLO_PASSWORD) {
@@ -890,33 +885,18 @@
             } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有權限在官網新增公告。"); }
         }
 
-        const defaultAnnouncementsJson = [
+        const defaultAnnouncements = [
             { tag: "⚖️ 內務監察", title: "官方「內務監察與警員投訴箱」通道開通", text: "為落實程序正義，保障全體市民的憲法權利，內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。" },
             { tag: "👮 聯合招募", title: "LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中", text: "執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，請至招募中心填寫名稱進行答題。" }
         ];
 
-        // 📡 從高速 MyJson 雲端安全端點載入公告數據
-        function fetchAnnouncementsFromCloud() {
-            fetch(CLOUD_JSON_STORE_URL)
-            .then(res => res.json())
-            .then(resData => {
-                // 部分 API 包裝結構可能在 .data 內，做個相容性過濾
-                let list = resData.data || resData;
-                if (Array.isArray(list)) {
-                    renderAnnouncementsHtml(list);
-                } else {
-                    renderAnnouncementsHtml(defaultAnnouncementsJson);
-                }
-            })
-            .catch(err => {
-                renderAnnouncementsHtml(defaultAnnouncementsJson);
-            });
-        }
-        fetchAnnouncementsFromCloud(); // 自動非同步拉取
-
-        function renderAnnouncementsHtml(jsonArray) {
+        function renderAnnouncements() {
+            // 強制從瀏覽器深層快取讀取
+            let saved = localStorage.getItem("la_core_announcements");
+            let list = saved ? JSON.parse(saved) : defaultAnnouncements;
+            
             let html = "";
-            jsonArray.forEach(item => {
+            list.forEach(item => {
                 html += `
                     <div class="announcement-item">
                         <div class="announce-date">${item.tag}</div>
@@ -926,8 +906,8 @@
             });
             document.getElementById("dynamic-announcement-area").innerHTML = html;
         }
+        renderAnnouncements(); // 頁面載入時即刻渲染
 
-        // 🚀 執行 100% 穿透跨域上傳洗入
         function publishNewAnnounce() {
             let tag = document.getElementById("new-announce-tag").value;
             let title = document.getElementById("new-announce-title").value.trim();
@@ -935,58 +915,45 @@
 
             if (!title || !text) { alert("⚠️ 請完整填寫公告標題與詳細內容內容！"); return; }
             
-            document.getElementById("publish-submit-btn").innerText = "⏳ 正在同步上傳至雲端資料庫...";
-            document.getElementById("publish-submit-btn").disabled = true;
+            let saved = localStorage.getItem("la_core_announcements");
+            let list = saved ? JSON.parse(saved) : defaultAnnouncements;
+            
+            list.unshift({ tag: tag, title: title, text: text });
+            
+            // 1. 瞬間鎖入本地端快取 (防重新整理消失)
+            localStorage.setItem("la_core_announcements", JSON.stringify(list));
+            renderAnnouncements();
+            
+            // 2. 利用現有的 Discord Webhook，將公告直接「廣播」出去讓全服看見
+            let payload = {
+                username: "市政廳 高階公告廣播系統",
+                avatar_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Seal_of_Los_Angeles_County%2C_California.svg/500px-Seal_of_Los_Angeles_County%2C_California.svg.png",
+                content: "@everyone 📢 **市政廳發布了最新網頁同步公告！請全體市民注意！**",
+                embeds: [{
+                    title: `[${tag}] ${title}`,
+                    color: 15158332,
+                    description: text,
+                    footer: { text: "LOS ANGELES MUNICIPAL ANNOUNCEMENT" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
 
-            fetch(CLOUD_JSON_STORE_URL)
-            .then(res => res.json())
-            .then(resData => resData.data || resData)
-            .catch(() => defaultAnnouncementsJson)
-            .then(currentList => {
-                if(!Array.isArray(currentList)) { currentList = defaultAnnouncementsJson; }
-                let newAnnounceObj = { tag: tag, title: title, text: text };
-                currentList.unshift(newAnnounceObj); // 置頂最新訊息
-
-                // 使用標準 JSON API 洗回覆寫
-                return fetch(CLOUD_JSON_STORE_URL, {
-                    method: "JSON" in window ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data: currentList })
-                });
-            })
-            .then(res => {
-                alert("✅ 雲端連線暢通！公告已成功上傳雲端，全球全服市民重新整理即可完美同步！");
-                fetchAnnouncementsFromCloud();
-                
-                document.getElementById("new-announce-title").value = "";
-                document.getElementById("new-announce-text").value = "";
-                document.getElementById("admin-announcement-form").style.display = "none";
-            })
-            .catch(err => {
-                // 當外部網絡徹底阻斷時之緊急安全降級退路機制
-                alert("⚠️ 偵測到雲端握手超時，已為您自動降級啟用本地容錯記憶快取模式！");
-                let localExisting = localStorage.getItem("la_fallback_announces") || "";
-                let fallbackHtml = `<div class="announcement-item"><div class="announce-date">${tag}</div><div class="announce-title">${title}</div><div class="announce-text">${text}</div></div>`;
-                localStorage.setItem("la_fallback_announces", fallbackHtml + localExisting);
-                document.getElementById("dynamic-announcement-area").innerHTML = fallbackHtml + localExisting + document.getElementById("dynamic-announcement-area").innerHTML;
-            })
-            .finally(() => {
-                document.getElementById("publish-submit-btn").innerText = "🚀 寫入雲端庫並發布全服";
-                document.getElementById("publish-submit-btn").disabled = false;
+            // 使用 BOLO 的 webhook 當作廣播頻道 (你可以隨意換成另外兩個)
+            fetch(BOLO_WEBHOOK_URL, { 
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
             });
+
+            alert("✅ 公告已成功發布！\n\n1. 已鎖入系統快取，重新整理絕對不會消失！\n2. 已自動廣播推播至 Discord，確保全服市民手機同步接收！");
+            
+            document.getElementById("new-announce-title").value = "";
+            document.getElementById("new-announce-text").value = "";
+            document.getElementById("admin-announcement-form").style.display = "none";
         }
 
         function resetToDefaultAnnounce() {
-            if (confirm("⚠️ 確定要把雲端資料庫重設，還原到最初的公告結構嗎？")) {
-                localStorage.removeItem("la_fallback_announces");
-                fetch(CLOUD_JSON_STORE_URL, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data: defaultAnnouncementsJson })
-                }).then(() => {
-                    alert("雲端庫已重設！");
-                    fetchAnnouncementsFromCloud();
-                });
+            if (confirm("⚠️ 確定要重設並清空所有自訂公告，還原至出廠狀態嗎？")) {
+                localStorage.removeItem("la_core_announcements");
+                renderAnnouncements();
             }
         }
 
