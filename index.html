@@ -191,13 +191,11 @@
             </div>
             
             <h2 class="section-title">洛杉磯市政公告 (雲端即時同步)</h2>
-            <!-- Google Cloud 公告渲染區 -->
             <div class="announcement-box" id="dynamic-announcement-area">
-                <div style="text-align:center; color:#888;">📡 連線 Google 雲端讀取公告中...</div>
+                <div style="text-align:center; color:#888;">📡 連線 Google 雲端庫讀取中...</div>
             </div>
 
-            <!-- 管理員密碼鎖公告發布面板 -->
-            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (發布全服同步公告)</button>
+            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (發布/刪除全服同步公告)</button>
             <div class="admin-panel-box" id="admin-announcement-form">
                 <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階雲端發布終端</h3>
                 <div class="form-row">
@@ -843,9 +841,12 @@
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         
-        // 🚀 Google 雲端同步系統 (完全體實裝)
+        // 🚀 Google 雲端同步系統 (完全體實裝 + 管理員刪除功能)
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
         
+        let currentAnnouncements = [];
+        let isAdmin = false; // 管理員狀態鎖定
+
         // 預設快照（當雲端為空時的保底機制）
         const defaultAnnouncementsJson = [
             { tag: "⚖️ 內務監察", title: "官方「內務監察與警員投訴箱」通道開通", text: "為落實程序正義，保障全體市民的憲法權利，市政司法委員會與內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。市民提供之實證情資將直送督察後台。" },
@@ -857,23 +858,32 @@
             .then(res => res.json())
             .then(data => {
                 if(Array.isArray(data) && data.length > 0) {
-                    renderAnnouncementsHtml(data);
+                    currentAnnouncements = data;
                 } else {
-                    renderAnnouncementsHtml(defaultAnnouncementsJson);
+                    currentAnnouncements = defaultAnnouncementsJson;
                 }
+                renderAnnouncementsHtml(currentAnnouncements);
             })
             .catch(err => {
-                renderAnnouncementsHtml(defaultAnnouncementsJson);
+                currentAnnouncements = defaultAnnouncementsJson;
+                renderAnnouncementsHtml(currentAnnouncements);
             });
         }
         
         function renderAnnouncementsHtml(jsonArray) {
             let html = "";
-            jsonArray.forEach(item => {
+            jsonArray.forEach((item, index) => {
+                // 如果是管理員，就會出現刪除按鈕
+                let deleteBtn = isAdmin ? `<button class="btn" style="background-color: #991b1b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="deleteAnnounce(${index})">🗑️ 刪除</button>` : "";
                 html += `
                     <div class="announcement-item">
-                        <div class="announce-date">${item.tag}</div>
-                        <div class="announce-title">${item.title}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div class="announce-date">${item.tag}</div>
+                                <div class="announce-title">${item.title}</div>
+                            </div>
+                            ${deleteBtn}
+                        </div>
                         <div class="announce-text">${item.text}</div>
                     </div>`;
             });
@@ -883,9 +893,29 @@
         function checkAdminPassword() {
             let pwd = prompt("請輸入高階管理員密碼以開啟發布面板 (預設密碼為 LA1080)：");
             if (pwd === "LA1080") {
+                isAdmin = true; // 解鎖管理員狀態
                 document.getElementById("admin-announcement-form").style.display = "block";
                 window.scrollTo(0, document.body.scrollHeight);
-            } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有權限在官網新增公告。"); }
+                renderAnnouncementsHtml(currentAnnouncements); // 重新渲染公告以顯示刪除按鈕
+            } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有權限在官網新增或刪除公告。"); }
+        }
+
+        function deleteAnnounce(index) {
+            if (!confirm("⚠️ 確定要刪除這則公告嗎？刪除後將從雲端永久移除！")) return;
+            
+            // 從陣列中移除該公告
+            currentAnnouncements.splice(index, 1);
+            
+            // 將更新後的陣列寫回雲端
+            fetch(CLOUD_API_URL, {
+                method: "POST",
+                body: JSON.stringify(currentAnnouncements)
+            }).then(() => {
+                alert("🗑️ 公告已刪除，並同步至雲端！");
+                renderAnnouncementsHtml(currentAnnouncements);
+            }).catch(err => {
+                alert("刪除發生錯誤：" + err.message);
+            });
         }
 
         function publishNewAnnounce() {
@@ -898,24 +928,17 @@
             document.getElementById("publish-submit-btn").innerText = "⏳ 正在寫入 Google 雲端庫...";
             document.getElementById("publish-submit-btn").disabled = true;
 
-            fetch(CLOUD_API_URL)
-            .then(res => res.json())
-            .catch(() => defaultAnnouncementsJson)
-            .then(currentList => {
-                if(!Array.isArray(currentList) || currentList.length === 0) currentList = defaultAnnouncementsJson;
+            // 把新公告放最前面
+            currentAnnouncements.unshift({ tag: tag, title: title, text: text });
                 
-                // 把新公告放最前面
-                currentList.unshift({ tag: tag, title: title, text: text });
-                
-                // POST 寫回 Google Apps Script
-                return fetch(CLOUD_API_URL, {
-                    method: "POST",
-                    body: JSON.stringify(currentList)
-                });
+            // POST 寫回 Google Apps Script
+            fetch(CLOUD_API_URL, {
+                method: "POST",
+                body: JSON.stringify(currentAnnouncements)
             })
             .then(res => {
                 alert("✅ 公告已成功寫入 Google 雲端庫！全世界的市民重新整理網頁都會立刻看到這則公告！");
-                fetchAnnouncementsFromCloud(); // 重新整理網頁畫面
+                renderAnnouncementsHtml(currentAnnouncements); // 重新整理網頁畫面
                 
                 document.getElementById("new-announce-title").value = "";
                 document.getElementById("new-announce-text").value = "";
@@ -932,12 +955,13 @@
 
         function resetToDefaultAnnounce() {
             if (confirm("⚠️ 確定要重設並清空所有自訂公告，還原至出廠狀態嗎？")) {
+                currentAnnouncements = defaultAnnouncementsJson.slice();
                 fetch(CLOUD_API_URL, {
                     method: "POST",
-                    body: JSON.stringify(defaultAnnouncementsJson)
+                    body: JSON.stringify(currentAnnouncements)
                 }).then(() => {
                     alert("已還原原廠預設狀態！");
-                    fetchAnnouncementsFromCloud();
+                    renderAnnouncementsHtml(currentAnnouncements);
                 });
             }
         }
