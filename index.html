@@ -109,7 +109,7 @@
 
         /* BOLO 佈告欄與發布終端 */
         .bolo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .bolo-card { background-color: #161616; border-radius: 8px; overflow: hidden; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .bolo-card { background-color: #161616; border-radius: 8px; overflow: hidden; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .bolo-header { padding: 12px 15px; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px; }
         .bolo-red { background-color: #991b1b; }
         .bolo-yellow { background-color: #b45309; }
@@ -117,7 +117,7 @@
         .bolo-img-wrapper { width: 100%; height: 180px; overflow: hidden; position: relative; }
         .bolo-img { width: 100%; height: 100%; object-fit: cover; border-bottom: 2px solid #333; }
         .warning-tape { height: 8px; background: repeating-linear-gradient(45deg, #fbbf24, #fbbf24 10px, #000 10px, #000 20px); border-bottom: 1px solid #333; }
-        .bolo-body { padding: 20px; }
+        .bolo-body { padding: 20px; flex-grow: 1; }
         .bolo-title { color: #fff; font-size: 1.25rem; margin-bottom: 15px; border-left: 4px solid #f59e0b; padding-left: 10px; font-weight: bold; }
         .bolo-detail { color: #aaa; font-size: 0.95rem; margin-bottom: 8px; display: flex; }
         .bolo-detail-label { width: 80px; font-weight: bold; color: #888; flex-shrink: 0; }
@@ -195,7 +195,7 @@
                 <div style="text-align:center; color:#888;">📡 連線 Google 雲端庫讀取中...</div>
             </div>
 
-            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (發布/刪除全服同步公告)</button>
+            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政/BOLO管理端 (發布、編輯、刪除全服公告)</button>
             <div class="admin-panel-box" id="admin-announcement-form">
                 <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階雲端發布終端</h3>
                 <div class="form-row">
@@ -220,8 +220,8 @@
                     </div>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="publishNewAnnounce()">🚀 寫入 Google 雲端庫並發布全服</button>
-                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="resetToDefaultAnnounce()">🧹 重設並還原初始預設公告</button>
+                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="submitAnnounce()">🚀 寫入 Google 雲端庫並發布全服</button>
+                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="cancelAnnounceEdit()">取消編輯 / 關閉</button>
                 </div>
             </div>
         </section>
@@ -231,12 +231,12 @@
     <div id="page-bolo" class="tab-content">
         <section style="padding-top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px;">
-                <h2 class="section-title" style="margin-bottom: 0; border-left-color: #ef4444;">全州通緝與 BOLO</h2>
-                <button class="btn" onclick="checkBoloPassword()" style="background-color: #ef4444; margin-top: 0;">🚨 登入 BOLO 終端 (限執法人員)</button>
+                <h2 class="section-title" style="margin-bottom: 0; border-left-color: #ef4444;">全州通緝與 BOLO (雲端同步)</h2>
+                <button class="btn" onclick="checkBoloPassword()" style="background-color: #ef4444; margin-top: 0;">🚨 登入 BOLO 終端 (發布、編輯、刪除)</button>
             </div>
             <p style="color: #aaa; margin-bottom: 30px;">以下為當前洛杉磯地區高危險通緝目標與重要情資。執法人員巡邏時請保持高度警戒，平民若發現以下車輛請撥打 911。</p>
 
-            <!-- BOLO 隱藏發布表單 -->
+            <!-- BOLO 隱藏發布/編輯表單 -->
             <div id="bolo-form-container">
                 <h3>🖥️ MDT 聯合調度發布終端 (記錄執法者與地點)</h3>
                 <div class="form-row">
@@ -292,44 +292,15 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button class="btn" onclick="submitBoloWebhook()" style="background-color: #ef4444; flex: 1;">將通緝令廣播至 Discord</button>
+                    <button class="btn" id="bolo-submit-btn" onclick="submitBolo()" style="background-color: #ef4444; flex: 1;">將通緝令廣播至 Discord 並同步網頁</button>
                     <button class="btn" onclick="closeBoloForm()" style="background-color: #555;">取消關閉</button>
                 </div>
-                <p id="bolo-msg" style="color: #4ade80; margin-top: 15px; font-weight: bold; display: none;">✅ BOLO 通緝令已成功發送至 Discord 頻道！</p>
+                <p id="bolo-msg" style="color: #4ade80; margin-top: 15px; font-weight: bold; display: none;"></p>
             </div>
 
-            <!-- BOLO 靜態卡片預覽 -->
-            <div class="bolo-grid">
-                <div class="bolo-card">
-                    <div class="bolo-header bolo-red">
-                        <span>🔴 EXTREME DANGER</span><span>WANTED</span>
-                    </div>
-                    <div class="warning-tape"></div>
-                    <div class="bolo-img-wrapper"><img src="https://images.unsplash.com/photo-1603504343110-53b0e3532ccb?auto=format&fit=crop&w=600&q=80" alt="Charger" class="bolo-img"></div>
-                    <div class="bolo-body">
-                        <div class="bolo-title">重裝銀行搶劫犯</div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">目標：</div><div class="bolo-detail-value">消光黑 Dodge Charger</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">車牌：</div><div class="bolo-detail-value" style="color:#ef4444; font-weight:bold;">無牌</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">特徵：</div><div class="bolo-detail-value">全車黑化玻璃，裝有防撞保險桿。</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">涉犯法條：</div><div class="bolo-detail-value bolo-law">PC 211 強盜、PC 245 襲警</div></div>
-                    </div>
-                    <div class="bolo-footer">⚠️ <strong>行動指示：</strong> 涉及市區多起太平洋標準銀行搶案。嫌犯至少 3 人且持有步槍。發現時切勿單車攔停，立即呼叫 SWAT。</div>
-                </div>
-                <div class="bolo-card">
-                    <div class="bolo-header bolo-red">
-                        <span>🔴 BLUE ALERT</span><span>SHOOT TO KILL</span>
-                    </div>
-                    <div class="warning-tape"></div>
-                    <div class="bolo-img-wrapper"><img src="https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80" alt="Face" class="bolo-img" style="filter: contrast(1.2) brightness(0.7) grayscale(1);"></div>
-                    <div class="bolo-body">
-                        <div class="bolo-title">殺警重犯 (Cop Killer)</div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">目標：</div><div class="bolo-detail-value">John Doe (白人男性)</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">車輛：</div><div class="bolo-detail-value">步行 / 可能劫持任何載具</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">特徵：</div><div class="bolo-detail-value">頸部有毒蛇刺青，身穿黑色連帽衫。</div></div>
-                        <div class="bolo-detail"><div class="bolo-detail-label">涉犯法條：</div><div class="bolo-detail-value bolo-law">PC 187 謀殺罪 (一級)</div></div>
-                    </div>
-                    <div class="bolo-footer">⚠️ <strong>行動指示：</strong> 昨夜槍殺一名進行攔停的 LASD 警長。嫌犯具備高度攻擊性，見警即開火 (Shoot on sight)。</div>
-                </div>
+            <!-- BOLO 動態卡片渲染區 -->
+            <div class="bolo-grid" id="dynamic-bolo-area">
+                <div style="text-align:center; color:#888; width:100%;">📡 連線 Google 雲端讀取 BOLO 資料中...</div>
             </div>
         </section>
     </div>
@@ -841,11 +812,14 @@
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         
-        // 🚀 Google 雲端同步系統 (完全體實裝 + 管理員刪除功能)
+        // 🚀 Google 雲端同步系統 (全資料結構：公告 + BOLO)
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
         
-        let currentAnnouncements = [];
-        let isAdmin = false; // 管理員狀態鎖定
+        // 全局狀態變數
+        let appData = { announcements: [], bolos: [] };
+        let isAdmin = false; 
+        let editingAnnounceIndex = -1;
+        let editingBoloIndex = -1;
 
         // 預設快照（當雲端為空時的保底機制）
         const defaultAnnouncementsJson = [
@@ -853,36 +827,60 @@
             { tag: "👮 聯合招募", title: "LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中", text: "執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，旨在考核玩家的扮演情商與思維配合度。請至招募中心填寫名稱進行答題。" }
         ];
 
-        function fetchAnnouncementsFromCloud() {
+        const defaultBolosJson = [
+            { officer: "LSPD-001", location: "市中心", level: "red", title: "重裝銀行搶劫犯", target: "消光黑 Dodge Charger", plate: "無牌", desc: "全車黑化玻璃，裝有防撞保險桿。", law: "PC 211 強盜、PC 245 襲警", action: "涉及市區多起太平洋標準銀行搶案。嫌犯至少 3 人且持有步槍。發現時切勿單車攔停，立即呼叫 SWAT。", imgUrl: "https://images.unsplash.com/photo-1603504343110-53b0e3532ccb?auto=format&fit=crop&w=600&q=80" },
+            { officer: "LASD-002", location: "郊外山區", level: "red", title: "殺警重犯 (Cop Killer)", target: "John Doe (白人男性)", plate: "無牌", desc: "頸部有毒蛇刺青，身穿黑色連帽衫。", law: "PC 187 謀殺罪 (一級)", action: "昨夜槍殺一名進行攔停的 LASD 警長。嫌犯具備高度攻擊性，見警即開火 (Shoot on sight)。", imgUrl: "https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        /* ================= 雲端核心存取邏輯 ================= */
+        function fetchCloudData() {
             fetch(CLOUD_API_URL)
             .then(res => res.json())
             .then(data => {
-                if(Array.isArray(data) && data.length > 0) {
-                    currentAnnouncements = data;
+                if (Array.isArray(data)) {
+                    appData.announcements = data.length > 0 ? data : defaultAnnouncementsJson;
+                    appData.bolos = defaultBolosJson; 
+                } else if (data && typeof data === 'object') {
+                    appData.announcements = data.announcements || defaultAnnouncementsJson;
+                    appData.bolos = data.bolos || defaultBolosJson;
                 } else {
-                    currentAnnouncements = defaultAnnouncementsJson;
+                    appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson };
                 }
-                renderAnnouncementsHtml(currentAnnouncements);
+                renderAnnouncementsHtml();
+                renderBolosHtml();
             })
             .catch(err => {
-                currentAnnouncements = defaultAnnouncementsJson;
-                renderAnnouncementsHtml(currentAnnouncements);
+                appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson };
+                renderAnnouncementsHtml();
+                renderBolosHtml();
             });
         }
-        
-        function renderAnnouncementsHtml(jsonArray) {
+
+        function saveToCloud() {
+            return fetch(CLOUD_API_URL, {
+                method: "POST",
+                body: JSON.stringify(appData)
+            });
+        }
+
+        /* ================= 公告系統 ================= */
+        function renderAnnouncementsHtml() {
             let html = "";
-            jsonArray.forEach((item, index) => {
-                // 如果是管理員，就會出現刪除按鈕
-                let deleteBtn = isAdmin ? `<button class="btn" style="background-color: #991b1b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="deleteAnnounce(${index})">🗑️ 刪除</button>` : "";
+            appData.announcements.forEach((item, index) => {
+                let editBtns = isAdmin ? `
+                    <div style="display:flex; gap:10px; margin-top:5px;">
+                        <button class="btn" style="background-color: #f59e0b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="editAnnounce(${index})">✏️ 編輯</button>
+                        <button class="btn" style="background-color: #991b1b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="deleteAnnounce(${index})">🗑️ 刪除</button>
+                    </div>` : "";
+
                 html += `
                     <div class="announcement-item">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
                             <div>
                                 <div class="announce-date">${item.tag}</div>
                                 <div class="announce-title">${item.title}</div>
                             </div>
-                            ${deleteBtn}
+                            ${editBtns}
                         </div>
                         <div class="announce-text">${item.text}</div>
                     </div>`;
@@ -891,90 +889,247 @@
         }
 
         function checkAdminPassword() {
-            let pwd = prompt("請輸入高階管理員密碼以開啟發布面板 (預設密碼為 LA1080)：");
+            let pwd = prompt("請輸入高階管理員密碼 (預設密碼為 LA1080)：");
             if (pwd === "LA1080") {
-                isAdmin = true; // 解鎖管理員狀態
+                isAdmin = true;
                 document.getElementById("admin-announcement-form").style.display = "block";
-                window.scrollTo(0, document.body.scrollHeight);
-                renderAnnouncementsHtml(currentAnnouncements); // 重新渲染公告以顯示刪除按鈕
-            } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有權限在官網新增或刪除公告。"); }
+                window.scrollTo(0, document.getElementById("admin-announcement-form").offsetTop - 100);
+                renderAnnouncementsHtml(); 
+                renderBolosHtml();
+            } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有管理員權限。"); }
         }
 
-        function deleteAnnounce(index) {
-            if (!confirm("⚠️ 確定要刪除這則公告嗎？刪除後將從雲端永久移除！")) return;
-            
-            // 從陣列中移除該公告
-            currentAnnouncements.splice(index, 1);
-            
-            // 將更新後的陣列寫回雲端
-            fetch(CLOUD_API_URL, {
-                method: "POST",
-                body: JSON.stringify(currentAnnouncements)
-            }).then(() => {
-                alert("🗑️ 公告已刪除，並同步至雲端！");
-                renderAnnouncementsHtml(currentAnnouncements);
-            }).catch(err => {
-                alert("刪除發生錯誤：" + err.message);
-            });
-        }
-
-        function publishNewAnnounce() {
+        function submitAnnounce() {
             let tag = document.getElementById("new-announce-tag").value;
             let title = document.getElementById("new-announce-title").value.trim();
             let text = document.getElementById("new-announce-text").value.trim();
 
             if (!title || !text) { alert("⚠️ 請完整填寫公告標題與詳細內容內容！"); return; }
             
-            document.getElementById("publish-submit-btn").innerText = "⏳ 正在寫入 Google 雲端庫...";
-            document.getElementById("publish-submit-btn").disabled = true;
+            let btn = document.getElementById("publish-submit-btn");
+            btn.innerText = "⏳ 正在同步 Google 雲端庫...";
+            btn.disabled = true;
 
-            // 把新公告放最前面
-            currentAnnouncements.unshift({ tag: tag, title: title, text: text });
+            let obj = { tag, title, text };
+            let isEditing = editingAnnounceIndex >= 0;
+
+            if (isEditing) {
+                appData.announcements[editingAnnounceIndex] = obj;
+            } else {
+                appData.announcements.unshift(obj);
+            }
                 
-            // POST 寫回 Google Apps Script
-            fetch(CLOUD_API_URL, {
-                method: "POST",
-                body: JSON.stringify(currentAnnouncements)
-            })
+            saveToCloud()
             .then(res => {
-                alert("✅ 公告已成功寫入 Google 雲端庫！全世界的市民重新整理網頁都會立刻看到這則公告！");
-                renderAnnouncementsHtml(currentAnnouncements); // 重新整理網頁畫面
-                
-                document.getElementById("new-announce-title").value = "";
-                document.getElementById("new-announce-text").value = "";
-                document.getElementById("admin-announcement-form").style.display = "none";
+                alert(isEditing ? "✏️ 公告更新成功並已同步！" : "✅ 公告發布成功！全世界的市民重新整理網頁都會立刻看到！");
+                renderAnnouncementsHtml(); 
+                cancelAnnounceEdit();
             })
-            .catch(err => {
-                alert("雲端寫入發生錯誤：" + err.message);
-            })
+            .catch(err => { alert("雲端寫入發生錯誤：" + err.message); })
             .finally(() => {
-                document.getElementById("publish-submit-btn").innerText = "🚀 寫入 Google 雲端庫並發布全服";
-                document.getElementById("publish-submit-btn").disabled = false;
+                btn.innerText = "🚀 寫入 Google 雲端庫並發布全服";
+                btn.disabled = false;
             });
         }
 
+        function editAnnounce(index) {
+            editingAnnounceIndex = index;
+            let item = appData.announcements[index];
+            document.getElementById("new-announce-tag").value = item.tag;
+            document.getElementById("new-announce-title").value = item.title;
+            document.getElementById("new-announce-text").value = item.text;
+            
+            document.getElementById("publish-submit-btn").innerText = "💾 儲存修改並同步全服";
+            document.getElementById("admin-announcement-form").style.display = "block";
+            window.scrollTo(0, document.getElementById("admin-announcement-form").offsetTop - 100);
+        }
+
+        function deleteAnnounce(index) {
+            if (!confirm("⚠️ 確定要刪除這則公告嗎？刪除後將從雲端永久移除！")) return;
+            appData.announcements.splice(index, 1);
+            saveToCloud().then(() => {
+                alert("🗑️ 公告已刪除，並同步至雲端！");
+                renderAnnouncementsHtml();
+            });
+        }
+
+        function cancelAnnounceEdit() {
+            editingAnnounceIndex = -1;
+            document.getElementById("new-announce-title").value = "";
+            document.getElementById("new-announce-text").value = "";
+            document.getElementById("publish-submit-btn").innerText = "🚀 寫入 Google 雲端庫並發布全服";
+            document.getElementById("admin-announcement-form").style.display = "none";
+        }
+
         function resetToDefaultAnnounce() {
-            if (confirm("⚠️ 確定要重設並清空所有自訂公告，還原至出廠狀態嗎？")) {
-                currentAnnouncements = defaultAnnouncementsJson.slice();
-                fetch(CLOUD_API_URL, {
-                    method: "POST",
-                    body: JSON.stringify(currentAnnouncements)
-                }).then(() => {
+            if (confirm("⚠️ 確定要重設並清空所有雲端資料，還原至出廠狀態嗎？(BOLO與公告都會被還原)")) {
+                appData = { announcements: defaultAnnouncementsJson.slice(), bolos: defaultBolosJson.slice() };
+                saveToCloud().then(() => {
                     alert("已還原原廠預設狀態！");
-                    renderAnnouncementsHtml(currentAnnouncements);
+                    renderAnnouncementsHtml();
+                    renderBolosHtml();
                 });
             }
         }
 
-        // 頁面載入時立刻抓取雲端公告
-        fetchAnnouncementsFromCloud();
+        /* ================= BOLO 動態雲端系統 ================= */
+        function checkBoloPassword() {
+            let pwd = prompt("請輸入執法人員 BOLO 發布授權碼 (預設密碼為 LA1080)：");
+            if (pwd === "LA1080") {
+                isAdmin = true; // BOLO 和 公告共用權限解鎖
+                document.getElementById("bolo-form-container").style.display = "block";
+                document.getElementById("bolo-msg").style.display = "none";
+                renderBolosHtml(); // 重新渲染以顯示編輯按鈕
+            } else if (pwd !== null) { alert("❌ 密碼錯誤，您沒有發布/編輯通緝令的權限！"); }
+        }
 
-        // --- 以下皆為原本的功能，原封不動保留 ---
-        
-        const BOLO_PASSWORD = "LA1080"; 
-        const correctAnswers = { q1:"B", q2:"A", q3:"B", q4:"B", q5:"B", q6:"B", q7:"B", q8:"B", q9:"B", q10:"B" };
+        function renderBolosHtml() {
+            let html = "";
+            appData.bolos.forEach((item, index) => {
+                let editBtns = isAdmin ? `
+                    <div style="padding: 10px 15px; background: #111; display:flex; gap:10px; border-bottom: 1px solid #333;">
+                        <button class="btn" style="background-color:#f59e0b; padding:4px 10px; margin:0; font-size:0.8rem;" onclick="editBolo(${index})">✏️ 編輯</button>
+                        <button class="btn" style="background-color:#ef4444; padding:4px 10px; margin:0; font-size:0.8rem;" onclick="deleteBolo(${index})">🗑️ 刪除</button>
+                    </div>` : "";
 
-        let selectedLawsForCalc = [];
+                let colorClass = item.level === 'red' ? 'bolo-red' : (item.level === 'yellow' ? 'bolo-yellow' : 'bolo-blue');
+                let levelText = item.level === 'red' ? '🔴 EXTREME DANGER' : (item.level === 'yellow' ? '🟡 HIGH PRIORITY' : '🔵 INFO / STOLEN');
+                let wantedText = item.level === 'red' ? 'WANTED' : (item.level === 'yellow' ? 'EVADER' : 'INFO');
+                if (item.level === 'red' && item.title.includes('殺警')) wantedText = 'SHOOT TO KILL';
+
+                html += `
+                <div class="bolo-card">
+                    <div class="bolo-header ${colorClass}">
+                        <span>${levelText}</span><span>${wantedText}</span>
+                    </div>
+                    ${editBtns}
+                    <div class="warning-tape"></div>
+                    <div class="bolo-img-wrapper"><img src="${item.imgUrl}" class="bolo-img"></div>
+                    <div class="bolo-body">
+                        <div class="bolo-title">${item.title}</div>
+                        <div class="bolo-detail"><div class="bolo-detail-label">目標：</div><div class="bolo-detail-value">${item.target}</div></div>
+                        <div class="bolo-detail"><div class="bolo-detail-label">車牌：</div><div class="bolo-detail-value" style="color:#ef4444; font-weight:bold;">${item.plate}</div></div>
+                        <div class="bolo-detail"><div class="bolo-detail-label">特徵：</div><div class="bolo-detail-value">${item.desc}</div></div>
+                        <div class="bolo-detail"><div class="bolo-detail-label">涉犯法條：</div><div class="bolo-detail-value bolo-law">${item.law}</div></div>
+                    </div>
+                    <div class="bolo-footer">⚠️ <strong>行動指示：</strong> ${item.action}<br><span style="color:#555; font-size:0.8rem;">發布單位: ${item.officer} | 案發地點: ${item.location}</span></div>
+                </div>`;
+            });
+            document.getElementById("dynamic-bolo-area").innerHTML = html || "<p style='color:#888; text-align:center; width:100%;'>目前無通緝目標。</p>";
+        }
+
+        function submitBolo() {
+            let officer = document.getElementById("bolo-officer").value.trim();
+            let location = document.getElementById("bolo-location").value.trim();
+            let level = document.getElementById("bolo-level").value;
+            let title = document.getElementById("bolo-title").value.trim() || "未命名通緝";
+            let target = document.getElementById("bolo-target").value.trim() || "不明";
+            let plate = document.getElementById("bolo-plate").value.trim() || "無牌/不明";
+            let desc = document.getElementById("bolo-desc").value.trim() || "無描述";
+            let law = document.getElementById("bolo-law").value.trim() || "待查";
+            let action = document.getElementById("bolo-action").value.trim() || "發現後回報調度台";
+            let imgUrl = document.getElementById("bolo-img").value.trim();
+
+            if (!officer || !location) { alert("⚠️ 請輸入發布警員名稱與案發地點！"); return; }
+            if (!imgUrl.startsWith("http")) { imgUrl = "https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?auto=format&fit=crop&w=600&q=80"; }
+
+            let btn = document.getElementById("bolo-submit-btn");
+            btn.disabled = true;
+            btn.innerText = "⏳ 正在同步至雲端...";
+
+            let boloObj = { officer, location, level, title, target, plate, desc, law, action, imgUrl };
+            let isEditing = editingBoloIndex >= 0;
+
+            if (isEditing) {
+                appData.bolos[editingBoloIndex] = boloObj;
+            } else {
+                appData.bolos.unshift(boloObj);
+            }
+
+            saveToCloud().then(() => {
+                renderBolosHtml();
+                if (!isEditing) {
+                    // 發布新 BOLO 時推播 Discord
+                    sendBoloDiscordWebhook(boloObj);
+                }
+                alert(isEditing ? "✏️ BOLO 更新成功並同步！" : "🚨 BOLO 發布成功並已同步網頁與推播！");
+                closeBoloForm();
+            }).finally(() => {
+                btn.disabled = false;
+                btn.innerText = "將通緝令廣播至 Discord 並同步網頁";
+            });
+        }
+
+        function editBolo(index) {
+            editingBoloIndex = index;
+            let item = appData.bolos[index];
+            document.getElementById("bolo-officer").value = item.officer;
+            document.getElementById("bolo-location").value = item.location;
+            document.getElementById("bolo-level").value = item.level;
+            document.getElementById("bolo-title").value = item.title;
+            document.getElementById("bolo-target").value = item.target;
+            document.getElementById("bolo-plate").value = item.plate;
+            document.getElementById("bolo-desc").value = item.desc;
+            document.getElementById("bolo-law").value = item.law;
+            document.getElementById("bolo-action").value = item.action;
+            document.getElementById("bolo-img").value = item.imgUrl;
+
+            document.getElementById("bolo-submit-btn").innerText = "💾 儲存 BOLO 修改並同步";
+            document.getElementById("bolo-form-container").style.display = "block";
+            window.scrollTo(0, document.getElementById("bolo-form-container").offsetTop - 100);
+        }
+
+        function deleteBolo(index) {
+            if (!confirm("⚠️ 確定要撤銷/刪除這則通緝令嗎？")) return;
+            appData.bolos.splice(index, 1);
+            saveToCloud().then(() => {
+                alert("🗑️ 通緝令已從雲端撤銷！");
+                renderBolosHtml();
+            });
+        }
+
+        function closeBoloForm() {
+            editingBoloIndex = -1;
+            document.getElementById("bolo-form-container").style.display = "none";
+            document.getElementById("bolo-submit-btn").innerText = "將通緝令廣播至 Discord 並同步網頁";
+            let fields = ["bolo-officer", "bolo-location", "bolo-title", "bolo-target", "bolo-plate", "bolo-desc", "bolo-law", "bolo-action", "bolo-img"];
+            fields.forEach(id => document.getElementById(id).value = "");
+        }
+
+        function sendBoloDiscordWebhook(item) {
+            let embedColor = 15158332; let levelText = "🔴 EXTREME DANGER (極度危險)";
+            if (item.level === "yellow") { embedColor = 11817737; levelText = "🟡 HIGH PRIORITY (高度關注)"; }
+            if (item.level === "blue") { embedColor = 1981066; levelText = "🔵 INFO / STOLEN (情報分享)"; }
+
+            const payload = {
+                username: "LA Project 警政調度台",
+                avatar_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Los_Angeles_Police_Department_Seal.svg/500px-Los_Angeles_Police_Department_Seal.svg.png",
+                content: "@here **[全州通緝 BOLO 廣播]** 執法單位已更新最新高危通緝資訊！",
+                embeds: [{
+                    title: `🚨 ${levelText} - ${item.title}`,
+                    color: embedColor,
+                    image: { url: item.imgUrl },
+                    fields: [
+                        { name: "👤 發布警員", value: item.officer, inline: true },
+                        { name: "📍 案發地點", value: item.location, inline: true },
+                        { name: "🚗 目標載具/人物", value: `\`${item.target}\``, inline: true },
+                        { name: "🏷️ 車牌號碼", value: `\`${item.plate}\``, inline: true },
+                        { name: "⚖️ 涉犯法條", value: `**${item.law}**`, inline: false },
+                        { name: "🕵️ 特徵描述", value: item.desc, inline: false },
+                        { name: "⚠️ 警方行動指示", value: item.action, inline: false }
+                    ],
+                    footer: { text: "SAN ANDREAS DEPT. OF JUSTICE" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(BOLO_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        }
+
+        // 頁面載入時執行雲端讀取
+        fetchCloudData();
+
+        /* ================= 以下皆為原本的獨立功能，原封不動保留 ================= */
 
         // 洛杉磯太平洋標準時間
         function updateLATime() {
@@ -997,28 +1152,21 @@
             window.scrollTo(0, 0); 
         }
 
-        // 摺疊選單重寫與修復校正
+        // 摺疊選單
         function initAccordions() {
             var acc = document.getElementsByClassName("accordion");
-            for (var i = 0; i < acc.length; i++) {
-                acc[i].replaceWith(acc[i].cloneNode(true));
-            }
+            for (var i = 0; i < acc.length; i++) { acc[i].replaceWith(acc[i].cloneNode(true)); }
             var freshAcc = document.getElementsByClassName("accordion");
             for (var i = 0; i < freshAcc.length; i++) {
                 freshAcc[i].addEventListener("click", function(e) {
                     this.classList.toggle("active-acc");
                     var panel = this.nextElementSibling;
-                    if (panel.style.maxHeight) {
-                        panel.style.maxHeight = null;
-                    } else {
-                        panel.style.maxHeight = panel.scrollHeight + "px";
-                    }
+                    if (panel.style.maxHeight) { panel.style.maxHeight = null; } else { panel.style.maxHeight = panel.scrollHeight + "px"; }
                 });
             }
         }
         initAccordions();
 
-        /* ----- 智慧搜尋過濾過濾邏輯 ----- */
         function filterLaws() {
             let filter = document.getElementById("law-search-input").value.toLowerCase().trim();
             let accordions = document.querySelectorAll("#law-accordion-group .accordion");
@@ -1056,7 +1204,6 @@
             initAccordions();
         }
 
-        /* ----- 罰則精算器連動計算 ----- */
         function toggleLaw(btn, fine, jail, lawName) {
             btn.classList.toggle("selected");
             if (btn.classList.contains("selected")) {
@@ -1097,7 +1244,6 @@
             navigator.clipboard.writeText(doc).then(() => alert("✅ 裁決書公文已複製至您的剪貼簿！"));
         }
 
-        /* ----- 匿名情資信箱 ----- */
         function submitAnonymousTip() {
             let type = document.getElementById("tip-type").value;
             let location = document.getElementById("tip-location").value.trim();
@@ -1136,7 +1282,6 @@
             }).catch(e => alert("加密通道發送失敗！"));
         }
 
-        /* ----- 10代碼速查字典 ----- */
         const codesDict = {
             "10-4": "【10-4】收到/明白。調度台訊息確認無誤。",
             "10-6": "【10-6】目前正忙碌中。除非有緊急危及生命生命狀態，否則請保持無線電靜音。",
@@ -1160,11 +1305,9 @@
             document.getElementById("code-lookup-result").innerText = codesDict[val] || "🔍 字典搜尋中：查無此代碼，請確認是否包含連字號（例如：10-15）";
         }
 
-        /* ----- 臨檢小抄筆記功能 ----- */
         function saveScratch() { localStorage.setItem("la_scratchpad", document.getElementById("officer-scratchpad").value); }
         document.getElementById("officer-scratchpad").value = localStorage.getItem("la_scratchpad") || "";
 
-        /* ----- 法院起訴公文生成邏輯 ----- */
         function generateCourtDocument() {
             let name = document.getElementById("court-name").value.trim() || "匿名法律人";
             let target = document.getElementById("court-target").value.trim() || "不明執法人員/市民";
@@ -1180,17 +1323,13 @@
             navigator.clipboard.writeText(document.getElementById("court-text-box").value).then(() => alert("📄 官方司法訴狀公文已完整複製至您的剪貼簿！"));
         }
 
-        /* ----- 核心功能實裝：檢舉/投訴警員直送 Discord 內務部頻道 ----- */
         function submitOfficerComplaintWebhook() {
             let name = document.getElementById("court-name").value.trim() || "匿名市民";
             let target = document.getElementById("court-target").value.trim();
             let law = document.getElementById("court-law").value.trim();
             let reason = document.getElementById("court-reason").value.trim();
 
-            if (!target || !reason) {
-                alert("⚠️ 請務必填寫【遭檢舉之警員編號】與【侵害事實具體敘述】！");
-                return;
-            }
+            if (!target || !reason) { alert("⚠️ 請務必填寫【遭檢舉之警員編號】與【侵害事實具體敘述】！"); return; }
 
             const payload = {
                 username: "洛杉磯警察局內務調查部 (IAD)",
@@ -1198,7 +1337,7 @@
                 content: "⚖️ **[內務告急：收到市民正式投訴執法人員違規報告]** 督察組請立刻介入程序調查！",
                 embeds: [{
                     title: "⚖️ 官方內部行政監察審查公文",
-                    color: 3447003, // 肅穆的深灰色/警政深藍色
+                    color: 3447003,
                     fields: [
                         { name: "👤 申訴舉報人姓名", value: name, inline: true },
                         { name: "👮 遭投訴警員名稱/代號", value: `\`${target}\``, inline: true },
@@ -1211,25 +1350,15 @@
             };
 
             fetch(ANONYMOUS_TIP_WEBHOOK_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+            }).then(() => {
                 document.getElementById("court-success-msg").style.display = "block";
-                // 投遞成功後清空
-                document.getElementById("court-name").value = "";
-                document.getElementById("court-target").value = "";
-                document.getElementById("court-law").value = "";
-                document.getElementById("court-reason").value = "";
+                document.getElementById("court-name").value = ""; document.getElementById("court-target").value = "";
+                document.getElementById("court-law").value = ""; document.getElementById("court-reason").value = "";
                 setTimeout(() => { document.getElementById("court-success-msg").style.display = "none"; }, 5000);
-            })
-            .catch(error => {
-                alert("投訴報告傳輸失敗，請檢查網路連線狀態！");
-            });
+            }).catch(error => { alert("投訴報告傳輸失敗，請檢查網路連線狀態！"); });
         }
 
-        /* ----- 米蘭達警告 AI 語音朗讀 ----- */
         function readMirandaTTS() {
             if ('speechSynthesis' in window) {
                 let msg = new SpeechSynthesisUtterance("你有權保持緘默。你所說的一切都將在法庭上作為指控你的不利證據。你有權在受審時請律師，如果你請不起，法庭將為你指派一名公設辯護人。你了解我剛才對你宣讀的這些權利嗎？");
@@ -1238,7 +1367,6 @@
             } else { alert("您的瀏覽器不支援 Web Speech API 語音朗讀功能！"); }
         }
 
-        /* ----- 招生考核測驗邏輯 ----- */
         function startQuiz() {
             let name = document.getElementById("civilian-name").value.trim();
             if (name === "") { alert("請先輸入您的市民角色名稱！"); return; }
@@ -1282,74 +1410,6 @@
                 document.getElementById("quiz-questions-area").style.display = "none";
                 document.getElementById("apply-link-box").style.display = "block";
             }).catch(e => alert("答案傳送失敗！"));
-        }
-
-        /* ----- BOLO 發布 ----- */
-        function checkBoloPassword() {
-            let pwd = prompt("請輸入執法人員 BOLO 發布授權碼 (預設密碼為 LA1080)：");
-            if (pwd === BOLO_PASSWORD) {
-                document.getElementById("bolo-form-container").style.display = "block";
-                document.getElementById("bolo-msg").style.display = "none";
-            } else if (pwd !== null) { alert("❌ 密碼錯誤，您沒有發布通緝令的權限！"); }
-        }
-
-        function closeBoloForm() {
-            document.getElementById("bolo-form-container").style.display = "none";
-            document.getElementById("bolo-officer").value = ""; document.getElementById("bolo-location").value = "";
-            document.getElementById("bolo-title").value = ""; document.getElementById("bolo-target").value = "";
-            document.getElementById("bolo-plate").value = ""; document.getElementById("bolo-desc").value = "";
-            document.getElementById("bolo-law").value = ""; document.getElementById("bolo-action").value = "";
-            document.getElementById("bolo-img").value = "";
-        }
-
-        function submitBoloWebhook() {
-            let officer = document.getElementById("bolo-officer").value.trim();
-            let location = document.getElementById("bolo-location").value.trim();
-            let level = document.getElementById("bolo-level").value;
-            let title = document.getElementById("bolo-title").value.trim() || "未命名通緝";
-            let target = document.getElementById("bolo-target").value.trim() || "不明";
-            let plate = document.getElementById("bolo-plate").value.trim() || "無牌/不明";
-            let desc = document.getElementById("bolo-desc").value.trim() || "無描述";
-            let law = document.getElementById("bolo-law").value.trim() || "待查";
-            let action = document.getElementById("bolo-action").value.trim() || "發現後回報調度台";
-            let imgUrl = document.getElementById("bolo-img").value.trim();
-
-            if (!officer || !location) { alert("⚠️ 請輸入發布警員名稱與案發地點！"); return; }
-
-            let embedColor = 15158332; let levelText = "🔴 EXTREME DANGER (極度危險)";
-            if (level === "yellow") { embedColor = 11817737; levelText = "🟡 HIGH PRIORITY (高度關注)"; }
-            if (level === "blue") { embedColor = 1981066; levelText = "🔵 INFO / STOLEN (情報分享)"; }
-
-            if (!imgUrl.startsWith("http")) { imgUrl = "https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?auto=format&fit=crop&w=600&q=80"; }
-
-            const payload = {
-                username: "LA Project 警政調度台",
-                avatar_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Los_Angeles_Police_Department_Seal.svg/500px-Los_Angeles_Police_Department_Seal.svg.png",
-                content: "@here **[全州通緝 BOLO 廣播]** 執法單位已更新最新高危通緝資訊！",
-                embeds: [{
-                    title: `🚨 ${levelText} - ${title}`,
-                    color: embedColor,
-                    image: { url: imgUrl },
-                    fields: [
-                        { name: "👤 發布警員", value: officer, inline: true },
-                        { name: "📍 案發地點", value: location, inline: true },
-                        { name: "🚗 目標載具/人物", value: `\`${target}\``, inline: true },
-                        { name: "🏷️ 車牌號碼", value: `\`${plate}\``, inline: true },
-                        { name: "⚖️ 涉犯法條", value: `**${law}**`, inline: false },
-                        { name: "🕵️ 特徵描述", value: desc, inline: false },
-                        { name: "⚠️ 警方行動指示", value: action, inline: false }
-                    ],
-                    footer: { text: "SAN ANDREAS DEPT. OF JUSTICE" },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            fetch(BOLO_WEBHOOK_URL, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-            }).then(() => {
-                document.getElementById("bolo-msg").style.display = "block";
-                setTimeout(closeBoloForm, 2000); 
-            }).catch(e => alert("發送失敗！"));
         }
     </script>
 </body>
