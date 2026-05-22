@@ -37,7 +37,7 @@
 
         /* 首頁公告 */
         .announcement-box { background-color: #1a1a1a; border-left: 5px solid #f59e0b; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; }
-        .announcement-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; animation: fadeIn 0.3s; }
+        .announcement-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; }
         .announcement-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .announce-date { color: #f59e0b; font-weight: bold; font-size: 0.85rem; margin-bottom: 5px; display: inline-block; background-color: rgba(245, 158, 11, 0.1); padding: 3px 8px; border-radius: 4px; }
         .announce-title { color: #fff; font-size: 1.1rem; margin-bottom: 5px; font-weight: bold; }
@@ -156,9 +156,19 @@
         #apply-link-box { display: none; margin-top: 25px; padding: 20px; background-color: #166534; border-radius: 5px; text-align: center; }
 
         footer { background-color: #0f0f0f; text-align: center; padding: 25px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.9rem; color: #666; }
+
+        /* ================= 系統權限與管理員專屬樣式 ================= */
+        .admin-only { display: none !important; }
+        .admin-mode .admin-only { display: inline-block !important; }
+        .login-bar { position: fixed; top: 15px; right: 20px; z-index: 9999; }
     </style>
 </head>
 <body>
+
+    <!-- 統一登入列 -->
+    <div class="login-bar">
+        <button id="login-btn" class="btn" style="background-color:#333; padding: 6px 15px; font-size:0.9rem; margin-top:0;" onclick="toggleAdminMode()">👤 執法人員登入</button>
+    </div>
 
     <!-- 頂部導覽列 -->
     <header>
@@ -190,13 +200,13 @@
                 </div>
             </div>
             
-            <h2 class="section-title">洛杉磯市政公告 (雲端即時同步)</h2>
-            <div class="announcement-box" id="dynamic-announcement-area">
-                <div style="text-align:center; color:#888;">📡 連線 Google 雲端庫讀取中...</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap;">
+                <h2 class="section-title" style="margin-bottom: 0;">洛杉磯市政公告 (雲端同步)</h2>
+                <button class="btn admin-only" style="background-color: #ef4444; margin-top:0;" onclick="document.getElementById('admin-announcement-form').style.display='block'; window.scrollTo(0, document.getElementById('admin-announcement-form').offsetTop - 100);">➕ 發布新公告</button>
             </div>
-
-            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政/BOLO管理端 (發布、編輯、刪除全服公告)</button>
-            <div class="admin-panel-box" id="admin-announcement-form">
+            
+            <!-- 公告隱藏發布面板 -->
+            <div class="admin-panel-box admin-only" id="admin-announcement-form" style="display:none; margin-top:0; margin-bottom:30px;">
                 <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階雲端發布終端</h3>
                 <div class="form-row">
                     <div class="form-col">
@@ -220,9 +230,14 @@
                     </div>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="submitAnnounce()">🚀 寫入 Google 雲端庫並發布全服</button>
+                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="submitAnnounce()">🚀 寫入雲端庫並發布全服</button>
                     <button class="btn" style="margin-top:0; background-color:#555;" onclick="cancelAnnounceEdit()">取消編輯 / 關閉</button>
                 </div>
+            </div>
+
+            <!-- 公告渲染區 -->
+            <div class="announcement-box" id="dynamic-announcement-area">
+                <div style="text-align:center; color:#888;">📡 連線 Google 雲端庫讀取中...</div>
             </div>
         </section>
     </div>
@@ -232,12 +247,12 @@
         <section style="padding-top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="section-title" style="margin-bottom: 0; border-left-color: #ef4444;">全州通緝與 BOLO (雲端同步)</h2>
-                <button class="btn" onclick="checkBoloPassword()" style="background-color: #ef4444; margin-top: 0;">🚨 登入 BOLO 終端 (發布、編輯、刪除)</button>
+                <button class="btn admin-only" onclick="document.getElementById('bolo-form-container').style.display='block'; window.scrollTo(0, document.getElementById('bolo-form-container').offsetTop - 100);" style="background-color: #ef4444; margin-top: 0;">➕ 新增通緝令</button>
             </div>
             <p style="color: #aaa; margin-bottom: 30px;">以下為當前洛杉磯地區高危險通緝目標與重要情資。執法人員巡邏時請保持高度警戒，平民若發現以下車輛請撥打 911。</p>
 
             <!-- BOLO 隱藏發布/編輯表單 -->
-            <div id="bolo-form-container">
+            <div id="bolo-form-container" class="admin-only" style="display:none;">
                 <h3>🖥️ MDT 聯合調度發布終端 (記錄執法者與地點)</h3>
                 <div class="form-row">
                     <div class="form-col">
@@ -295,7 +310,6 @@
                     <button class="btn" id="bolo-submit-btn" onclick="submitBolo()" style="background-color: #ef4444; flex: 1;">將通緝令廣播至 Discord 並同步網頁</button>
                     <button class="btn" onclick="closeBoloForm()" style="background-color: #555;">取消關閉</button>
                 </div>
-                <p id="bolo-msg" style="color: #4ade80; margin-top: 15px; font-weight: bold; display: none;"></p>
             </div>
 
             <!-- BOLO 動態卡片渲染區 -->
@@ -665,7 +679,6 @@
                 </div>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn" onclick="generateCourtDocument()" style="background-color:#1e40af; flex: 1;">📄 僅排版生成官方訴狀公文</button>
-                    <!-- 新增功能：直接投遞至內務監察部 Discord -->
                     <button class="btn" onclick="submitOfficerComplaintWebhook()" style="background-color:#991b1b; flex: 1;">🔒 將此投訴報告直送內務部審查頻道</button>
                 </div>
                 <p id="court-success-msg" style="color: #4ade80; font-weight: bold; margin-top: 15px; text-align: center; display: none;">✅ 投訴報告已通過安全埠加密投遞至內務督察組（IAD）後台！我們會儘速啟動行政調查。</p>
@@ -805,7 +818,7 @@
         <p>&copy; 2026 LOS ANGELES PROJECT. Powered by GitHub Pages. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript 核心控制邏輯 -->
+    <!-- ================= JavaScript 核心控制邏輯 ================= -->
     <script>
         // WEBHOOK 三分流硬核綁定
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
@@ -817,7 +830,7 @@
         
         // 全局狀態變數
         let appData = { announcements: [], bolos: [] };
-        let isAdmin = false; 
+        let isAdmin = sessionStorage.getItem("isAdmin") === "true"; 
         let editingAnnounceIndex = -1;
         let editingBoloIndex = -1;
 
@@ -831,6 +844,50 @@
             { officer: "LSPD-001", location: "市中心", level: "red", title: "重裝銀行搶劫犯", target: "消光黑 Dodge Charger", plate: "無牌", desc: "全車黑化玻璃，裝有防撞保險桿。", law: "PC 211 強盜、PC 245 襲警", action: "涉及市區多起太平洋標準銀行搶案。嫌犯至少 3 人且持有步槍。發現時切勿單車攔停，立即呼叫 SWAT。", imgUrl: "https://images.unsplash.com/photo-1603504343110-53b0e3532ccb?auto=format&fit=crop&w=600&q=80" },
             { officer: "LASD-002", location: "郊外山區", level: "red", title: "殺警重犯 (Cop Killer)", target: "John Doe (白人男性)", plate: "無牌", desc: "頸部有毒蛇刺青，身穿黑色連帽衫。", law: "PC 187 謀殺罪 (一級)", action: "昨夜槍殺一名進行攔停的 LASD 警長。嫌犯具備高度攻擊性，見警即開火 (Shoot on sight)。", imgUrl: "https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80" }
         ];
+
+        // 頁面載入時執行
+        window.onload = () => {
+            applyAdminUI();
+            fetchCloudData();
+            initAccordions();
+            updateLATime();
+        };
+
+        /* ================= 管理員權限登入系統 ================= */
+        function toggleAdminMode() {
+            if (!isAdmin) {
+                let pwd = prompt("請輸入執法人員授權密碼：");
+                if (pwd === "LA1080") {
+                    isAdmin = true;
+                    sessionStorage.setItem("isAdmin", "true");
+                    alert("✅ 權限已解鎖：您現在可以編輯所有公告與 BOLO。");
+                } else if (pwd !== null) {
+                    alert("❌ 密碼錯誤！您沒有管理員權限。");
+                    return;
+                } else {
+                    return;
+                }
+            } else {
+                isAdmin = false;
+                sessionStorage.setItem("isAdmin", "false");
+                alert("🔒 已登出管理模式");
+            }
+            applyAdminUI();
+        }
+
+        function applyAdminUI() {
+            document.body.classList.toggle("admin-mode", isAdmin);
+            let loginBtn = document.getElementById("login-btn");
+            if (isAdmin) {
+                loginBtn.innerText = "🔓 登出管理模式";
+                loginBtn.style.backgroundColor = "#ef4444";
+            } else {
+                loginBtn.innerText = "👤 執法人員登入";
+                loginBtn.style.backgroundColor = "#333";
+            }
+            renderAnnouncementsHtml();
+            renderBolosHtml();
+        }
 
         /* ================= 雲端核心存取邏輯 ================= */
         function fetchCloudData() {
@@ -867,11 +924,11 @@
         function renderAnnouncementsHtml() {
             let html = "";
             appData.announcements.forEach((item, index) => {
-                let editBtns = isAdmin ? `
-                    <div style="display:flex; gap:10px; margin-top:5px;">
+                let editBtns = `
+                    <div class="admin-only" style="margin-top:5px;">
                         <button class="btn" style="background-color: #f59e0b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="editAnnounce(${index})">✏️ 編輯</button>
                         <button class="btn" style="background-color: #991b1b; padding: 4px 10px; margin-top: 0; font-size: 0.8rem;" onclick="deleteAnnounce(${index})">🗑️ 刪除</button>
-                    </div>` : "";
+                    </div>`;
 
                 html += `
                     <div class="announcement-item">
@@ -886,17 +943,6 @@
                     </div>`;
             });
             document.getElementById("dynamic-announcement-area").innerHTML = html;
-        }
-
-        function checkAdminPassword() {
-            let pwd = prompt("請輸入高階管理員密碼 (預設密碼為 LA1080)：");
-            if (pwd === "LA1080") {
-                isAdmin = true;
-                document.getElementById("admin-announcement-form").style.display = "block";
-                window.scrollTo(0, document.getElementById("admin-announcement-form").offsetTop - 100);
-                renderAnnouncementsHtml(); 
-                renderBolosHtml();
-            } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有管理員權限。"); }
         }
 
         function submitAnnounce() {
@@ -927,7 +973,7 @@
             })
             .catch(err => { alert("雲端寫入發生錯誤：" + err.message); })
             .finally(() => {
-                btn.innerText = "🚀 寫入 Google 雲端庫並發布全服";
+                btn.innerText = "🚀 寫入雲端庫並發布全服";
                 btn.disabled = false;
             });
         }
@@ -957,40 +1003,19 @@
             editingAnnounceIndex = -1;
             document.getElementById("new-announce-title").value = "";
             document.getElementById("new-announce-text").value = "";
-            document.getElementById("publish-submit-btn").innerText = "🚀 寫入 Google 雲端庫並發布全服";
+            document.getElementById("publish-submit-btn").innerText = "🚀 寫入雲端庫並發布全服";
             document.getElementById("admin-announcement-form").style.display = "none";
         }
 
-        function resetToDefaultAnnounce() {
-            if (confirm("⚠️ 確定要重設並清空所有雲端資料，還原至出廠狀態嗎？(BOLO與公告都會被還原)")) {
-                appData = { announcements: defaultAnnouncementsJson.slice(), bolos: defaultBolosJson.slice() };
-                saveToCloud().then(() => {
-                    alert("已還原原廠預設狀態！");
-                    renderAnnouncementsHtml();
-                    renderBolosHtml();
-                });
-            }
-        }
-
         /* ================= BOLO 動態雲端系統 ================= */
-        function checkBoloPassword() {
-            let pwd = prompt("請輸入執法人員 BOLO 發布授權碼 (預設密碼為 LA1080)：");
-            if (pwd === "LA1080") {
-                isAdmin = true; // BOLO 和 公告共用權限解鎖
-                document.getElementById("bolo-form-container").style.display = "block";
-                document.getElementById("bolo-msg").style.display = "none";
-                renderBolosHtml(); // 重新渲染以顯示編輯按鈕
-            } else if (pwd !== null) { alert("❌ 密碼錯誤，您沒有發布/編輯通緝令的權限！"); }
-        }
-
         function renderBolosHtml() {
             let html = "";
             appData.bolos.forEach((item, index) => {
-                let editBtns = isAdmin ? `
-                    <div style="padding: 10px 15px; background: #111; display:flex; gap:10px; border-bottom: 1px solid #333;">
+                let editBtns = `
+                    <div class="admin-only" style="padding: 10px 15px; background: #111; display:flex; gap:10px; border-bottom: 1px solid #333;">
                         <button class="btn" style="background-color:#f59e0b; padding:4px 10px; margin:0; font-size:0.8rem;" onclick="editBolo(${index})">✏️ 編輯</button>
                         <button class="btn" style="background-color:#ef4444; padding:4px 10px; margin:0; font-size:0.8rem;" onclick="deleteBolo(${index})">🗑️ 刪除</button>
-                    </div>` : "";
+                    </div>`;
 
                 let colorClass = item.level === 'red' ? 'bolo-red' : (item.level === 'yellow' ? 'bolo-yellow' : 'bolo-blue');
                 let levelText = item.level === 'red' ? '🔴 EXTREME DANGER' : (item.level === 'yellow' ? '🟡 HIGH PRIORITY' : '🔵 INFO / STOLEN');
@@ -1049,7 +1074,6 @@
             saveToCloud().then(() => {
                 renderBolosHtml();
                 if (!isEditing) {
-                    // 發布新 BOLO 時推播 Discord
                     sendBoloDiscordWebhook(boloObj);
                 }
                 alert(isEditing ? "✏️ BOLO 更新成功並同步！" : "🚨 BOLO 發布成功並已同步網頁與推播！");
@@ -1126,21 +1150,17 @@
             fetch(BOLO_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         }
 
-        // 頁面載入時執行雲端讀取
-        fetchCloudData();
+        /* ================= 原有功能邏輯 ================= */
+        const correctAnswers = { q1:"B", q2:"A", q3:"B", q4:"B", q5:"B", q6:"B", q7:"B", q8:"B", q9:"B", q10:"B" };
+        let selectedLawsForCalc = [];
 
-        /* ================= 以下皆為原本的獨立功能，原封不動保留 ================= */
-
-        // 洛杉磯太平洋標準時間
         function updateLATime() {
             let options = { timeZone: "America/Los_Angeles", hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" };
             let formatter = new Intl.DateTimeFormat("en-US", options);
             document.getElementById("la-time-display").innerText = "LA TIME: " + formatter.format(new Date());
         }
         setInterval(updateLATime, 1000);
-        updateLATime();
 
-        // 頁籤切換
         function openTab(tabId) {
             let contents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < contents.length; i++) { contents[i].classList.remove("active"); }
@@ -1152,7 +1172,6 @@
             window.scrollTo(0, 0); 
         }
 
-        // 摺疊選單
         function initAccordions() {
             var acc = document.getElementsByClassName("accordion");
             for (var i = 0; i < acc.length; i++) { acc[i].replaceWith(acc[i].cloneNode(true)); }
@@ -1165,7 +1184,6 @@
                 });
             }
         }
-        initAccordions();
 
         function filterLaws() {
             let filter = document.getElementById("law-search-input").value.toLowerCase().trim();
