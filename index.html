@@ -37,7 +37,7 @@
 
         /* 首頁公告 */
         .announcement-box { background-color: #1a1a1a; border-left: 5px solid #f59e0b; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; }
-        .announcement-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; }
+        .announcement-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; animation: fadeIn 0.3s; }
         .announcement-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .announce-date { color: #f59e0b; font-weight: bold; font-size: 0.85rem; margin-bottom: 5px; display: inline-block; background-color: rgba(245, 158, 11, 0.1); padding: 3px 8px; border-radius: 4px; }
         .announce-title { color: #fff; font-size: 1.1rem; margin-bottom: 5px; font-weight: bold; }
@@ -161,12 +161,17 @@
         .admin-only { display: none !important; }
         .admin-mode .admin-only { display: inline-block !important; }
         .login-bar { position: fixed; top: 15px; right: 20px; z-index: 9999; }
+        
+        /* 勤務名單樣式 */
+        .roster-item { padding: 10px; background: #1a1a1a; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid #4ade80; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .log-item { padding: 5px 0; border-bottom: 1px dashed #333; font-family: monospace; color: #aaa; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <!-- 統一登入列 -->
     <div class="login-bar">
+        <span id="current-user-display" style="color:#4ade80; font-weight:bold; margin-right:10px; display:none;"></span>
         <button id="login-btn" class="btn" style="background-color:#333; padding: 6px 15px; font-size:0.9rem; margin-top:0;" onclick="toggleAdminMode()">👤 執法人員登入</button>
     </div>
 
@@ -179,14 +184,45 @@
         <nav>
             <ul>
                 <li><a onclick="openTab('page-home')" id="nav-home" class="active">首頁大廳</a></li>
-                <li><a onclick="openTab('page-bolo')" id="nav-bolo" style="color: #ef4444; font-weight: bold;">🚨 全州通緝 (BOLO)</a></li>
+                <li><a onclick="openTab('page-dispatch')" id="nav-dispatch">📡 勤務調度</a></li>
+                <li><a onclick="openTab('page-bolo')" id="nav-bolo" style="color: #ef4444; font-weight: bold;">🚨 全州通緝</a></li>
                 <li><a onclick="openTab('page-depts')" id="nav-depts">各部門介紹</a></li>
                 <li><a onclick="openTab('page-rules')" id="nav-rules">加州/LA法規全書</a></li>
                 <li><a onclick="openTab('page-sop')" id="nav-sop">SOP與10代碼</a></li>
-                <li><a onclick="openTab('page-apply')" id="nav-apply">警校招募中心</a></li>
+                <li><a onclick="openTab('page-apply')" id="nav-apply">警校招募</a></li>
             </ul>
         </nav>
     </header>
+
+    <!-- ================= 0. 勤務打卡與調度 (CAD/Roster) 新功能 ================= -->
+    <div id="page-dispatch" class="tab-content">
+        <section style="padding-top: 20px;">
+            <h2 class="section-title">📡 勤務指揮與打卡系統 (CAD/Roster)</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">全州執法官員上下線狀態監控。請於值勤前完成 10-8 打卡，結束勤務時務必 10-7 下線。</p>
+
+            <div class="admin-only" style="margin-bottom: 25px;">
+                <button class="btn" style="background-color: #166534;" onclick="clockIn()">🟢 10-8 開始值勤 (打卡上線)</button>
+                <button class="btn" style="background-color: #991b1b;" onclick="clockOut()">🔴 10-7 結束值勤 (打卡下線)</button>
+            </div>
+
+            <div class="grid-container">
+                <div class="card" style="border-top-color: #4ade80;">
+                    <h3>🟢 目前線上值勤警力 (Active Roster)</h3>
+                    <div id="active-roster-list" style="margin-top: 15px;">
+                        <div style="color:#888;">載入中...</div>
+                    </div>
+                </div>
+
+                <div class="admin-only card" style="border-top-color: #f59e0b;">
+                    <h3>📋 系統操作日誌 (Audit Logs)</h3>
+                    <p style="color:#888; font-size:0.8rem; margin-bottom:10px;">內部督察組 (IAD) 專用。紀錄所有公告、BOLO與上下線操作。</p>
+                    <div id="audit-log-area" style="background: #111; padding: 15px; border-radius: 5px; height: 250px; overflow-y: auto;">
+                        <div style="color:#888;">載入中...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <!-- ================= 1. 首頁大廳 ================= -->
     <div id="page-home" class="tab-content active">
@@ -247,7 +283,7 @@
         <section style="padding-top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="section-title" style="margin-bottom: 0; border-left-color: #ef4444;">全州通緝與 BOLO (雲端同步)</h2>
-                <button class="btn admin-only" onclick="document.getElementById('bolo-form-container').style.display='block'; window.scrollTo(0, document.getElementById('bolo-form-container').offsetTop - 100);" style="background-color: #ef4444; margin-top: 0;">➕ 新增通緝令</button>
+                <button class="btn admin-only" onclick="openBoloCreateForm()" style="background-color: #ef4444; margin-top: 0;">➕ 新增通緝令</button>
             </div>
             <p style="color: #aaa; margin-bottom: 30px;">以下為當前洛杉磯地區高危險通緝目標與重要情資。執法人員巡邏時請保持高度警戒，平民若發現以下車輛請撥打 911。</p>
 
@@ -257,7 +293,7 @@
                 <div class="form-row">
                     <div class="form-col">
                         <label>發布警員名稱/代號</label>
-                        <input type="text" id="bolo-officer" placeholder="例如: LSPD-1234...">
+                        <input type="text" id="bolo-officer" placeholder="例如: LSPD-1234..." readonly style="background-color: #222; color: #888;">
                     </div>
                     <div class="form-col">
                         <label>案發地點</label>
@@ -679,6 +715,7 @@
                 </div>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn" onclick="generateCourtDocument()" style="background-color:#1e40af; flex: 1;">📄 僅排版生成官方訴狀公文</button>
+                    <!-- 新增功能：直接投遞至內務監察部 Discord -->
                     <button class="btn" onclick="submitOfficerComplaintWebhook()" style="background-color:#991b1b; flex: 1;">🔒 將此投訴報告直送內務部審查頻道</button>
                 </div>
                 <p id="court-success-msg" style="color: #4ade80; font-weight: bold; margin-top: 15px; text-align: center; display: none;">✅ 投訴報告已通過安全埠加密投遞至內務督察組（IAD）後台！我們會儘速啟動行政調查。</p>
@@ -825,24 +862,32 @@
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         
-        // 🚀 Google 雲端同步系統 (全資料結構：公告 + BOLO)
+        // 🚀 Google 雲端同步系統 (全資料結構：公告 + BOLO + 勤務名單 + 操作日誌)
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
         
+        // 預設帳號密碼庫 (可在此處新增更多警員帳號)
+        const OFFICER_ACCOUNTS = {
+            "ADMIN": "LA1080",
+            "LSPD-001": "1234",
+            "LASD-002": "1234",
+            "CHP-003": "1234"
+        };
+
         // 全局狀態變數
-        let appData = { announcements: [], bolos: [] };
+        let appData = { announcements: [], bolos: [], roster: [], logs: [] };
         let isAdmin = sessionStorage.getItem("isAdmin") === "true"; 
+        let currentUser = sessionStorage.getItem("currentUser") || "";
         let editingAnnounceIndex = -1;
         let editingBoloIndex = -1;
 
         // 預設快照（當雲端為空時的保底機制）
         const defaultAnnouncementsJson = [
-            { tag: "⚖️ 內務監察", title: "官方「內務監察與警員投訴箱」通道開通", text: "為落實程序正義，保障全體市民的憲法權利，市政司法委員會與內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。市民提供之實證情資將直送督察後台。" },
-            { tag: "👮 聯合招募", title: "LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中", text: "執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，旨在考核玩家的扮演情商與思維配合度。請至招募中心填寫名稱進行答題。" }
+            { tag: "⚖️ 內務監察", title: "官方「內務監察與警員投訴箱」通道開通", text: "為落實程序正義，保障全體市民的憲法權利，市政司法委員會與內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。" },
+            { tag: "👮 聯合招募", title: "LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中", text: "執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」。" }
         ];
 
         const defaultBolosJson = [
-            { officer: "LSPD-001", location: "市中心", level: "red", title: "重裝銀行搶劫犯", target: "消光黑 Dodge Charger", plate: "無牌", desc: "全車黑化玻璃，裝有防撞保險桿。", law: "PC 211 強盜、PC 245 襲警", action: "涉及市區多起太平洋標準銀行搶案。嫌犯至少 3 人且持有步槍。發現時切勿單車攔停，立即呼叫 SWAT。", imgUrl: "https://images.unsplash.com/photo-1603504343110-53b0e3532ccb?auto=format&fit=crop&w=600&q=80" },
-            { officer: "LASD-002", location: "郊外山區", level: "red", title: "殺警重犯 (Cop Killer)", target: "John Doe (白人男性)", plate: "無牌", desc: "頸部有毒蛇刺青，身穿黑色連帽衫。", law: "PC 187 謀殺罪 (一級)", action: "昨夜槍殺一名進行攔停的 LASD 警長。嫌犯具備高度攻擊性，見警即開火 (Shoot on sight)。", imgUrl: "https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80" }
+            { officer: "LSPD-001", location: "市中心", level: "red", title: "重裝銀行搶劫犯", target: "消光黑 Dodge Charger", plate: "無牌", desc: "全車黑化玻璃，裝有防撞保險桿。", law: "PC 211 強盜、PC 245 襲警", action: "涉及市區多起太平洋標準銀行搶案。嫌犯至少 3 人且持有步槍。", imgUrl: "https://images.unsplash.com/photo-1603504343110-53b0e3532ccb?auto=format&fit=crop&w=600&q=80" }
         ];
 
         // 頁面載入時執行
@@ -853,24 +898,108 @@
             updateLATime();
         };
 
+        /* ================= 系統操作日誌 (Audit Log) ================= */
+        function addAuditLog(actionMsg) {
+            let timeOpts = { timeZone: "America/Los_Angeles", hour12: false, month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" };
+            let timeStr = new Intl.DateTimeFormat("en-US", timeOpts).format(new Date());
+            let logEntry = `[${timeStr}] 👮 ${currentUser} 執行操作：${actionMsg}`;
+            appData.logs.unshift(logEntry);
+            if (appData.logs.length > 50) appData.logs.pop(); // 限制最多保留 50 筆紀錄
+        }
+
+        function renderLogs() {
+            let logArea = document.getElementById("audit-log-area");
+            if (!logArea) return;
+            if (appData.logs.length === 0) {
+                logArea.innerHTML = "<div style='color:#888;'>目前無任何操作紀錄。</div>";
+                return;
+            }
+            let html = "";
+            appData.logs.forEach(log => {
+                html += `<div class="log-item">${log}</div>`;
+            });
+            logArea.innerHTML = html;
+        }
+
+        /* ================= 勤務打卡與線上名單 (Roster) ================= */
+        function clockIn() {
+            if (!appData.roster.includes(currentUser)) {
+                appData.roster.push(currentUser);
+                addAuditLog("10-8 開始值勤 (ON DUTY)");
+                saveToCloud().then(() => renderRosterHtml());
+            } else {
+                alert("您已經在線上值勤名單中了！");
+            }
+        }
+
+        function clockOut() {
+            let idx = appData.roster.indexOf(currentUser);
+            if (idx > -1) {
+                appData.roster.splice(idx, 1);
+                addAuditLog("10-7 結束值勤 (OFF DUTY)");
+                saveToCloud().then(() => renderRosterHtml());
+            } else {
+                alert("您目前不在線上值勤名單中！");
+            }
+        }
+
+        function renderRosterHtml() {
+            let rosterList = document.getElementById("active-roster-list");
+            if (!rosterList) return;
+            if (appData.roster.length === 0) {
+                rosterList.innerHTML = "<div style='color:#888;'>目前全市無警員在線。</div>";
+                return;
+            }
+            let html = "";
+            appData.roster.forEach(officer => {
+                html += `
+                    <div class="roster-item">
+                        <span>👮 ${officer}</span>
+                        <span style="color:#4ade80; font-size:0.85rem;">10-8 ON DUTY</span>
+                    </div>`;
+            });
+            rosterList.innerHTML = html;
+        }
+
         /* ================= 管理員權限登入系統 ================= */
         function toggleAdminMode() {
             if (!isAdmin) {
-                let pwd = prompt("請輸入執法人員授權密碼：");
-                if (pwd === "LA1080") {
-                    isAdmin = true;
-                    sessionStorage.setItem("isAdmin", "true");
-                    alert("✅ 權限已解鎖：您現在可以編輯所有公告與 BOLO。");
-                } else if (pwd !== null) {
-                    alert("❌ 密碼錯誤！您沒有管理員權限。");
+                let badge = prompt("請輸入您的專屬警員代號 (例如: LSPD-001 或 ADMIN)：");
+                if (!badge) return;
+                badge = badge.toUpperCase();
+                
+                if (!OFFICER_ACCOUNTS[badge]) {
+                    alert("❌ 查無此警員代號！請確認編號是否正確。");
                     return;
+                }
+
+                let pwd = prompt(`請輸入 ${badge} 的專屬登入密碼：`);
+                if (pwd === OFFICER_ACCOUNTS[badge]) {
+                    isAdmin = true;
+                    currentUser = badge;
+                    sessionStorage.setItem("isAdmin", "true");
+                    sessionStorage.setItem("currentUser", badge);
+                    alert(`✅ 登入成功！歡迎值勤，${badge}。`);
+                    
+                    addAuditLog("登入 MDT 系統");
+                    saveToCloud(); // 儲存登入紀錄
                 } else {
+                    alert("❌ 密碼錯誤！您沒有管理員權限。");
                     return;
                 }
             } else {
+                // 登出時，若還在名單上，自動幫他 10-7
+                let idx = appData.roster.indexOf(currentUser);
+                if (idx > -1) { appData.roster.splice(idx, 1); }
+                
+                addAuditLog("登出 MDT 系統");
+                saveToCloud();
+
                 isAdmin = false;
+                currentUser = "";
                 sessionStorage.setItem("isAdmin", "false");
-                alert("🔒 已登出管理模式");
+                sessionStorage.setItem("currentUser", "");
+                alert("🔒 已登出 MDT 管理模式");
             }
             applyAdminUI();
         }
@@ -878,15 +1007,26 @@
         function applyAdminUI() {
             document.body.classList.toggle("admin-mode", isAdmin);
             let loginBtn = document.getElementById("login-btn");
+            let userDisplay = document.getElementById("current-user-display");
+
             if (isAdmin) {
-                loginBtn.innerText = "🔓 登出管理模式";
+                loginBtn.innerText = "🔓 登出系統";
                 loginBtn.style.backgroundColor = "#ef4444";
+                userDisplay.innerText = `👮 ${currentUser}`;
+                userDisplay.style.display = "inline-block";
+                
+                // 自動帶入 BOLO 發布人
+                let boloOfficer = document.getElementById("bolo-officer");
+                if (boloOfficer) boloOfficer.value = currentUser;
             } else {
                 loginBtn.innerText = "👤 執法人員登入";
                 loginBtn.style.backgroundColor = "#333";
+                userDisplay.style.display = "none";
             }
             renderAnnouncementsHtml();
             renderBolosHtml();
+            renderRosterHtml();
+            renderLogs();
         }
 
         /* ================= 雲端核心存取邏輯 ================= */
@@ -894,20 +1034,21 @@
             fetch(CLOUD_API_URL)
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) {
-                    appData.announcements = data.length > 0 ? data : defaultAnnouncementsJson;
-                    appData.bolos = defaultBolosJson; 
-                } else if (data && typeof data === 'object') {
+                if (data && typeof data === 'object' && !Array.isArray(data)) {
                     appData.announcements = data.announcements || defaultAnnouncementsJson;
                     appData.bolos = data.bolos || defaultBolosJson;
+                    appData.roster = data.roster || [];
+                    appData.logs = data.logs || [];
                 } else {
-                    appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson };
+                    appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson, roster: [], logs: [] };
                 }
                 renderAnnouncementsHtml();
                 renderBolosHtml();
+                renderRosterHtml();
+                renderLogs();
             })
             .catch(err => {
-                appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson };
+                appData = { announcements: defaultAnnouncementsJson, bolos: defaultBolosJson, roster: [], logs: [] };
                 renderAnnouncementsHtml();
                 renderBolosHtml();
             });
@@ -922,6 +1063,8 @@
 
         /* ================= 公告系統 ================= */
         function renderAnnouncementsHtml() {
+            let area = document.getElementById("dynamic-announcement-area");
+            if (!area) return;
             let html = "";
             appData.announcements.forEach((item, index) => {
                 let editBtns = `
@@ -942,7 +1085,7 @@
                         <div class="announce-text">${item.text}</div>
                     </div>`;
             });
-            document.getElementById("dynamic-announcement-area").innerHTML = html;
+            area.innerHTML = html;
         }
 
         function submitAnnounce() {
@@ -961,14 +1104,17 @@
 
             if (isEditing) {
                 appData.announcements[editingAnnounceIndex] = obj;
+                addAuditLog(`編輯了市政公告: ${title}`);
             } else {
                 appData.announcements.unshift(obj);
+                addAuditLog(`發布了市政公告: ${title}`);
             }
                 
             saveToCloud()
             .then(res => {
                 alert(isEditing ? "✏️ 公告更新成功並已同步！" : "✅ 公告發布成功！全世界的市民重新整理網頁都會立刻看到！");
                 renderAnnouncementsHtml(); 
+                renderLogs();
                 cancelAnnounceEdit();
             })
             .catch(err => { alert("雲端寫入發生錯誤：" + err.message); })
@@ -992,10 +1138,12 @@
 
         function deleteAnnounce(index) {
             if (!confirm("⚠️ 確定要刪除這則公告嗎？刪除後將從雲端永久移除！")) return;
+            addAuditLog(`刪除了市政公告: ${appData.announcements[index].title}`);
             appData.announcements.splice(index, 1);
             saveToCloud().then(() => {
                 alert("🗑️ 公告已刪除，並同步至雲端！");
                 renderAnnouncementsHtml();
+                renderLogs();
             });
         }
 
@@ -1008,7 +1156,17 @@
         }
 
         /* ================= BOLO 動態雲端系統 ================= */
+        function openBoloCreateForm() {
+            document.getElementById('bolo-form-container').style.display='block'; 
+            window.scrollTo(0, document.getElementById('bolo-form-container').offsetTop - 100);
+            if (isAdmin && currentUser) {
+                document.getElementById("bolo-officer").value = currentUser;
+            }
+        }
+
         function renderBolosHtml() {
+            let area = document.getElementById("dynamic-bolo-area");
+            if (!area) return;
             let html = "";
             appData.bolos.forEach((item, index) => {
                 let editBtns = `
@@ -1040,11 +1198,11 @@
                     <div class="bolo-footer">⚠️ <strong>行動指示：</strong> ${item.action}<br><span style="color:#555; font-size:0.8rem;">發布單位: ${item.officer} | 案發地點: ${item.location}</span></div>
                 </div>`;
             });
-            document.getElementById("dynamic-bolo-area").innerHTML = html || "<p style='color:#888; text-align:center; width:100%;'>目前無通緝目標。</p>";
+            area.innerHTML = html || "<p style='color:#888; text-align:center; width:100%;'>目前無通緝目標。</p>";
         }
 
         function submitBolo() {
-            let officer = document.getElementById("bolo-officer").value.trim();
+            let officer = document.getElementById("bolo-officer").value.trim() || currentUser;
             let location = document.getElementById("bolo-location").value.trim();
             let level = document.getElementById("bolo-level").value;
             let title = document.getElementById("bolo-title").value.trim() || "未命名通緝";
@@ -1055,7 +1213,7 @@
             let action = document.getElementById("bolo-action").value.trim() || "發現後回報調度台";
             let imgUrl = document.getElementById("bolo-img").value.trim();
 
-            if (!officer || !location) { alert("⚠️ 請輸入發布警員名稱與案發地點！"); return; }
+            if (!location) { alert("⚠️ 請輸入發布警員名稱與案發地點！"); return; }
             if (!imgUrl.startsWith("http")) { imgUrl = "https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?auto=format&fit=crop&w=600&q=80"; }
 
             let btn = document.getElementById("bolo-submit-btn");
@@ -1067,15 +1225,16 @@
 
             if (isEditing) {
                 appData.bolos[editingBoloIndex] = boloObj;
+                addAuditLog(`更新了 BOLO 檔案: ${title} (${target})`);
             } else {
                 appData.bolos.unshift(boloObj);
+                addAuditLog(`發布了 BOLO 通緝: ${title} (${target})`);
             }
 
             saveToCloud().then(() => {
                 renderBolosHtml();
-                if (!isEditing) {
-                    sendBoloDiscordWebhook(boloObj);
-                }
+                renderLogs();
+                if (!isEditing) { sendBoloDiscordWebhook(boloObj); }
                 alert(isEditing ? "✏️ BOLO 更新成功並同步！" : "🚨 BOLO 發布成功並已同步網頁與推播！");
                 closeBoloForm();
             }).finally(() => {
@@ -1105,10 +1264,12 @@
 
         function deleteBolo(index) {
             if (!confirm("⚠️ 確定要撤銷/刪除這則通緝令嗎？")) return;
+            addAuditLog(`撤銷/刪除了 BOLO 檔案: ${appData.bolos[index].title}`);
             appData.bolos.splice(index, 1);
             saveToCloud().then(() => {
                 alert("🗑️ 通緝令已從雲端撤銷！");
                 renderBolosHtml();
+                renderLogs();
             });
         }
 
@@ -1116,8 +1277,9 @@
             editingBoloIndex = -1;
             document.getElementById("bolo-form-container").style.display = "none";
             document.getElementById("bolo-submit-btn").innerText = "將通緝令廣播至 Discord 並同步網頁";
-            let fields = ["bolo-officer", "bolo-location", "bolo-title", "bolo-target", "bolo-plate", "bolo-desc", "bolo-law", "bolo-action", "bolo-img"];
+            let fields = ["bolo-location", "bolo-title", "bolo-target", "bolo-plate", "bolo-desc", "bolo-law", "bolo-action", "bolo-img"];
             fields.forEach(id => document.getElementById(id).value = "");
+            document.getElementById("bolo-officer").value = currentUser; // 保留登入者 ID
         }
 
         function sendBoloDiscordWebhook(item) {
@@ -1159,7 +1321,6 @@
             let formatter = new Intl.DateTimeFormat("en-US", options);
             document.getElementById("la-time-display").innerText = "LA TIME: " + formatter.format(new Date());
         }
-        setInterval(updateLATime, 1000);
 
         function openTab(tabId) {
             let contents = document.getElementsByClassName("tab-content");
