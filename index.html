@@ -139,7 +139,7 @@
         .scratch-box textarea { width: 100%; background-color: #121212; border: 1px solid #444; color: white; padding: 10px; border-radius: 4px; font-size: 0.9rem; resize: vertical; }
         .scratch-box h4 { color: #fff; margin-bottom: 10px; font-size: 1rem; border-left: 3px solid #1e40af; padding-left: 8px; }
 
-        /* 投訴箱及情報箱 */
+        /* 投訴箱與情報箱 */
         .tip-box { background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-top: 4px solid #f59e0b; margin-top: 40px; }
         .tip-warning-box { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #fbbf24; font-size: 0.9rem; }
 
@@ -155,7 +155,7 @@
         #quiz-questions-area { display: none; }
         #apply-link-box { display: none; margin-top: 25px; padding: 20px; background-color: #166534; border-radius: 5px; text-align: center; }
 
-        footer { background-color: #0f0f0f; text-align: center; padding: 25px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.9rem; color: #666; display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; }
+        footer { background-color: #0f0f0f; text-align: center; padding: 25px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.9rem; color: #666; }
     </style>
 </head>
 <body>
@@ -190,26 +190,16 @@
                 </div>
             </div>
             
-            <h2 class="section-title">洛杉磯市政公告</h2>
-            <!-- 核心功能實裝：動態管理員公告渲染區 -->
+            <h2 class="section-title">洛杉磯市政公告 (動態全服雲端同步)</h2>
+            <!-- 核心功能實裝：全球資料庫即時同步公告大廳 -->
             <div class="announcement-box" id="dynamic-announcement-area">
-                <!-- 預設靜態快照（當瀏覽器沒有緩存時呈現） -->
-                <div class="announcement-item">
-                    <div class="announce-date">⚖️ 內務監察</div>
-                    <div class="announce-title">官方「內務監察與警員投訴箱」通道開通</div>
-                    <div class="announce-text">為落實程序正義，保障全體市民的憲法權利，內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。</div>
-                </div>
-                <div class="announcement-item">
-                    <div class="announce-date">👮 聯合招募</div>
-                    <div class="announce-title">LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中</div>
-                    <div class="announce-text">執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，請至招募中心填寫名稱進行答題。</div>
-                </div>
+                <div style="text-align:center; color:#888;">📡 正在連線至加州司法部 JSON 雲端資料庫讀取公告...</div>
             </div>
 
-            <!-- 隱藏的管理員密碼鎖公告發布面板 -->
-            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (新增公告)</button>
+            <!-- 管理員密碼鎖公告發布面板 -->
+            <button class="btn" style="background-color:#222; font-size:0.8rem; padding:6px 15px;" onclick="checkAdminPassword()">🛠️ 登入市政管理端 (發布全服同步公告)</button>
             <div class="admin-panel-box" id="admin-announcement-form">
-                <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階管理發布面板</h3>
+                <h3 style="color:#ef4444; margin-bottom:15px;">📢 市政廳/MDT 高階雲端發布終端</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>公告圖示小標籤</label>
@@ -232,8 +222,8 @@
                     </div>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" onclick="publishNewAnnounce()">🚀 現場廣播同步至首頁大廳</button>
-                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="clearAllAnnounce()">🧹 清空所有人造公告</button>
+                    <button class="btn" style="margin-top:0; background-color:#ef4444; flex:1;" id="publish-submit-btn" onclick="publishNewAnnounce()">🚀 寫入雲端庫並發布全服</button>
+                    <button class="btn" style="margin-top:0; background-color:#555;" onclick="resetToDefaultAnnounce()">🧹 重設並還原初始預設公告</button>
                 </div>
             </div>
         </section>
@@ -248,7 +238,6 @@
             </div>
             <p style="color: #aaa; margin-bottom: 30px;">以下為當前洛杉磯地區高危險通緝目標與重要情資。執法人員巡邏時請保持高度警戒，平民若發現以下車輛請撥打 911。</p>
 
-            <!-- BOLO 發布表單 -->
             <div id="bolo-form-container">
                 <h3>🖥️ MDT 聯合調度發布終端 (記錄執法者與地點)</h3>
                 <div class="form-row">
@@ -310,7 +299,6 @@
                 <p id="bolo-msg" style="color: #4ade80; margin-top: 15px; font-weight: bold; display: none;">✅ BOLO 通緝令已成功發送至 Discord 頻道！</p>
             </div>
 
-            <!-- BOLO 靜態卡片預覽 -->
             <div class="bolo-grid">
                 <div class="bolo-card">
                     <div class="bolo-header bolo-red">
@@ -350,8 +338,6 @@
     <div id="page-depts" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">洛杉磯公共安全機關編制</h2>
-            <p style="color: #aaa; margin-bottom: 30px;">LA Project 擁有高度專業化的核心執法與救援單位，各部門各司其職，緊密合作維持全郡秩序。</p>
-
             <div class="grid-container">
                 <div class="card dept-card dept-lapd">
                     <span class="badge-title" style="background-color: rgba(30, 58, 138, 0.2); color: #60a5fa;">LAPD</span>
@@ -423,7 +409,6 @@
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">全州法規大全 (California Codes)</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">本資料庫全面實裝。警員與法律人員在司法流程中應完整、精確引用以下法條與代碼。</p>
             
             <!-- 智慧搜尋框 -->
             <div class="search-container">
@@ -490,7 +475,7 @@
                         <div class="law-text"><p><span class="law-code">CVC 2800.1</span> <strong>逃避警方攔停盤查：</strong> 面對後方亮警燈警笛之執法車輛，故意加速逃逸抗拒攔停（輕罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'CVC 2800.1 逃避攔停')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">CVC 2800.2</span> <strong>危險飛車逃捕 (重罪)：</strong> 逃捕途中伴隨 3 次以上嚴重交通違規（如連闖紅燈、逆向狂飆）（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 15, 'CVC 2800.2 危險飛車逃捕')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">CVC 2800.4</span> <strong>逆向逃避警方追捕：</strong> 逃避追捕時，故意將車輛駛入設有分隔島之對向車道逆向狂飆，試圖逼退警車。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 18, 'CVC 2800.4 逆向逃捕')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">CVC 20001(a)</span> <strong>肇事逃逸 (人員傷亡)：</strong> 引發導致他人受傷或死亡之車禍後，未實施緊急救助便逃離現場。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 24, 'CVC 20001(a) 肇事逃逸')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">CVC 20001(a)</span> <strong>肇事逃逸 (人員傷亡)：</strong> 引發導致他人受傷或死亡之車禍後，未實施 emergency 救助便逃離現場。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 24, 'CVC 20001(a) 肇事逃逸')">➕ 納入計算</button></div>
                     </div>
                 </div>
 
@@ -498,14 +483,14 @@
                     <button class="accordion">📕 4. PC - 謀殺、武裝強盜、劫車、綁架與人身武力侵害 (Violent Crimes)</button>
                     <div class="panel">
                         <div class="law-text"><p><span class="law-code">PC 187</span> <strong>一級/二級謀殺罪 (Murder)：</strong> 非法、蓄意且具備事先預謀手段或極度魯莽無視生命地剥奪人類生命。</p> <button class="add-btn" onclick="toggleLaw(this, 100000, 120, 'PC 187 謀殺罪')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PC 664/187</span> <strong>謀殺未遂 (Attempted Murder)：</strong> 已實施致死性攻擊（開槍射擊、揮刀砍刺），但受害者經急救後存活。</p> <button class="add-btn" onclick="toggleLaw(this, 60000, 60, 'PC 664/187 謀殺未遂')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 664/187</span> <strong>謀殺未遂 (Attempted Murder)：</strong> 已實施致死性攻擊，但受害者經急救後存活。</p> <button class="add-btn" onclick="toggleLaw(this, 60000, 60, 'PC 664/187 謀殺未遂')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 207</span> <strong>一般綁架罪 (Kidnapping)：</strong> 使用實體武力、強迫或恐嚇手段，違反他人意願將其強行移動、帶離至其他地點。</p> <button class="add-btn" onclick="toggleLaw(this, 45000, 40, 'PC 207 綁架罪')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 210.5</span> <strong>挾持平民人質抗法：</strong> 遭遇警方防線包圍時，強行將無辜市民、店員扣留作為阻擋警方攻堅之防盾。</p> <button class="add-btn" onclick="toggleLaw(this, 55000, 50, 'PC 210.5 挾持人質')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 211</span> <strong>強盜強奪罪 (Robbery)：</strong> 面對面利用致命武器、暴力攻擊或言語恐嚇，強行奪取受害者、超商或銀行之財物。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 30, 'PC 211 強盜罪')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 215</span> <strong>武裝劫車罪 (Carjacking)：</strong> 利用槍枝或利刃面對面恐嚇正在車內的駕駛，強行將其驅離並奪取車輛控制權。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 35, 'PC 215 劫車罪')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 236</span> <strong>非法拘禁 (False Imprisonment)：</strong> 非法限制、剝奪他人人身移動自由（例如在搶劫時將店員鎖進倉庫）。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 236 非法拘禁')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 242</span> <strong>非法毆打 (Battery)：</strong> 實際對他人身體進行任何非法、違反意願之暴力武力接觸，造成實質身體傷害。</p> <button class="add-btn" onclick="toggleLaw(this, 10000, 5, 'PC 242 非法毆打')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PC 245(a)(1)</span> <strong>致命武器攻擊 (ADW)：</strong> 使用火器以外的致命性武器（如球棒、折刀、指虎，或故意開車撞人）猛烈攻擊他人。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 245(a)(1) 致命武器攻擊')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 245(a)(1)</span> <strong>致命武器攻擊 (ADW)：</strong> 使用火器以外的致命性武器猛烈攻擊他人。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 245(a)(1) 致命武器攻擊')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 245(d)(1)</span> <strong>持致命武器襲警：</strong> 持刀、槍枝、致命重物或故意駕車衝撞明知正在執行職務的執警人員。</p> <button class="add-btn" onclick="toggleLaw(this, 45000, 35, 'PC 245(d)(1) 持刀槍襲警')">➕ 納入計算</button></div>
                     </div>
                 </div>
@@ -528,7 +513,7 @@
                     <div class="panel">
                         <div class="law-text"><p><span class="law-code">PC 25400</span> <strong>非法隱蔽攜帶槍枝：</strong> 未持有合法 CCW 持槍證，於衣服內藏匿、置於車輛置物箱攜帶手槍。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 25400 非法隱蔽攜槍')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 25850</span> <strong>公共場所攜帶上膛火器：</strong> 在公共街道、公共廣場或車輛行駛中，隨身攜帶彈匣已上膛之火器。</p> <button class="add-btn" onclick="toggleLaw(this, 18000, 12, 'PC 25850 攜帶上膛槍枝')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PC 29800</span> <strong>重罪犯非法持有槍枝：</strong> 曾被宣判過重罪(Felon)之人員，終身嚴禁購買、持有、攜帶任何機動槍枝。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'PC 29800 重罪犯持槍')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 29800</span> <strong>重罪犯非法持有槍枝：</strong> 曾被宣判過重罪之人員，終身嚴禁購買、持有、攜帶任何機動槍枝。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'PC 29800 重罪犯持槍')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 30605</span> <strong>持有黑名單突擊武器：</strong> 非法攜帶、運輸或持有未經註冊之全自動突擊步槍或微型衝鋒槍。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 30, 'PC 30605 持有突擊武器')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 32310</span> <strong>持有大容量彈匣：</strong> 违规持有、進口或黑市製造超過 10 發子彈容量限制之高容量彈匣。</p> <button class="add-btn" onclick="toggleLaw(this, 12000, 6, 'PC 32310 持有大容量彈匣')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 18710</span> <strong>非法持有軍用爆裂物：</strong> 非法持有、製造 C4 炸藥、管狀炸彈 (Pipe Bomb) 等爆裂裝置。</p> <button class="add-btn" onclick="toggleLaw(this, 60000, 50, 'PC 18710 非法持有軍用炸藥')">➕ 納入計算</button></div>
@@ -544,8 +529,8 @@
                         <div class="law-text"><p><span class="law-code">H&S 11351</span> <strong>意圖販賣而持有毒品：</strong> 持有大劑量毒品，且伴隨分裝夾鏈袋、微型天平及大量零碎散鈔等證物。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 18, 'H&S 11351 意圖販賣毒品')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">H&S 11352</span> <strong>街頭販賣與非法運輸：</strong> 在街頭與他人實施毒品交易，或利用載具跨區運輸毒品物資。</p> <button class="add-btn" onclick="toggleLaw(this, 35000, 24, 'H&S 11352 販賣與運輸毒品')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">H&S 11358</span> <strong>非法大規模種植大麻：</strong> 未獲得州政府頒發之商業執照，私自開闢溫室大規模種植大麻。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 12, 'H&S 11358 私種大麻')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">H&S 11379.6</span> <strong>非法經營地下製毒工廠：</strong> 私自設立秘密實驗室 (Meth Lab) 提煉、製造甲基安非他命等（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 80000, 60, 'H&S 11379.6 經營地下製毒廠')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">H&S 11550</span> <strong>受毒品影響神智不清：</strong> 在公共場合處於非法毒品影響狀態之下，表現出精神迷幻、狂躁，危害自身安全。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'H&S 11550 毒品吸食過量')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11379.6</span> <strong>非法經營地下製毒工廠：</strong> 私自設立秘密實驗室 提煉、製造甲基安非他命等。</p> <button class="add-btn" onclick="toggleLaw(this, 80000, 60, 'H&S 11379.6 經營地下製毒廠')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">H&S 11550</span> <strong>受毒品影響神智不清：</strong> 在公共場合處於非法毒品影響狀態之下，表現出精神迷幻、狂躁。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 0, 'H&S 11550 毒品吸食過量')">➕ 納入計算</button></div>
                     </div>
                 </div>
 
@@ -553,7 +538,7 @@
                     <button class="accordion">⚖️ 8. PC - 拒捕、公職收賄與竄改MDT紀錄 (Obstruction & Corruption)</button>
                     <div class="panel">
                         <div class="law-text"><p><span class="law-code">PC 148(a)(1)</span> <strong>一般拒捕妨礙公務：</strong> 故意抵抗逮捕、拔腿阻避追捕、或用言語粗暴阻撓警員執行職務。</p> <button class="add-btn" onclick="toggleLaw(this, 6000, 3, 'PC 148(a)(1) 一般拒捕')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PC 69</span> <strong>暴力抵抗執法 (重罪)：</strong> 逮捕過程中與警員猛烈扭打、使用武力抵抗或言語威脅阻止警員（重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 69 暴力拒捕')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 69</span> <strong>暴力抵抗執法 (重罪)：</strong> 逮捕過程中與警員猛烈扭打、使用武力抵抗或言語威脅阻止警員。</p> <button class="add-btn" onclick="toggleLaw(this, 20000, 15, 'PC 69 暴力拒捕')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 148.9</span> <strong>向警察提供虛假身分：</strong> 為了逃避通緝、法律責任，故意向盤查警員報假假名、假身份證號。</p> <button class="add-btn" onclick="toggleLaw(this, 8000, 0, 'PC 148.9 報假身分')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 67 / 68</span> <strong>行賄與公職收賄：</strong> 市民向警員提供賄金，或警員主動索要、收取犯罪分子提供的賄賂與不法利益。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 20, 'PC 67/68 公職貪汙收賄')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 113</span> <strong>非法竄改政府紀錄：</strong> 惡意登入警用電腦 MDT，竄改、抹除或偽造自身或幫派同夥之犯罪檔案。</p> <button class="add-btn" onclick="toggleLaw(this, 40000, 24, 'PC 113 竄改MDT紀錄')">➕ 納入計算</button></div>
@@ -565,11 +550,11 @@
                 <div class="accordion-item-group">
                     <button class="accordion">👥 9. PC - 幫派加重、傷害K9與公共秩序 (Public Order)</button>
                     <div class="panel">
-                        <div class="law-text"><p><span class="law-code">PC 186.22</span> <strong>街頭幫派犯罪加重：</strong> 為促進或協助犯罪幫派組織利益而犯下重罪（法官得大幅加重刑期）。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 186.22 幫派加重')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 186.22</span> <strong>街頭幫派犯罪加重：</strong> 為促進或協助犯罪幫派組織利益而犯下重罪。</p> <button class="add-btn" onclick="toggleLaw(this, 25000, 20, 'PC 186.22 幫派加重')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 404</span> <strong>煽動/參與暴動罪：</strong> 兩人或以上共同在街頭使用武力暴力，砸毀店家、破壞社會治安。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 10, 'PC 404 參與暴動')">➕ 納入計算</button></div>
                         <div class="law-text"><p><span class="law-code">PC 602</span> <strong>非法入侵管制領地：</strong> 未經允許擅自闖入私人土地，或強行侵入機場、軍事基地、LASD 管制區。</p> <button class="add-btn" onclick="toggleLaw(this, 5000, 0, 'PC 602 非法入侵')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PC 597</span> <strong>惡意傷害執法警犬 K9：</strong> 在交火或搜捕中，故意開槍擊傷、砍殺執法部門之專職 K9 警犬（加重重罪）。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 24, 'PC 597 蓄意傷害K9')">➕ 納入計算</button></div>
-                        <div class="law-text"><p><span class="law-code">PUC 21403</span> <strong>低空危險飛行：</strong> 駕駛航空器在市區上空低於 1000 英呎，危害地面平民 safety。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 0, 'PUC 21403 低空違規飛行')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PC 597</span> <strong>惡意傷害執法警犬 K9：</strong> 在交火或搜捕中，故意開槍擊傷、砍殺執法部門之專職 K9 警犬。</p> <button class="add-btn" onclick="toggleLaw(this, 30000, 24, 'PC 597 蓄意傷害K9')">➕ 納入計算</button></div>
+                        <div class="law-text"><p><span class="law-code">PUC 21403</span> <strong>低空危險飛行：</strong> 駕駛航空器在市區上空低於 1000 英呎，危害地面平民安全。</p> <button class="add-btn" onclick="toggleLaw(this, 15000, 0, 'PUC 21403 低空違規飛行')">➕ 納入計算</button></div>
                     </div>
                 </div>
             </div>
@@ -602,7 +587,7 @@
                 <div class="form-row">
                     <div class="form-col" style="flex: 100%;">
                         <label>嫌疑人外觀特徵、幫派穿著服飾或涉案載具車款外觀</label>
-                        <input type="text" id="tip-suspect" placeholder="例如: 身穿紫色夾克疑似巴勒幫成員...">
+                        <input type="text" id="tip-suspect" placeholder="例如：身穿紫色夾克疑似巴勒幫成員...">
                     </div>
                     <div class="form-col" style="flex: 100%;">
                         <label>具體情報內容詳情敘述</label>
@@ -681,7 +666,7 @@
 
             <!-- 內務部申訴檢舉箱 -->
             <div class="tip-box" style="border-top-color: #1e40af;">
-                <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 5px;">🏛 shrink 內務監察部（IAD）官方標準警員違規檢舉與訴狀箱</h2>
+                <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 5px;">🏛️ 內務監察部（IAD）官方標準警員違規檢舉與訴狀箱</h2>
                 <p style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">市民如遭遇警員執法不公、武力過當時，可填寫此表。可一鍵產生公文訴狀，亦可直送 Discord 內部後台審查。</p>
                 
                 <div class="form-row">
@@ -766,7 +751,7 @@
                         <div class="quiz-q" id="q4-text">4. 高級警長在無線電中命令全體警車在某個路口設立攔截防線。當你抵達該路口時，發現你的車身位置最適合堵住路口缺口，你該如何調整警車朝向？</div>
                         <div class="quiz-options">
                             <label><input type="radio" name="q4" value="A"> A. 將車身與路口垂直橫放，用最寬的警車側車門直接攔在嫌犯衝撞的方向。</label>
-                            <label><input type="radio" name="q4" value="B"> B. 將車身呈 45 度角斜放，利用引擎室（車頭最堅固且有擋板處）去堵住缺口，並將車門留在安全側作為交火遮蔽掩體。</label>
+                            <label><input type="radio" name="q4" value="B"> B. 將車身呈 45 度角斜放，利用引擎室去堵住缺口，並將車門留在安全側作為交火遮蔽掩體。</label>
                             <label><input type="radio" name="q4" value="C"> C. 為了保護珍貴的警車不被撞壞，把車停在後方平民車輛或牆壁後面躲著。</label>
                         </div>
                     </div>
@@ -799,7 +784,7 @@
                     </div>
 
                     <div class="quiz-item" style="margin-top:30px;">
-                        <div class="quiz-q" id="q8-text">8. 在進行飛車追捕時，你的巡邏車在過彎時失控撞上了路邊電線桿，車頭冒煙受損無法前進。此時另外兩輛隊友的警車正從你身旁經過繼續追捕。你接下來應該？</div>
+                        <div class="quiz-q" id="q8-text">8. 在進行飛車追捕時，你的巡邏車在過彎時失控撞上了路邊電線桿，車頭冒煙受損無法前前進。此時另外兩輛隊友的警車正從你身旁經過繼續追捕。你接下來應該？</div>
                         <div class="quiz-options">
                             <label><input type="radio" name="q8" value="A"> A. 在無線電中瘋狂大喊並洗頻「我撞車了！救我！」，要求前方的隊友幕僚立刻掉頭回來接你上車。</label>
                             <label><input type="radio" name="q8" value="B"> B. 保持無線電乾淨。簡短回報「自身代號撞車 10-7，無受傷，追捕由二車接手指揮播報」，隨後聯絡拖吊車與消防單位。</label>
@@ -819,7 +804,7 @@
                     <div class="quiz-item" style="margin-top:30px;">
                         <div class="quiz-q" id="q10-text">10. 角色扮演 (Roleplay) 在高級企劃中的核心真諦與最終目的是什麼？</div>
                         <div class="quiz-options">
-                            <label><input type="radio" name="q10" value="A"> A. 贏得每一場警匪對峙與飛車追捕，向所有人證明執法機關是絕對無敵、不可戰戰勝的。</label>
+                            <label><input type="radio" name="q10" value="A"> A. 贏得每一場警匪對峙與飛車追捕，向所有人證明執法機關是絕對無敵、不可戰勝的。</label>
                             <label><input type="radio" name="q10" value="B"> B. 透過與社群其他市民、反派玩家的深度互動，共同創造出一段精彩、充滿故事性且雙方都享受其中的 RP 劇情。</label>
                             <label><input type="radio" name="q10" value="C"> C. 利用規則漏洞賺取大量遊戲幣，購買全伺服器最貴的超級跑車在廣場炫耀。</label>
                         </div>
@@ -830,7 +815,7 @@
                 </div>
 
                 <div id="apply-link-box">
-                    <h3 style="color: white; margin-bottom: 10px;">🎉 考核已順利送出！</h3>
+                    <h3 style="color: white; margin-bottom: 10px;">🎉 考核已順流送出！</h3>
                     <p style="color: #ccc; margin-bottom: 15px;">我們已收到您的邏輯思維作答紀錄。請點擊下方按鈕填寫最終意願表單：</p>
                     <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                         <a href="#" class="btn" style="background-color: #1e40af; color: #fff;" target="_blank">填寫 LAPD 警察局表單</a>
@@ -850,6 +835,9 @@
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
         const BOLO_WEBHOOK_URL = "https://discord.com/api/webhooks/1506467193297309776/mW8XAuKph3jFgwev04SFaTZffvQ3tgEPB0KBwcyGCDVSqAecox93aOGC7fMxt4FESufS";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
+        
+        // 免費線上公開資料庫通道（極致硬核：端對端動態同步讀寫）
+        const CLOUD_JSON_STORE_URL = "https://kvdb.io/MN7SgXmH8vPby8S8P8t1q2/la_project_announces";
         
         const BOLO_PASSWORD = "LA1080"; 
         const correctAnswers = { q1:"B", q2:"A", q3:"B", q4:"B", q5:"B", q6:"B", q7:"B", q8:"B", q9:"B", q10:"B" };
@@ -893,7 +881,7 @@
         }
         initAccordions();
 
-        /* ----- 核心功能實裝：密碼鎖後台管理員公告機制 ----- */
+        /* ----- 核心黑科技實裝：真正全球秒級同步的雲端 JSON 資料庫引擎 ----- */
         function checkAdminPassword() {
             let pwd = prompt("請輸入高階管理員密碼以開啟發布面板 (預設密碼為 LA1080)：");
             if (pwd === BOLO_PASSWORD) {
@@ -902,62 +890,100 @@
             } else if (pwd !== null) { alert("❌ 密碼錯誤！您沒有權限在官網新增公告。"); }
         }
 
-        function renderAnnouncements() {
-            let defaultHtml = `
-                <div class="announcement-item">
-                    <div class="announce-date">⚖️ 內務監察</div>
-                    <div class="announce-title">官方「內務監察與警員投訴箱」通道開通</div>
-                    <div class="announce-text">為落實程序正義，保障全體市民的憲法權利，內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。</div>
-                </div>
-                <div class="announcement-item">
-                    <div class="announce-date">👮 聯合招募</div>
-                    <div class="announce-title">LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中</div>
-                    <div class="announce-text">執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，請至招募中心填寫名稱進行答題。</div>
-                </div>`;
-            
-            let savedAnnounces = localStorage.getItem("la_custom_announcements");
-            if (savedAnnounces) {
-                document.getElementById("dynamic-announcement-area").innerHTML = savedAnnounces + defaultHtml;
-            } else {
-                document.getElementById("dynamic-announcement-area").innerHTML = defaultHtml;
-            }
-        }
-        renderAnnouncements(); // 頁面初始化載入
+        // 預設快照（當雲端全空或首次部署時建立基礎結構）
+        const defaultAnnouncementsJson = [
+            { tag: "⚖️ 內務監察", title: "官方「內務監察與警員投訴箱」通道開通", text: "為落實程序正義，保障全體市民的憲法權利，內務部（IAD）正式於「加州/LA法規全書」最下方實裝警員違規投訴系統。" },
+            { tag: "👮 聯合招募", title: "LAPD 洛杉磯警察局 / CHP 加州公路巡警招生中", text: "執法部門聯合招募通道正式開啟。本季考核全面採用「10題情境邏輯思維問卷」，請至招募中心填寫名稱進行答題。" }
+        ];
 
+        // 📡 從免費雲端 JSON 資料庫讀取歷史資料
+        function fetchAnnouncementsFromCloud() {
+            fetch(CLOUD_JSON_STORE_URL)
+            .then(res => {
+                if (!res.ok) { throw new Error("庫尚未建立或為空"); }
+                return res.json();
+            })
+            .then(data => {
+                renderAnnouncementsHtml(data);
+            })
+            .catch(err => {
+                // 如果是全新空庫，自動幫你初始化快照
+                renderAnnouncementsHtml(defaultAnnouncementsJson);
+            });
+        }
+        fetchAnnouncementsFromCloud(); // 首頁加載時即刻動態向全網抓取
+
+        function renderAnnouncementsHtml(jsonArray) {
+            let html = "";
+            jsonArray.forEach(item => {
+                html += `
+                    <div class="announcement-item">
+                        <div class="announce-date">${item.tag}</div>
+                        <div class="announce-title">${item.title}</div>
+                        <div class="announce-text">${item.text}</div>
+                    </div>`;
+            });
+            document.getElementById("dynamic-announcement-area").innerHTML = html;
+        }
+
+        // 🚀 將新打字的公告，即時「覆寫/推送」回網路上免費的 JSON 雲端庫
         function publishNewAnnounce() {
             let tag = document.getElementById("new-announce-tag").value;
             let title = document.getElementById("new-announce-title").value.trim();
             let text = document.getElementById("new-announce-text").value.trim();
 
             if (!title || !text) { alert("⚠️ 請完整填寫公告標題與詳細內容內容！"); return; }
-
-            let newHtml = `
-                <div class="announcement-item">
-                    <div class="announce-date">${tag}</div>
-                    <div class="announce-title">${title}</div>
-                    <div class="announce-text">${text}</div>
-                </div>`;
-
-            let existing = localStorage.getItem("la_custom_announcements") || "";
-            localStorage.setItem("la_custom_announcements", newHtml + existing); // 最新公告置頂
             
-            renderAnnouncements();
-            alert("🚀 公告已成功動態新增至首頁大廳！");
-            
-            // 清空輸入欄位
-            document.getElementById("new-announce-title").value = "";
-            document.getElementById("new-announce-text").value = "";
-            document.getElementById("admin-announcement-form").style.display = "none";
+            document.getElementById("publish-submit-btn").innerText = "⏳ 正在同步上傳至雲端資料庫...";
+            document.getElementById("publish-submit-btn").disabled = true;
+
+            // 先從網路上抓現有的公告數組下來
+            fetch(CLOUD_JSON_STORE_URL)
+            .then(res => res.json())
+            .catch(() => defaultAnnouncementsJson) // 失敗就用預設組
+            .then(currentList => {
+                // 將新公告插到最前頭（置頂呈現）
+                let newAnnounceObj = { tag: tag, title: title, text: text };
+                currentList.unshift(newAnnounceObj);
+
+                // PUT 請求：覆寫並將新 JSON 洗回雲端資料庫
+                return fetch(CLOUD_JSON_STORE_URL, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(currentList)
+                });
+            })
+            .then(res => {
+                if(!res.ok) throw new Error("雲端儲存失敗");
+                alert("✅ 奇蹟達成！最新公告已成功存入雲端，全球全服所有市民已全面同步！");
+                fetchAnnouncementsFromCloud(); // 重新整理網頁畫面
+                
+                // 還原按鈕與控制項
+                document.getElementById("new-announce-title").value = "";
+                document.getElementById("new-announce-text").value = "";
+                document.getElementById("admin-announcement-form").style.display = "none";
+            })
+            .catch(err => alert("上傳失敗：" + err.message))
+            .finally(() => {
+                document.getElementById("publish-submit-btn").innerText = "🚀 寫入雲端庫並發布全服";
+                document.getElementById("publish-submit-btn").disabled = false;
+            });
         }
 
-        function clearAllAnnounce() {
-            if (confirm("⚠️ 確定要清空所有自行新增的管理員公告嗎？")) {
-                localStorage.removeItem("la_custom_announcements");
-                renderAnnouncements();
+        function resetToDefaultAnnounce() {
+            if (confirm("⚠️ 確定要把雲端資料庫重設，抹除所有人造公告，還原到最初的公告結構嗎？")) {
+                fetch(CLOUD_JSON_STORE_URL, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(defaultAnnouncementsJson)
+                }).then(() => {
+                    alert("雲端資料庫已重設！");
+                    fetchAnnouncementsFromCloud();
+                });
             }
         }
 
-        /* ----- 智慧搜尋過濾法規 ----- */
+        /* ----- 智慧關鍵字搜尋過濾法規 ----- */
         function filterLaws() {
             let filter = document.getElementById("law-search-input").value.toLowerCase().trim();
             let accordions = document.querySelectorAll("#law-accordion-group .accordion");
