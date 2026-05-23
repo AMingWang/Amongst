@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Los Angeles | 官方公共安全與司法完全體終端</title>
+    <title>Los Angeles | 官方公共安全與司法終端</title>
     <style>
         /* 全域設定與洛杉磯傍晚城市背景 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -13,7 +13,7 @@
             line-height: 1.6; 
         }
 
-        /* 頂部導覽列 (全新排版) */
+        /* 頂部導覽列 */
         header { background-color: rgba(20, 20, 25, 0.95); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #1e40af; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 15px; backdrop-filter: blur(8px); }
         .logo-area { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .logo { font-size: 1.6rem; font-weight: bold; color: #ffffff; letter-spacing: 2px; }
@@ -23,8 +23,6 @@
         nav ul { list-style: none; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         nav a { color: #e0e0e0; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: 0.3s; cursor: pointer; padding: 8px 12px; border-radius: 4px; background-color: #222; border: 1px solid transparent; }
         nav a:hover, nav a.active { background-color: #1e40af; color: white; }
-        
-        /* 登入按鈕專屬樣式 */
         .nav-login-btn { background-color: #f59e0b !important; color: #000 !important; font-weight: bold !important; border: 1px solid #d97706 !important; }
         .nav-login-btn:hover { background-color: #d97706 !important; color: #fff !important; }
 
@@ -36,15 +34,16 @@
         /* 共用區塊 */
         section { padding: 40px 5%; max-width: 1200px; margin: 0 auto; min-height: 75vh; }
         h2.section-title { font-size: 1.8rem; margin-bottom: 25px; color: #fff; border-left: 5px solid #1e40af; padding-left: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .btn { display: inline-block; background-color: #1e40af; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.2s; border: none; cursor: pointer; text-align: center; }
+        .btn { display: inline-block; background-color: #1e40af; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; transition: 0.2s; border: none; cursor: pointer; text-align: center; }
         .btn:hover { filter: brightness(1.2); }
+        .btn:disabled { background-color: #555 !important; cursor: not-allowed; }
 
         /* 英雄區塊 */
         .hero { text-align: center; padding: 80px 20px; background: linear-gradient(rgba(18, 18, 18, 0.5), rgba(18, 18, 18, 0.9)); border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; }
         .hero h1 { font-size: 3.5rem; color: #ffffff; margin-bottom: 15px; letter-spacing: 2px; }
         .hero p { font-size: 1.1rem; color: #cccccc; max-width: 600px; margin: 0 auto; }
 
-        /* 隱藏式發布面板 */
+        /* 發布面板 */
         .form-panel { background-color: #161616; border: 1px dashed #4ade80; padding: 25px; border-radius: 6px; margin-bottom: 30px; display: none; animation: fadeIn 0.3s; }
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-col { flex: 1; min-width: 200px; }
@@ -52,7 +51,7 @@
         .form-col input, .form-col select, .form-col textarea { width: 100%; padding: 10px; background-color: #121212; border: 1px solid #333; color: white; border-radius: 4px; font-size: 0.95rem; }
         .form-col input:focus, .form-col select:focus, .form-col textarea:focus { border-color: #4ade80; outline: none; }
 
-        /* 列表樣式 (公告、新聞、判決) */
+        /* 列表樣式 */
         .list-box { background-color: rgba(20,20,25,0.8); border-left: 5px solid #f59e0b; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; backdrop-filter: blur(5px); }
         .list-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; }
         .list-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
@@ -107,22 +106,12 @@
         .data-table th { background-color: #1e40af; color: white; }
         .data-table tr:nth-child(even) { background-color: #1a1a1a; }
 
-        /* 匿名與內務舉報箱 */
-        .tip-box { background-color: rgba(26,26,26,0.9); border: 1px solid #333; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-top: 4px solid #f59e0b; margin-top: 40px; }
-        .tip-warning-box { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #fbbf24; font-size: 0.9rem; }
-
-        /* 測驗中心 */
-        .quiz-box { background-color: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; }
-        .quiz-q { margin-bottom: 15px; color: #e0e0e0; font-weight: bold; font-size: 1.1rem; }
-        .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
-        .quiz-options label:hover { background-color: #2a2a2a; border-color: #1e40af; }
-
-        /* 法規精算與折疊 (完整保留) */
+        /* 法規精算與折疊 */
         .accordion { background-color: #1e1e1e; color: #fff; cursor: pointer; padding: 15px; width: 100%; text-align: left; border: none; border-bottom: 1px solid #333; font-weight: bold; font-size: 1rem; }
         .active-acc, .accordion:hover { background-color: #2a2a2a; border-left: 4px solid #1e40af; }
         .panel { padding: 0 15px; background-color: #121212; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .law-text { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #333; font-size: 0.9rem; color: #aaa; }
-        .law-code { color: #f59e0b; font-weight: bold; min-width: 130px; display: inline-block; }
+        .law-code { color: #f59e0b; font-weight: bold; min-width: 120px; display: inline-block; }
         .add-btn { background:#222; border:1px solid #444; color:#aaa; padding:4px 8px; border-radius:3px; cursor:pointer; font-size:0.8rem; }
         .add-btn.selected { background:#ef4444; color:#fff; border-color:#ef4444; }
         .calc-panel { background-color: rgba(30,64,175,0.1); border: 2px solid #1e40af; border-radius: 8px; padding: 20px; margin-bottom: 30px; }
@@ -132,15 +121,26 @@
         .search-bar:focus { border-color: #1e40af; outline: none; }
         .highlight-text { background-color: rgba(245, 158, 11, 0.4); color: #fff; padding: 2px 4px; border-radius: 2px; font-weight: bold; }
 
+        /* 匿名舉報箱 */
+        .tip-box { background-color: rgba(26,26,26,0.9); border: 1px solid #333; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-top: 4px solid #f59e0b; margin-top: 40px; }
+        .tip-warning-box { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #fbbf24; font-size: 0.9rem; }
+
+        /* 測驗中心 */
+        .quiz-box { background-color: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; }
+        .quiz-q { margin-bottom: 15px; color: #e0e0e0; font-weight: bold; font-size: 1.1rem; }
+        .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
+        .quiz-options label:hover { background-color: #2a2a2a; border-color: #1e40af; }
+
         /* 模態框 (登入/註冊/編輯) */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .modal-content { background-color: #161616; margin: 5% auto; padding: 30px; border: 2px solid #1e40af; width: 90%; max-width: 450px; border-radius: 8px; box-shadow: 0 0 20px rgba(30,64,175,0.5); position: relative; }
         .close-modal { position: absolute; right: 20px; top: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close-modal:hover { color: white; }
         
-        /* 動態權限顯示控制 */
+        /* 動態權限顯示控制 (核心) */
         .role-admin-only, .role-police-only, .role-judge-only, .role-reporter-only { display: none !important; }
         body.is-admin .role-admin-only { display: inline-block !important; }
+        body.is-admin .role-admin-flex { display: flex !important; }
         body.is-police .role-police-only { display: inline-block !important; }
         body.is-judge .role-judge-only { display: inline-block !important; }
         body.is-reporter .role-reporter-only { display: inline-block !important; }
@@ -148,7 +148,7 @@
 </head>
 <body id="main-body">
 
-    <!-- 頂部導覽列 (全新排序：大廳/新聞/法庭/法規/BOLO/名冊/在線/招募/登入) -->
+    <!-- 頂部導覽列 (完美排序) -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -164,7 +164,7 @@
                 <li><a onclick="openTab('page-roster')" id="nav-roster">執法人員名冊</a></li>
                 <li><a onclick="openTab('page-dispatch')" id="nav-dispatch">在線警員</a></li>
                 <li><a onclick="openTab('page-apply')" id="nav-apply">警校招募</a></li>
-                <li><a id="nav-admin" class="role-admin-only" style="background:#991b1b !important;" onclick="openTab('page-admin')">⚙️ 後台管理</a></li>
+                <li><a id="nav-admin" class="role-admin-only" style="background:#991b1b !important;" onclick="openTab('page-admin')">⚙️ 後台</a></li>
                 <li><a id="nav-login" class="nav-login-btn" onclick="openAuthModal()">👤 登入/註冊</a></li>
             </ul>
         </nav>
@@ -195,13 +195,13 @@
                         <option value="reporter">📰 新聞記者</option>
                     </select>
                 </div>
-                <!-- 動態隱藏區：法官與記者不需填寫部門警號 -->
+                <!-- 動態隱藏區：只有警員需要填寫 -->
                 <div id="reg-police-fields">
                     <div class="form-col" style="margin-bottom:10px;"><label>所屬部門</label><input type="text" id="reg-dept" placeholder="LAPD / LASD / CHP..."></div>
                     <div class="form-col" style="margin-bottom:10px;"><label>警號/徽章號</label><input type="text" id="reg-badge" placeholder="1234"></div>
                     <div class="form-col" style="margin-bottom:20px;"><label>階級</label><input type="text" id="reg-rank" placeholder="Officer II"></div>
                 </div>
-                <button class="btn" style="width:100%; background:#166534; margin-top:0;" onclick="submitRegister()">提交申請 (需管理員核准)</button>
+                <button class="btn" id="btn-reg-submit" style="width:100%; background:#166534; margin-top:0;" onclick="submitRegister()">提交申請 (需管理員核准)</button>
                 <p style="margin-top:15px; text-align:center; font-size:0.85rem;"><a href="#" style="color:#aaa;" onclick="toggleAuthMode()">返回登入</a></p>
             </div>
         </div>
@@ -230,7 +230,7 @@
                     <option value="pending">⏳ 待審核 (Pending)</option>
                 </select>
             </div>
-            <button class="btn" style="width:100%; background:#f59e0b; color:#000; margin-top:0;" onclick="submitEditUser()">💾 儲存修改</button>
+            <button class="btn" id="btn-edit-user" style="width:100%; background:#f59e0b; color:#000; margin-top:0;" onclick="submitEditUser()">💾 儲存修改</button>
         </div>
     </div>
 
@@ -247,8 +247,9 @@
                 <button class="btn role-admin-only" style="margin-top:0; padding: 6px 15px; background-color:#ef4444;" onclick="toggleForm('admin-announcement-form')">➕ 新增公告</button>
             </h2>
             
+            <!-- 發布公告面板 (預設隱藏) -->
             <div class="form-panel role-admin-only" id="admin-announcement-form">
-                <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布/編輯 公告</h3>
+                <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布 / 編輯 公告</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>分類標籤</label>
@@ -266,18 +267,21 @@
                 <button class="btn" onclick="toggleForm('admin-announcement-form')" style="background:#555; margin-top:0;">取消</button>
             </div>
 
+            <!-- 公告渲染區 -->
             <div class="list-box" id="area-announcement">
-                <div style="text-align:center; color:#888;">📡 資料同步中...</div>
+                <div style="text-align:center; color:#888;">📡 資料載入中...</div>
             </div>
             
+            <!-- 部門介紹 -->
             <h2 class="section-title" style="margin-top:40px;">公共安全機關編制</h2>
             <div class="grid-container">
                 <div class="card dept-card dept-lapd"><span class="badge-title" style="background:rgba(30,58,138,0.2); color:#60a5fa;">LAPD</span><h3>洛杉磯警察局</h3><p style="font-style:italic; color:#888;">"To Protect and to Serve"</p><p>負責市區常規巡邏、重大街頭刑案偵辦。旗下編有交通科、K9 及大名鼎鼎的 SWAT 特種部隊。</p></div>
-                <div class="card dept-card dept-lasd"><span class="badge-title" style="background:rgba(22,101,52,0.2); color:#4ade80;">LASD</span><h3>洛杉磯郡警長局</h3><p style="font-style:italic; color:#888;">"Tradition of Service"</p><p>負責城市周邊、偏遠郡縣巡邏，全權主管監獄看守、受刑人移送與法庭安全維護。</p></div>
+                <div class="card dept-card dept-lasd"><span class="badge-title" style="background:rgba(22,101,52,0.2); color:#4ade80;">LASD</span><h3>洛杉磯郡警長局</h3><p style="font-style:italic; color:#888;">"Tradition of Service"</p><p>負責周邊偏遠郡縣巡邏，全權主管監獄看守、受刑人移送與法庭安全維護。</p></div>
                 <div class="card dept-card dept-chp"><span class="badge-title" style="background:rgba(180,83,9,0.2); color:#fbbf24;">CHP</span><h3>加州公路巡警</h3><p style="font-style:italic; color:#888;">"Safety and Service"</p><p>城市交通大動脈守護者。專職高速公路飛車追捕 (10-80)、重大交通攔停及公路車禍還原。</p></div>
                 <div class="card dept-card dept-lafd"><span class="badge-title" style="background:rgba(153,27,27,0.2); color:#f87171;">LAFD</span><h3>洛杉磯消防局</h3><p style="font-style:italic; color:#888;">"Serving with Courage"</p><p>負責重大火災撲滅、車禍破壞剪救援、以及第一線受傷平民與中槍嫌犯的緊急醫療救護 (EMS)。</p></div>
             </div>
 
+            <!-- 紀念碑 -->
             <div class="memorial-section">
                 <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 洛杉磯執法部門榮譽殿堂與紀念碑</h2>
                 <h3 style="color: #f59e0b; margin-top: 25px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🌟 傳奇勳章．榮譽殿堂</h3>
@@ -314,7 +318,7 @@
                 <h3 style="color:#60a5fa; margin-bottom:15px;">📰 發布新聞頭條</h3>
                 <div class="form-row"><div class="form-col"><label>新聞標題</label><input type="text" id="news-title"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>新聞內文</label><textarea id="news-text" rows="4"></textarea></div></div>
-                <button class="btn" style="margin-top:0; background-color:#1e40af;" onclick="submitNews()">發佈上網</button>
+                <button class="btn" id="btn-news-submit" style="margin-top:0; background-color:#1e40af;" onclick="submitNews()">發佈上網</button>
                 <button class="btn" style="margin-top:0; background-color:#555;" onclick="toggleForm('news-form')">取消</button>
             </div>
 
@@ -341,7 +345,7 @@
                     <div class="form-col" style="flex:100%;"><label>判決主文與刑期</label><input type="text" id="court-verdict" placeholder="例如: 判處有期徒刑 60 個月，罰金 $45,000..."></div>
                     <div class="form-col" style="flex:100%;"><label>法庭見解說明</label><textarea id="court-reason" rows="3"></textarea></div>
                 </div>
-                <button class="btn" style="margin-top:0; background-color:#b45309;" onclick="submitCourt()">敲槌判決</button>
+                <button class="btn" id="btn-court-submit" style="margin-top:0; background-color:#b45309;" onclick="submitCourt()">敲槌判決</button>
                 <button class="btn" style="margin-top:0; background-color:#555;" onclick="toggleForm('court-form')">取消</button>
             </div>
 
@@ -349,11 +353,12 @@
         </section>
     </div>
 
-    <!-- ================= 4. 法規/SOP (完整130條與投訴箱) ================= -->
+    <!-- ================= 4. 法規/SOP ================= -->
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">⚖️ 法規全書與標準作業程序 (SOP)</h2>
             
+            <!-- SOP 卡片 -->
             <div class="grid-container" style="margin-bottom: 30px;">
                 <div class="card" style="border-top-color: #1e40af;">
                     <h3>LAPD 交通攔停程序 (10-11)</h3>
@@ -378,6 +383,7 @@
                 </div>
             </div>
 
+            <!-- 法規搜尋與精算 -->
             <input type="text" id="law-search-input" class="search-bar" placeholder="🔍 智慧法規檢索 (輸入如: 187, 酒駕, 槍枝)..." oninput="filterLaws()">
             
             <div class="calc-panel">
@@ -393,8 +399,8 @@
                 </div>
             </div>
 
+            <!-- 130 條法規折疊區 (由 JS 在背景極速生成) -->
             <div id="law-accordion-group">
-                <!-- 由 JavaScript 填入完整的法規 HTML -->
                 <button class="accordion">📘 1. CVC - 車輛牌照與改裝</button><div class="panel" id="law-cat-1"></div>
                 <button class="accordion">📘 2. CVC - 行車號誌與超速</button><div class="panel" id="law-cat-2"></div>
                 <button class="accordion">📘 3. CVC - 競速、酒駕與逃避</button><div class="panel" id="law-cat-3"></div>
@@ -406,13 +412,13 @@
                 <button class="accordion">👥 9. PC - 幫派與公共秩序</button><div class="panel" id="law-cat-9"></div>
             </div>
 
-            <!-- 市民匿名舉報箱 -->
+            <!-- 匿名舉報 -->
             <div class="tip-box" style="margin-top:50px;">
                 <h2 class="section-title" style="border-left-color:#f59e0b; margin-bottom: 10px;">📨 匿名檢舉情報信箱 (Crime Stoppers)</h2>
                 <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情資直接廣播至內網。</div>
                 <div class="form-row"><div class="form-col"><label>犯罪類型</label><select id="tip-type"><option>重大毒品交易</option><option>軍火走私</option><option>武裝強盜</option><option>非法飆車</option><option>幫派犯罪</option></select></div><div class="form-col"><label>案發地點</label><input type="text" id="tip-loc"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>嫌疑特徵/車牌</label><input type="text" id="tip-sus"></div><div class="form-col" style="flex:100%;"><label>情報詳情</label><textarea id="tip-txt" rows="3"></textarea></div></div>
-                <button class="btn" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
+                <button class="btn" id="btn-tip-submit" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
             </div>
 
             <!-- IAD 內務部投訴 -->
@@ -420,7 +426,7 @@
                 <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 10px;">🏛️ 內務監察部 (IAD) 官方投訴箱</h2>
                 <div class="form-row"><div class="form-col"><label>申訴人全名</label><input type="text" id="iad-name"></div><div class="form-col"><label>遭投訴警員代號</label><input type="text" id="iad-target"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>具體侵害事實詳情</label><textarea id="iad-content" rows="4"></textarea></div></div>
-                <button class="btn" onclick="submitIAD()" style="background-color:#991b1b; width:100%;">🔒 提交至督察組後台</button>
+                <button class="btn" id="btn-iad-submit" onclick="submitIAD()" style="background-color:#991b1b; width:100%;">🔒 提交至督察組後台</button>
             </div>
         </section>
     </div>
@@ -455,7 +461,7 @@
                     <div class="form-col"><label>行動指示</label><input type="text" id="bolo-action"></div>
                 </div>
                 <div class="form-row"><div class="form-col"><label>嫌犯照片 URL</label><input type="text" id="bolo-img" placeholder="https://..."></div></div>
-                <button class="btn" style="margin-top:0; background-color: #ef4444;" onclick="submitBolo()">🚨 發布通緝</button>
+                <button class="btn" id="btn-bolo-submit" style="margin-top:0; background-color: #ef4444;" onclick="submitBolo()">🚨 發布通緝</button>
                 <button class="btn" style="margin-top:0; background-color: #555;" onclick="toggleForm('bolo-form-container')">取消</button>
             </div>
 
@@ -481,11 +487,12 @@
     <div id="page-dispatch" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📡 勤務調度系統 (CAD)</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">警力名單每 5 秒靜默同步，無須重新整理。</p>
+            <p style="color: #aaa; margin-bottom: 20px;">警力名單每 5 秒靜默同步，無須手動重新整理。</p>
 
             <div class="role-police-only role-admin-only" style="margin-bottom: 25px;">
-                <button class="btn" style="background-color: #166534; margin-top:0;" onclick="clockIn()">🟢 10-8 開始值勤 (上線)</button>
-                <button class="btn" style="background-color: #991b1b; margin-top:0;" onclick="clockOut()">🔴 10-7 結束值勤 (下線)</button>
+                <button class="btn" id="btn-clock-in" style="background-color: #166534; margin-top:0;" onclick="clockIn()">🟢 10-8 開始值勤 (上線)</button>
+                <button class="btn" id="btn-clock-out" style="background-color: #991b1b; margin-top:0;" onclick="clockOut()">🔴 10-7 結束值勤 (下線)</button>
+                <button class="btn" style="background-color: #333; margin-top:0;" onclick="forceSync()">🔄 手動強制同步</button>
             </div>
 
             <div class="grid-container" style="grid-template-columns: 1fr;">
@@ -537,14 +544,13 @@
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">8. 追車時失控撞桿，隊友警車剛經過，你該？</div>
                     <div class="quiz-options"><label><input type="radio" name="q8" value="A"> A. 無線電狂吼救命要隊友回頭。</label><label><input type="radio" name="q8" value="B"> B. 簡短回報 10-7，交由二車指揮。</label><label><input type="radio" name="q8" value="C"> C. 徒步穿越高速公路追。</label></div></div>
 
-                    <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">9. 槍戰中嫌犯躲掩體盲射，你該如何配合團隊？</div>
-                    <div class="quiz-options"><label><input type="radio" name="q9" value="A"> A. 獨自從大馬路正面衝鋒。</label><label><input type="radio" name="q9" value="B"> B. 保持交叉火力，部分壓制部分包抄。</label><label><input type="radio" name="q9" value="C"> C. 躲在遠處對空鳴槍幫忙打氣。</label></div></div>
+                    <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">9. 槍戰中嫌犯躲掩體盲射，你該如何配合？</div>
+                    <div class="quiz-options"><label><input type="radio" name="q9" value="A"> A. 獨自正面衝鋒。</label><label><input type="radio" name="q9" value="B"> B. 保持交叉火力，部分壓制部分包抄。</label><label><input type="radio" name="q9" value="C"> C. 躲在遠處對空鳴槍幫忙打氣。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">10. RP (角色扮演) 在企劃中的核心真諦是？</div>
                     <div class="quiz-options"><label><input type="radio" name="q10" value="A"> A. 贏得每場追捕證明警局無敵。</label><label><input type="radio" name="q10" value="B"> B. 創造精彩互動劇情，雙方享受過程。</label><label><input type="radio" name="q10" value="C"> C. 找漏洞賺錢買超跑。</label></div></div>
                     
-                    <button class="btn" style="margin-top:25px; background-color:#1e40af;" onclick="submitQuiz()">送出考核答案</button>
-                    <p id="quiz-msg" style="color:#f59e0b; font-weight:bold; display:none; margin-top:15px;">傳送中...</p>
+                    <button class="btn" id="btn-quiz-submit" style="margin-top:25px; background-color:#1e40af;" onclick="submitQuiz()">送出考核答案</button>
                 </div>
 
                 <div id="apply-link-box" style="display:none; margin-top:20px;">
@@ -580,9 +586,8 @@
         </section>
     </div>
 
-    <!-- ================= JavaScript ================= -->
+    <!-- ================= JavaScript 核心邏輯 ================= -->
     <script>
-        // Webhooks & API
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
@@ -590,64 +595,58 @@
         let appData = { announcements: [], bolos: [], roster: [], logs: [], court: [], news: [], users: {} };
         let currentUser = sessionStorage.getItem("currentUser") || "";
         let lastHash = "";
-        let editAnnIdx = -1;
+        let isSyncing = false; // 防卡頓資料鎖
+        let editAnnIdx = -1; // 記錄目前編輯中的公告 Index
 
-        /* 130 條法規產生庫 (已分 9 大類) */
+        /* 130 條法規引擎 */
         const LAW_DB = [
-            // 1. CVC 牌照改裝
             { c:"CVC 4000(a)(1)", n:"未註冊車輛", f:1500, j:0, t:1 }, { c:"CVC 4454(a)", n:"未帶行照", f:800, j:0, t:1 },
             { c:"CVC 4463", n:"偽造車牌", f:12000, j:6, t:1 }, { c:"CVC 5200(a)", n:"未依規定懸掛車牌", f:2000, j:0, t:1 },
             { c:"CVC 12500(a)", n:"無照駕駛", f:5000, j:0, t:1 }, { c:"CVC 14601.1", n:"駕照吊銷期行駛", f:7500, j:3, t:1 },
             { c:"CVC 16028(a)", n:"未出示保險", f:1500, j:0, t:1 }, { c:"CVC 24250", n:"夜間未開燈", f:1000, j:0, t:1 },
             { c:"CVC 26708", n:"非法隔熱紙", f:2500, j:0, t:1 }, { c:"CVC 27150", n:"非法改裝排氣管", f:6000, j:0, t:1 },
             { c:"CVC 24008", n:"底盤過低違規", f:4500, j:0, t:1 },
-            // 2. CVC 行車號誌超速
             { c:"CVC 21453(a)", n:"闖紅燈", f:3000, j:0, t:2 }, { c:"CVC 21461(a)", n:"未遵守標誌", f:2000, j:0, t:2 },
             { c:"CVC 22450(a)", n:"無視停止標誌", f:2500, j:0, t:2 }, { c:"CVC 21806", n:"未禮讓警車", f:5000, j:0, t:2 },
             { c:"CVC 21651(b)", n:"逆向行駛", f:4000, j:0, t:2 }, { c:"CVC 21703", n:"惡意逼車", f:3500, j:0, t:2 },
             { c:"CVC 22348(b)", n:"超速 100 mph", f:12000, j:0, t:2 }, { c:"CVC 22349(a)", n:"超速", f:3500, j:0, t:2 },
             { c:"CVC 22350", n:"基本速度法違規", f:3000, j:0, t:2 },
-            // 3. CVC 競速酒駕逃避
             { c:"CVC 23103", n:"危險駕駛", f:8000, j:3, t:3 }, { c:"CVC 23109(a)", n:"非法競速", f:15000, j:6, t:3 },
             { c:"CVC 23152(a)", n:"酒駕 (DUI)", f:8000, j:10, t:3 }, { c:"CVC 23152(f)", n:"毒駕/藥駕", f:8000, j:10, t:3 },
             { c:"CVC 23153", n:"酒駕致傷", f:18000, j:15, t:3 }, { c:"CVC 2800.1", n:"逃避攔停", f:6000, j:3, t:3 },
             { c:"CVC 2800.2", n:"危險飛車逃捕", f:15000, j:15, t:3 }, { c:"CVC 2800.4", n:"逆向逃捕", f:18000, j:18, t:3 },
             { c:"CVC 20001(a)", n:"肇事逃逸", f:25000, j:24, t:3 },
-            // 4. PC 暴力與人身侵害
             { c:"PC 187", n:"謀殺", f:100000, j:120, t:4 }, { c:"PC 664/187", n:"謀殺未遂", f:60000, j:60, t:4 },
             { c:"PC 207", n:"綁架", f:45000, j:40, t:4 }, { c:"PC 210.5", n:"挾持人質", f:55000, j:50, t:4 },
             { c:"PC 211", n:"強盜", f:35000, j:30, t:4 }, { c:"PC 215", n:"武裝劫車", f:40000, j:35, t:4 },
             { c:"PC 236", n:"非法拘禁", f:15000, j:10, t:4 }, { c:"PC 242", n:"非法毆打", f:10000, j:5, t:4 },
             { c:"PC 245(a)(1)", n:"致命武器攻擊", f:25000, j:20, t:4 }, { c:"PC 245(d)(1)", n:"持械襲警", f:45000, j:35, t:4 },
-            // 5. PC 竊盜與財產
             { c:"PC 459", n:"入室盜竊", f:20000, j:15, t:5 }, { c:"PC 487", n:"重大竊盜", f:15000, j:10, t:5 },
             { c:"PC 487(d)(1)", n:"重大汽車竊盜", f:18000, j:12, t:5 }, { c:"PC 496", n:"收受贓物", f:10000, j:5, t:5 },
             { c:"PC 470", n:"偽造文書/證件", f:12000, j:8, t:5 }, { c:"PC 186.10", n:"重大洗錢", f:30000, j:20, t:5 },
             { c:"PC 451", n:"縱火", f:50000, j:40, t:5 },
-            // 6. PC 武器管制
             { c:"PC 25400", n:"隱蔽攜槍", f:15000, j:10, t:6 }, { c:"PC 25850", n:"攜帶上膛火器", f:18000, j:12, t:6 },
             { c:"PC 29800", n:"重罪犯持槍", f:35000, j:24, t:6 }, { c:"PC 30605", n:"持有突擊武器", f:40000, j:30, t:6 },
             { c:"PC 32310", n:"大容量彈匣", f:12000, j:6, t:6 }, { c:"PC 18710", n:"軍用爆裂物", f:60000, j:50, t:6 },
             { c:"PC 246", n:"飛車射擊", f:45000, j:30, t:6 }, { c:"PC 417", n:"拔槍恐嚇", f:8000, j:3, t:6 },
-            // 7. H&S 毒品
             { c:"H&S 11350", n:"持有毒品", f:10000, j:6, t:7 }, { c:"H&S 11351", n:"意圖販賣毒品", f:25000, j:18, t:7 },
             { c:"H&S 11352", n:"運輸/販賣毒品", f:35000, j:24, t:7 }, { c:"H&S 11358", n:"私種大麻", f:20000, j:12, t:7 },
             { c:"H&S 11379.6", n:"經營製毒廠", f:80000, j:60, t:7 }, { c:"H&S 11550", n:"受毒品影響", f:6000, j:0, t:7 },
-            // 8. PC 妨礙公務
             { c:"PC 148(a)(1)", n:"拒捕/妨礙公務", f:6000, j:3, t:8 }, { c:"PC 69", n:"暴力拒捕", f:20000, j:15, t:8 },
             { c:"PC 148.9", n:"報假身分", f:8000, j:0, t:8 }, { c:"PC 67/68", n:"行賄/收賄", f:30000, j:20, t:8 },
             { c:"PC 113", n:"竄改紀錄", f:40000, j:24, t:8 }, { c:"PC 538d", n:"假冒警察", f:15000, j:10, t:8 },
             { c:"PC 836.6", n:"逃脫羈押", f:20000, j:15, t:8 },
-            // 9. PC 幫派秩序
             { c:"PC 186.22", n:"幫派犯罪加重", f:25000, j:20, t:9 }, { c:"PC 404", n:"參與暴動", f:15000, j:10, t:9 },
             { c:"PC 602", n:"非法入侵", f:5000, j:0, t:9 }, { c:"PC 597", n:"傷害執法 K9", f:30000, j:24, t:9 },
             { c:"PUC 21403", n:"低空危險飛行", f:15000, j:0, t:9 }
         ];
 
         window.onload = () => {
-            initLaws(); applyAuthUI(); fetchData(); updateLATime();
-            // 每 5 秒靜默更新，防卡頓
-            setInterval(() => fetchData(true), 5000);
+            setTimeout(initLaws, 500); // 延遲載入法規防卡頓
+            applyAuthUI(); 
+            fetchCloudData(); 
+            updateLATime();
+            setInterval(() => fetchCloudData(true), 5000); // 5秒靜默同步
         };
 
         function updateLATime() {
@@ -711,9 +710,16 @@
             let badge = role==="police" ? document.getElementById("reg-badge").value.trim() : "";
             let rank = role==="police" ? document.getElementById("reg-rank").value.trim() : "";
 
+            let btn = document.getElementById("btn-reg-submit");
+            btn.disabled = true; btn.innerText = "提交中...";
+
             appData.users[user] = { pwd: pass, name: name, role: role, dept: dept, badge: badge, rank: rank, status: "pending" };
             addAuditLog(`新註冊: ${user} (${role})`);
-            saveToCloud().then(() => { alert("✅ 註冊成功！待核准。"); toggleAuthMode(); });
+            
+            saveToCloud().then(() => { 
+                alert("✅ 註冊成功！待核准。"); 
+                toggleAuthMode(); 
+            }).finally(() => { btn.disabled = false; btn.innerText = "提交申請 (需管理員核准)"; });
         }
 
         function loginSuccess(user) {
@@ -745,26 +751,41 @@
             }
         }
 
-        // --- 核心拉取與防卡頓渲染 ---
+        // --- 核心防卡頓抓取 ---
+        function forceSync() { fetchCloudData(false); }
         function fetchCloudData(silent = false) {
+            if(isSyncing) return;
+            isSyncing = true;
             fetch(CLOUD_API_URL).then(r => r.text()).then(txt => {
-                if (txt === lastHash) return; // Hash Check 防卡頓
+                isSyncing = false;
+                if (txt === lastHash || !txt) return; // Zero-Lag 核心：沒改變就不動 DOM
                 lastHash = txt;
                 let d = JSON.parse(txt);
                 appData.announcements = d.announcements || []; appData.bolos = d.bolos || [];
                 appData.roster = d.roster || []; appData.logs = d.logs || [];
                 appData.court = d.court || []; appData.news = d.news || []; appData.users = d.users || {};
                 renderAll();
-            }).catch(e => {});
+                if(!silent) alert("🔄 資料已同步最新！");
+            }).catch(e => { isSyncing = false; });
         }
-        function saveToCloud() { return fetch(CLOUD_API_URL, { method: "POST", body: JSON.stringify(appData) }); }
+
+        function saveToCloud() {
+            isSyncing = true;
+            let payload = JSON.stringify(appData);
+            lastHash = payload; // 寫入前先更新 Hash 防止覆蓋
+            return fetch(CLOUD_API_URL, { method: "POST", body: payload })
+                .then(r => r.text())
+                .then(() => { isSyncing = false; })
+                .catch(e => { isSyncing = false; });
+        }
+
         function addAuditLog(msg) {
             let d = new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
             appData.logs.unshift(`[${d}] [${currentUser||'SYS'}] ${msg}`);
             if(appData.logs.length > 50) appData.logs.pop();
         }
 
-        // --- 動態渲染 (資料更新或權限改變時觸發) ---
+        // --- 動態渲染 ---
         function renderAll() {
             let isAdmin = (currentUser === "ADMIN");
             let role = isAdmin ? "admin" : (appData.users[currentUser]?.role || "guest");
@@ -824,11 +845,13 @@
             document.getElementById("edit-user-modal").style.display="block";
         }
         function submitEditUser() {
+            let btn = document.getElementById("btn-edit-user"); btn.innerText = "儲存中..."; btn.disabled = true;
             let acc = appData.users[edUid];
             acc.name = document.getElementById("edit-name").value; acc.role = document.getElementById("edit-role").value;
             acc.dept = document.getElementById("edit-dept").value; acc.badge = document.getElementById("edit-badge").value;
             acc.rank = document.getElementById("edit-rank").value; acc.status = document.getElementById("edit-status").value;
-            log(`編輯帳號: ${edUid}`); saveToCloud().then(()=>{ document.getElementById("edit-user-modal").style.display="none"; renderAll(); });
+            log(`編輯帳號: ${edUid}`); 
+            saveToCloud().then(()=>{ document.getElementById("edit-user-modal").style.display="none"; renderAll(); }).finally(() => { btn.innerText = "💾 儲存修改"; btn.disabled = false; });
         }
         function approveUser(u) { appData.users[u].status="approved"; log(`核准: ${u}`); saveToCloud().then(renderAll); }
         function delUser(u) { if(!confirm("刪除帳號?")) return; delete appData.users[u]; log(`刪除帳號: ${u}`); saveToCloud().then(renderAll); }
@@ -837,9 +860,12 @@
         function submitAnnounce() {
             let t=document.getElementById("post-tag").value, h=document.getElementById("post-title").value, c=document.getElementById("post-text").value;
             if(!h||!c) return alert("未填寫完整");
-            if(editAnnIdx > -1) { appData.announcements[editAnnIdx] = {tag:t, title:h, text:c}; log("編輯公告: "+h); editAnnIdx=-1; document.getElementById("btn-ann-submit").innerText="🚀 確認發佈"; } 
+            let btn = document.getElementById("btn-ann-submit"); btn.disabled = true; btn.innerText = "發佈中...";
+            
+            if(editAnnIdx > -1) { appData.announcements[editAnnIdx] = {tag:t, title:h, text:c}; log("編輯公告: "+h); editAnnIdx=-1; } 
             else { appData.announcements.unshift({tag:t, title:h, text:c}); log("發佈公告: "+h); }
-            saveToCloud().then(()=>{ toggleForm('admin-announcement-form'); document.getElementById("post-title").value=""; document.getElementById("post-text").value=""; fetchData(); });
+            
+            saveToCloud().then(()=>{ toggleForm('admin-announcement-form'); document.getElementById("post-title").value=""; document.getElementById("post-text").value=""; fetchData(); }).finally(() => { btn.disabled = false; btn.innerText = "🚀 確認發佈"; });
         }
         function editAnn(i) {
             editAnnIdx = i; let a = appData.announcements[i];
@@ -849,12 +875,36 @@
         }
         function delAnn(i) { if(confirm("刪除公告?")) { log("刪除公告"); appData.announcements.splice(i,1); saveToCloud().then(fetchData); } }
 
-        function submitBolo() { let h=document.getElementById("bolo-title").value; if(!h) return alert("請填標題"); appData.bolos.unshift({title:h, level:document.getElementById("bolo-level").value, target:document.getElementById("bolo-target").value, plate:document.getElementById("bolo-plate").value, law:document.getElementById("bolo-law").value, desc:document.getElementById("bolo-desc").value, action:document.getElementById("bolo-action").value, imgUrl:document.getElementById("bolo-img").value||"https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?w=600", officer:currentUser}); log("發布BOLO"); saveToCloud().then(()=>{ toggleForm('bolo-form-container'); fetchData(); }); }
+        function submitBolo() { 
+            let h=document.getElementById("bolo-title").value; if(!h) return alert("請填標題"); 
+            let btn = document.getElementById("btn-bolo-submit"); btn.disabled = true; btn.innerText = "發布中...";
+            appData.bolos.unshift({title:h, level:document.getElementById("bolo-level").value, target:document.getElementById("bolo-target").value, plate:document.getElementById("bolo-plate").value, law:document.getElementById("bolo-law").value, desc:document.getElementById("bolo-desc").value, action:document.getElementById("bolo-action").value, imgUrl:document.getElementById("bolo-img").value||"https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?w=600", officer:currentUser}); 
+            log("發布BOLO"); saveToCloud().then(()=>{ toggleForm('bolo-form-container'); fetchData(); }).finally(() => { btn.disabled = false; btn.innerText = "🚨 發布通緝"; }); 
+        }
         function delBolo(i) { if(confirm("撤銷通緝?")){ log("撤銷通緝"); appData.bolos.splice(i,1); saveToCloud().then(fetchData); } }
-        function submitCourt() { let d=document.getElementById("court-defendant").value, v=document.getElementById("court-verdict").value, r=document.getElementById("court-reason").value; if(!d||!v) return; appData.court.unshift({def:d, ver:v, reason:r, judge:currentUser, date:new Date().toLocaleDateString()}); log("判決: "+d); saveToCloud().then(()=>{toggleForm('court-form'); fetchData();}); }
-        function submitNews() { let t=document.getElementById("news-title").value, c=document.getElementById("news-text").value; if(!t||!c) return; appData.news.unshift({t:t, c:c, auth:currentUser, date:new Date().toLocaleDateString()}); log("發布新聞: "+t); saveToCloud().then(()=>{toggleForm('news-form'); fetchData();}); }
-        function clockIn() { if(!appData.roster.includes(currentUser)) { appData.roster.push(currentUser); log("10-8"); saveToCloud().then(fetchData); } }
-        function clockOut() { let i=appData.roster.indexOf(currentUser); if(i>-1) { appData.roster.splice(i,1); log("10-7"); saveToCloud().then(fetchData); } }
+
+        function submitCourt() { 
+            let d=document.getElementById("court-defendant").value, v=document.getElementById("court-verdict").value, r=document.getElementById("court-reason").value; if(!d||!v) return; 
+            let btn = document.getElementById("btn-court-submit"); btn.disabled = true; btn.innerText = "發布中...";
+            appData.court.unshift({def:d, ver:v, reason:r, judge:currentUser, date:new Date().toLocaleDateString()}); log("判決: "+d); 
+            saveToCloud().then(()=>{toggleForm('court-form'); fetchData();}).finally(() => { btn.disabled = false; btn.innerText = "敲槌判決"; }); 
+        }
+
+        function submitNews() { 
+            let t=document.getElementById("news-title").value, c=document.getElementById("news-text").value; if(!t||!c) return; 
+            let btn = document.getElementById("btn-news-submit"); btn.disabled = true; btn.innerText = "發布中...";
+            appData.news.unshift({t:t, c:c, auth:currentUser, date:new Date().toLocaleDateString()}); log("發布新聞: "+t); 
+            saveToCloud().then(()=>{toggleForm('news-form'); fetchData();}).finally(() => { btn.disabled = false; btn.innerText = "發佈上網"; }); 
+        }
+
+        function clockIn() { 
+            let btn = document.getElementById("btn-clock-in"); btn.disabled = true;
+            if(!appData.roster.includes(currentUser)) { appData.roster.push(currentUser); log("10-8"); saveToCloud().then(fetchData).finally(()=>{ btn.disabled=false; }); } else { btn.disabled = false; }
+        }
+        function clockOut() { 
+            let btn = document.getElementById("btn-clock-out"); btn.disabled = true;
+            let i=appData.roster.indexOf(currentUser); if(i>-1) { appData.roster.splice(i,1); log("10-7"); saveToCloud().then(fetchData).finally(()=>{ btn.disabled=false; }); } else { btn.disabled = false; }
+        }
 
         // --- 法規與精算器 ---
         function initLaws() {
@@ -890,8 +940,14 @@
         function copyCalcResult() { if(!sl.length) return alert("請勾選法條"); navigator.clipboard.writeText(`【裁決處罰公文】\n引用法條：${sl.join("、")}\n罰款：$${sf} | 刑期：${sj}月 | 保釋金：$${sf*0.1}`).then(()=>alert("複製成功")); }
 
         // --- 匿名舉報 & IAD & 招募測驗 ---
-        function submitTip() { fetch(ANONYMOUS_TIP_WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:"**[新匿名情報]**", embeds:[{title:"檢舉詳情", color:16119819, fields:[{name:"地點",value:document.getElementById("tip-loc").value||"無"},{name:"特徵",value:document.getElementById("tip-sus").value||"無"},{name:"內容",value:document.getElementById("tip-txt").value||"無"}]}]})}).then(()=>alert("送出成功")); }
-        function submitIAD() { fetch(ANONYMOUS_TIP_WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:"**[內務部新投訴]**", embeds:[{title:"IAD 投訴紀錄", color:3447003, fields:[{name:"申訴人",value:document.getElementById("iad-name").value||"無"},{name:"遭投訴警員",value:document.getElementById("iad-target").value||"無"},{name:"事實",value:document.getElementById("iad-content").value||"無"}]}]})}).then(()=>alert("送出成功")); }
+        function submitTip() { 
+            let btn = document.getElementById("btn-tip-submit"); btn.disabled = true; btn.innerText = "傳送中...";
+            fetch(ANONYMOUS_TIP_WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:"**[新匿名情報]**", embeds:[{title:"檢舉詳情", color:16119819, fields:[{name:"地點",value:document.getElementById("tip-loc").value||"無"},{name:"特徵",value:document.getElementById("tip-sus").value||"無"},{name:"內容",value:document.getElementById("tip-txt").value||"無"}]}]})}).then(()=>{ alert("送出成功"); btn.disabled=false; btn.innerText="🔒 加密送出情報"; }); 
+        }
+        function submitIAD() { 
+            let btn = document.getElementById("btn-iad-submit"); btn.disabled = true; btn.innerText = "傳送中...";
+            fetch(ANONYMOUS_TIP_WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:"**[內務部新投訴]**", embeds:[{title:"IAD 投訴紀錄", color:3447003, fields:[{name:"申訴人",value:document.getElementById("iad-name").value||"無"},{name:"遭投訴警員",value:document.getElementById("iad-target").value||"無"},{name:"事實",value:document.getElementById("iad-content").value||"無"}]}]})}).then(()=>{ alert("送出成功"); btn.disabled=false; btn.innerText="🔒 提交至督察組後台"; }); 
+        }
         function readMirandaTTS() { let msg=new SpeechSynthesisUtterance("你有權保持緘默。你所說的一切都將在法庭上作為指控你的不利證據。你有權請律師。"); msg.lang="zh-TW"; window.speechSynthesis.speak(msg); }
         
         function startQuiz() { if(!document.getElementById("quiz-name").value) return alert("請輸入姓名"); document.getElementById("quiz-start-area").style.display="none"; document.getElementById("quiz-questions-area").style.display="block"; }
@@ -901,10 +957,11 @@
                 let s = document.querySelector(`input[name="q${i}"]:checked`); 
                 if(!s) return alert("請作答完所有題目！"); 
                 if(s.value===ans[`q${i}`]) sc+=10; 
-                rep += `**Q${i}**: 選擇 [${s.value}] ${s.value===ans[`q${i}`]?'✅':'❌'}\n`; 
+                rep += `**Q${i}**: [${s.value}] ${s.value===ans[`q${i}`]?'✅':'❌'} | `; 
             }
-            document.getElementById("quiz-msg").style.display="block";
-            // 使用 description 避免 Webhook Field 1024 字元限制導致的崩潰
+            let btn = document.getElementById("btn-quiz-submit"); btn.disabled = true; btn.innerText = "傳送中...";
+            
+            // 使用 description 完美解決 Discord Field 1024 字元超長錯誤
             fetch(RECRUIT_WEBHOOK_URL, {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ embeds: [{ title: "🚨 警校招募考核紀錄", description: `**申請人:** ${document.getElementById("quiz-name").value}\n**總分:** ${sc}/100\n\n**作答明細:**\n${rep}`, color: sc>=80?3066993:15158332 }] })
