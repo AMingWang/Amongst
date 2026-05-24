@@ -127,7 +127,7 @@
         .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
         .quiz-options label:hover { background-color: #2a2a2a; border-color: #1e40af; }
 
-        /* 模態框 (登入/註冊/編輯/IAD裁決) */
+        /* 模態框 */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .modal-content { background-color: #161616; margin: 5% auto; padding: 30px; border: 2px solid #1e40af; width: 90%; max-width: 450px; border-radius: 8px; box-shadow: 0 0 20px rgba(30,64,175,0.5); position: relative; }
         .close-modal { position: absolute; right: 20px; top: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
@@ -144,7 +144,7 @@
 </head>
 <body id="main-body">
 
-    <!-- 頂部導覽列 (完美排序) -->
+    <!-- 頂部導覽列 -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -191,7 +191,7 @@
                         <option value="reporter">📰 新聞記者</option>
                     </select>
                 </div>
-                <!-- 動態隱藏區：只有警員需要填寫部門警號 -->
+                <!-- 動態隱藏區 -->
                 <div id="reg-police-fields">
                     <div class="form-col" style="margin-bottom:10px;">
                         <label>所屬部門</label>
@@ -203,7 +203,22 @@
                         </select>
                     </div>
                     <div class="form-col" style="margin-bottom:10px;"><label>警號/徽章號</label><input type="text" id="reg-badge" placeholder="1234"></div>
-                    <div class="form-col" style="margin-bottom:20px;"><label>階級</label><input type="text" id="reg-rank" placeholder="Officer II"></div>
+                    <div class="form-col" style="margin-bottom:20px;">
+                        <label>階級</label>
+                        <select id="reg-rank">
+                            <option value="Cadet (警校生)">Cadet (警校生)</option>
+                            <option value="Officer I (一階警員)">Officer I (一階警員)</option>
+                            <option value="Officer II (二階警員)">Officer II (二階警員)</option>
+                            <option value="Officer III (三階警員)">Officer III (三階警員)</option>
+                            <option value="Sergeant I (一階警佐)">Sergeant I (一階警佐)</option>
+                            <option value="Sergeant II (二階警佐)">Sergeant II (二階警佐)</option>
+                            <option value="Lieutenant (警督)">Lieutenant (警督)</option>
+                            <option value="Captain (警監)">Captain (警監)</option>
+                            <option value="Commander (指揮官)">Commander (指揮官)</option>
+                            <option value="Deputy Chief (副局長)">Deputy Chief (副局長)</option>
+                            <option value="Chief of Police (局長)">Chief of Police (局長)</option>
+                        </select>
+                    </div>
                 </div>
                 <button class="btn" id="btn-reg-submit" style="width:100%; background:#166534; margin-top:0;" onclick="submitRegister()">提交申請 (需管理員核准)</button>
                 <p style="margin-top:15px; text-align:center; font-size:0.85rem;"><a href="#" style="color:#aaa;" onclick="toggleAuthMode()">返回登入</a></p>
@@ -227,7 +242,23 @@
                 <select id="edit-dept"><option value="LAPD">LAPD</option><option value="LASD">LASD</option><option value="CHP">CHP</option><option value="LAFD">LAFD</option><option value="市政府">市府/其他</option></select>
             </div>
             <div class="form-col" style="margin-bottom:10px;"><label>警號</label><input type="text" id="edit-badge"></div>
-            <div class="form-col" style="margin-bottom:10px;"><label>階級</label><input type="text" id="edit-rank"></div>
+            <div class="form-col" style="margin-bottom:10px;">
+                <label>階級</label>
+                <select id="edit-rank">
+                    <option value="">(無/非警員)</option>
+                    <option value="Cadet (警校生)">Cadet (警校生)</option>
+                    <option value="Officer I (一階警員)">Officer I (一階警員)</option>
+                    <option value="Officer II (二階警員)">Officer II (二階警員)</option>
+                    <option value="Officer III (三階警員)">Officer III (三階警員)</option>
+                    <option value="Sergeant I (一階警佐)">Sergeant I (一階警佐)</option>
+                    <option value="Sergeant II (二階警佐)">Sergeant II (二階警佐)</option>
+                    <option value="Lieutenant (警督)">Lieutenant (警督)</option>
+                    <option value="Captain (警監)">Captain (警監)</option>
+                    <option value="Commander (指揮官)">Commander (指揮官)</option>
+                    <option value="Deputy Chief (副局長)">Deputy Chief (副局長)</option>
+                    <option value="Chief of Police (局長)">Chief of Police (局長)</option>
+                </select>
+            </div>
             <div class="form-col" style="margin-bottom:20px;">
                 <label>帳號狀態</label>
                 <select id="edit-status"><option value="approved">✅ 核准 (Approved)</option><option value="pending">⏳ 待審核 (Pending)</option><option value="suspended">⛔ 停職 (Suspended)</option></select>
@@ -243,10 +274,10 @@
             <h2 style="margin-bottom:20px; color:#ef4444;">⚖️ 內務督察組 裁決面板</h2>
             <input type="hidden" id="iad-case-index">
             <div class="form-col" style="margin-bottom:15px;">
-                <label>處分等級與連動</label>
+                <label>處分等級與連動機制</label>
                 <select id="iad-action-type">
                     <option value="warning">📝 一級：書面申誡 (僅記錄於日誌)</option>
-                    <option value="retrain">📚 二級：強制重新受訓 (要求重考)</option>
+                    <option value="retrain">📚 二級：強制重新受訓 (寫入警告)</option>
                     <option value="suspend">🛑 三級：停職處分 (凍結帳號登入權限)</option>
                     <option value="demote">📉 四級：降級處分 (自動降低一階級)</option>
                     <option value="fire">☠️ 四級：開除 (永久註銷帳號)</option>
@@ -274,18 +305,12 @@
                 <button class="btn role-admin-only" style="margin-top:0; padding: 6px 15px; background-color:#ef4444;" onclick="openAnnForm()">➕ 新增公告</button>
             </h2>
             
-            <!-- 表單預設隱藏 (無 role 標籤干擾) -->
-            <div class="form-panel" id="admin-announcement-form">
+            <div class="form-panel role-admin-only" id="admin-announcement-form">
                 <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布公告</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>分類標籤</label>
-                        <select id="post-tag">
-                            <option value="📢 [全州通告]">📢 [全州通告]</option>
-                            <option value="🚨 [緊急法令]">🚨 [緊急法令]</option>
-                            <option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option>
-                            <option value="⚙️ [系統維護]">⚙️ [系統維護]</option>
-                        </select>
+                        <select id="post-tag"><option value="📢 [全州通告]">📢 [全州通告]</option><option value="🚨 [緊急法令]">🚨 [緊急法令]</option><option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option><option value="⚙️ [系統維護]">⚙️ [系統維護]</option></select>
                     </div>
                     <div class="form-col"><label>公告標題</label><input type="text" id="post-title"></div>
                 </div>
@@ -296,35 +321,12 @@
 
             <div class="list-box" id="area-announcement"><div style="text-align:center; color:#888;">📡 資料同步中...</div></div>
             
-            <!-- 部門介紹 -->
             <h2 class="section-title" style="margin-top:40px;">公共安全機關編制</h2>
             <div class="grid-container">
                 <div class="card dept-card dept-lapd"><span class="badge-title" style="background:rgba(30,58,138,0.2); color:#60a5fa;">LAPD</span><h3>洛杉磯警察局</h3><p style="font-style:italic; color:#888;">"To Protect and to Serve"</p><p>負責市區常規巡邏、重大街頭刑案偵辦。旗下編有交通科、K9 及大名鼎鼎的 SWAT 特種部隊。</p></div>
                 <div class="card dept-card dept-lasd"><span class="badge-title" style="background:rgba(22,101,52,0.2); color:#4ade80;">LASD</span><h3>洛杉磯郡警長局</h3><p style="font-style:italic; color:#888;">"Tradition of Service"</p><p>負責周邊偏遠郡縣巡邏，全權主管監獄看守、受刑人移送與法庭安全維護。</p></div>
                 <div class="card dept-card dept-chp"><span class="badge-title" style="background:rgba(180,83,9,0.2); color:#fbbf24;">CHP</span><h3>加州公路巡警</h3><p style="font-style:italic; color:#888;">"Safety and Service"</p><p>城市交通大動脈守護者。專職高速公路飛車追捕 (10-80)、重大交通攔停及公路車禍還原。</p></div>
                 <div class="card dept-card dept-lafd"><span class="badge-title" style="background:rgba(153,27,27,0.2); color:#f87171;">LAFD</span><h3>洛杉磯消防局</h3><p style="font-style:italic; color:#888;">"Serving with Courage"</p><p>負責重大火災撲滅、車禍破壞剪救援、以及第一線受傷平民與中槍嫌犯的緊急醫療救護 (EMS)。</p></div>
-            </div>
-
-            <div class="memorial-section">
-                <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 執法部門榮譽殿堂與紀念碑</h2>
-                <h3 style="color: #f59e0b; margin-top: 25px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🌟 傳奇勳章．榮譽殿堂</h3>
-                <div class="memorial-grid">
-                    <div class="memorial-card">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80" alt="Legend" class="memorial-avatar avatar-gold">
-                        <div class="memorial-name">William_Gates</div>
-                        <span class="memorial-rank rank-legend">LAPD 終身榮譽局長</span>
-                        <div class="memorial-desc">「建立並奠定了市區現代化巡邏體系與 SWAT 戰術規章。」</div>
-                    </div>
-                </div>
-                <h3 style="color: #ef4444; margin-top: 30px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🖤 永恆警徽．殉職官員紀念碑</h3>
-                <div class="memorial-grid">
-                    <div class="memorial-card">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Fallen" class="memorial-avatar avatar-black">
-                        <div class="memorial-name">James_Donovan</div>
-                        <span class="memorial-rank rank-fallen">LASD 殉職副警長</span>
-                        <div class="memorial-desc">「太平洋標準銀行重大武裝搶劫案中英勇犧牲。Code 4，您可以下班了。」</div>
-                    </div>
-                </div>
             </div>
         </section>
     </div>
@@ -337,7 +339,7 @@
                 <button class="btn role-reporter-only role-admin-only" style="margin-top:0; padding:6px 15px; background-color:#1e40af;" onclick="openNewsForm()">➕ 撰寫新聞</button>
             </h2>
             
-            <div id="news-form" class="form-panel">
+            <div id="news-form" class="form-panel role-reporter-only role-admin-only">
                 <h3 style="color:#60a5fa; margin-bottom:15px;" id="news-form-title">📰 發布新聞頭條</h3>
                 <div class="form-row"><div class="form-col"><label>新聞標題</label><input type="text" id="news-title"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>新聞內文</label><textarea id="news-text" rows="4"></textarea></div></div>
@@ -358,7 +360,7 @@
             </h2>
             <p style="color: #aaa; margin-bottom: 20px;">本區域為法院公開之裁決書，授權法官及管理員可發布與審理。</p>
             
-            <div id="court-form" class="form-panel">
+            <div id="court-form" class="form-panel role-judge-only role-admin-only">
                 <h3 style="color:#f59e0b; margin-bottom:15px;" id="court-form-title">⚖️ 新增法庭判決</h3>
                 <div class="form-row">
                     <div class="form-col"><label>被告 (市民姓名)</label><input type="text" id="court-defendant"></div>
@@ -460,7 +462,7 @@
                 <button class="btn role-police-only role-admin-only" style="margin-top: 0; padding: 6px 15px; background-color:#ef4444;" onclick="openBoloForm()">➕ 發布通緝</button>
             </h2>
 
-            <div id="bolo-form-container" class="form-panel">
+            <div id="bolo-form-container" class="form-panel role-police-only role-admin-only">
                 <h3 style="color:#ef4444; margin-bottom:15px;" id="bolo-form-title">🚨 建立通緝令</h3>
                 <div class="form-row">
                     <div class="form-col"><label>發布人</label><input type="text" id="bolo-officer" readonly style="background:#222; color:#888;"></div>
@@ -481,8 +483,10 @@
                     <div class="form-col"><label>特徵描述</label><input type="text" id="bolo-desc"></div>
                     <div class="form-col"><label>涉犯法條</label><input type="text" id="bolo-law"></div>
                 </div>
-                <div class="form-row"><div class="form-col"><label>行動指示</label><input type="text" id="bolo-action"></div></div>
-                <div class="form-row"><div class="form-col"><label>嫌犯照片 URL</label><input type="text" id="bolo-img" placeholder="https://..."></div></div>
+                <div class="form-row">
+                    <div class="form-col" style="flex:100%;"><label>行動指示</label><input type="text" id="bolo-action"></div>
+                    <div class="form-col" style="flex:100%;"><label>嫌犯照片 URL</label><input type="text" id="bolo-img" placeholder="https://..."></div>
+                </div>
                 <button class="btn" id="btn-bolo-submit" style="margin-top:0; background-color: #ef4444;" onclick="submitBolo()">🚨 發布通緝</button>
                 <button class="btn" style="margin-top:0; background-color: #555;" onclick="closeForm('bolo-form-container')">收起</button>
             </div>
@@ -556,10 +560,10 @@
                     <div class="quiz-options"><label><input type="radio" name="q5" value="A"> A. 用電擊槍擊倒強制逮捕。</label><label><input type="radio" name="q5" value="B"> B. 保持冷靜專業，開完罰單請其離開。</label><label><input type="radio" name="q5" value="C"> C. 用髒話當場痛罵回去。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">6. 噪音報案開門見沙發有三把步槍，單人值勤你該？</div>
-                    <div class="quiz-options"><label><input type="radio" name="q6" value="A"> A. 拔槍衝進去過肩摔制伏。</label><label><input type="radio" name="q6" value="B"> B. 退回安全距離呼叫支援。</label><label><input type="radio" name="q6" value="C"> C. 當作沒看到拿錢走人。</label></div></div>
+                    <div class="quiz-options"><label><input type="radio" name="q6" value="A"> A. 拔槍衝進去過肩摔制伏。</label><label><input type="radio" name="q6" value="B"> B. 不打草驚蛇，退回安全距離呼叫支援。</label><label><input type="radio" name="q6" value="C"> C. 當作沒看到拿錢走人。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">7. 新手不熟按鍵撞到警車，你該？</div>
-                    <div class="quiz-options"><label><input type="radio" name="q7" value="A"> A. 視為襲警當場擊斃。</label><label><input type="radio" name="q7" value="B"> B. RP口頭訓誡並引導教學。</label><label><input type="radio" name="q7" value="C"> C. 假裝沒看到直接開走。</label></div></div>
+                    <div class="quiz-options"><label><input type="radio" name="q7" value="A"> A. 視為襲警當場擊斃。</label><label><input type="radio" name="q7" value="B"> B. 保持包容，RP口頭訓誡並引導教學。</label><label><input type="radio" name="q7" value="C"> C. 假裝沒看到直接開走。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">8. 追車時失控撞桿，隊友警車剛經過，你該？</div>
                     <div class="quiz-options"><label><input type="radio" name="q8" value="A"> A. 無線電狂吼救命要隊友回頭。</label><label><input type="radio" name="q8" value="B"> B. 簡短回報 10-7，交由二車指揮。</label><label><input type="radio" name="q8" value="C"> C. 徒步穿越高速公路追。</label></div></div>
@@ -568,7 +572,7 @@
                     <div class="quiz-options"><label><input type="radio" name="q9" value="A"> A. 獨自從大馬路正面衝鋒。</label><label><input type="radio" name="q9" value="B"> B. 保持交叉火力，部分壓制部分包抄。</label><label><input type="radio" name="q9" value="C"> C. 躲在遠處對空鳴槍幫忙打氣。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">10. RP (角色扮演) 在企劃中的核心真諦是？</div>
-                    <div class="quiz-options"><label><input type="radio" name="q10" value="A"> A. 贏得每場追捕。</label><label><input type="radio" name="q10" value="B"> B. 創造精彩互動劇情。</label><label><input type="radio" name="q10" value="C"> C. 找漏洞賺錢。</label></div></div>
+                    <div class="quiz-options"><label><input type="radio" name="q10" value="A"> A. 贏得每場追捕證明警局無敵。</label><label><input type="radio" name="q10" value="B"> B. 創造精彩互動劇情，雙方享受過程。</label><label><input type="radio" name="q10" value="C"> C. 找漏洞賺錢買超跑。</label></div></div>
                     
                     <button class="btn" id="btn-quiz-submit" style="margin-top:25px; background-color:#1e40af;" onclick="submitQuiz()">送出考核答案</button>
                 </div>
@@ -613,7 +617,6 @@
 
     <!-- ================= JavaScript 核心邏輯 ================= -->
     <script>
-        // Webhooks & API
         const RECRUIT_WEBHOOK_URL = "https://discord.com/api/webhooks/1506196677969838232/vlm4XgNq7Pmnz8SGEd2hZiXt70uB7SmwjETcxTecyl-8ZmoQwN0yb1d0oYWlgdeXuN6m";
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
@@ -623,8 +626,10 @@
         let lastHash = "";
         let isSyncing = false; 
 
-        // 編輯索引紀錄
         let editAnnIdx = -1, editBoloIdx = -1, editCourtIdx = -1, editNewsIdx = -1;
+
+        // IAD 自動降級的階級表
+        const RANK_HIERARCHY = ["Cadet (警校生)", "Officer I (一階警員)", "Officer II (二階警員)", "Officer III (三階警員)", "Sergeant I (一階警佐)", "Sergeant II (二階警佐)", "Lieutenant (警督)", "Captain (警監)", "Commander (指揮官)", "Deputy Chief (副局長)", "Chief of Police (局長)"];
 
         const LAW_DB = [
             { c:"CVC 4000(a)(1)", n:"未註冊車輛", f:1500, j:0, t:1 }, { c:"CVC 4454(a)", n:"未帶行照", f:800, j:0, t:1 },
@@ -686,13 +691,13 @@
         function toggleForm(id) {
             let el = document.getElementById(id);
             if(el.style.display === "block") { el.style.display = "none"; }
-            else { hideAllForms(); el.style.display = "block"; } // 切換時自動收起其他表單
+            else { hideAllForms(); el.style.display = "block"; } 
         }
 
         function openTab(tabId) {
             document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
             document.querySelectorAll("nav a").forEach(el => el.classList.remove("active"));
-            hideAllForms(); // 切換頁籤強制收起所有表單
+            hideAllForms(); 
             document.getElementById(tabId).classList.add("active");
             if(document.getElementById("nav-" + tabId.replace("page-", ""))) document.getElementById("nav-" + tabId.replace("page-", "")).classList.add("active");
             window.scrollTo(0, 0); 
@@ -756,22 +761,21 @@
         function renderAll() {
             let isAdmin = (currentUser === "ADMIN"), role = isAdmin ? "admin" : (appData.users[currentUser]?.role || "guest");
             
-            // 公告
             document.getElementById("area-announcement").innerHTML = appData.announcements.map((a,i)=>`<div class="list-item"><div style="display:flex; justify-content:space-between;"><div><div class="item-tag">${a.tag}</div><div class="item-title">${a.title}</div></div><div>${isAdmin?`<button class="btn" style="background:#f59e0b; padding:2px 8px; font-size:0.7rem;" onclick="editAnn(${i})">✏️</button><button class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.7rem;" onclick="delAnn(${i})">🗑️</button>`:""}</div></div><div class="item-text">${a.text}</div></div>`).join("") || "<p style='color:#888; text-align:center;'>無公告</p>";
-            // BOLO
+            
             document.getElementById("area-bolo").innerHTML = appData.bolos.map((b,i)=>`<div class="bolo-card"><div class="bolo-header ${b.level==='red'?'bolo-red':(b.level==='yellow'?'bolo-yellow':'bolo-blue')}"><span>WANTED</span><div>${(isAdmin||role==="police")?`<span onclick="editBolo(${i})" style="cursor:pointer; background:#f59e0b; color:000; padding:2px 5px; border-radius:3px; font-size:0.8rem;">✏️</span><span onclick="delBolo(${i})" style="cursor:pointer; background:#fff; color:red; padding:2px 5px; border-radius:3px; margin-left:5px; font-size:0.8rem;">🗑️</span>`:""}</div></div><img src="${b.imgUrl}" class="bolo-img"><div class="bolo-body"><div class="bolo-title">${b.title}</div><div class="bolo-detail"><div class="bolo-detail-label">目標：</div>${b.target}</div><div class="bolo-detail"><div class="bolo-detail-label">車牌：</div>${b.plate}</div><div class="bolo-detail"><div class="bolo-detail-label">法條：</div>${b.law}</div></div><div class="bolo-footer">⚠️ ${b.action}<br>發布: ${b.officer}</div></div>`).join("") || "<p style='color:#888; width:100%; text-align:center;'>無通緝</p>";
-            // Roster
+            
             document.getElementById("area-roster").innerHTML = appData.roster.map(u=>`<div style="padding:10px; background:#1a1a1a; border-radius:4px; margin-bottom:5px; border-left:4px solid #4ade80;">👮 ${u} <span style="float:right; color:#4ade80;">上線值勤中</span></div>`).join("") || "<p style='color:#888;'>無警力</p>";
             let rTb = ""; for(let k in appData.users){ let u=appData.users[k]; if(u.status==='approved' && u.role==='police') rTb+=`<tr><td>${u.dept}</td><td>${u.rank}</td><td>${u.name}</td><td>${k} (#${u.badge})</td></tr>`; }
             document.querySelector("#table-roster tbody").innerHTML = rTb || "<tr><td colspan='4' style='text-align:center;'>無資料</td></tr>";
-            // Admin
+            
             if(isAdmin) {
                 let aTb = ""; for(let k in appData.users){ let u=appData.users[k]; aTb+=`<tr><td>${k}</td><td>${u.role}</td><td>${u.name}</td><td>${u.dept||'-'}</td><td style="color:${u.status==='approved'?'#4ade80':'#f59e0b'}">${u.status}</td><td>${u.status==='pending'?`<button onclick="approveUser('${k}')" style="background:#166534; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">核准</button>`:''}<button onclick="editUser('${k}')" style="background:#f59e0b; border:none; padding:3px 8px; border-radius:3px; cursor:pointer; margin:0 5px;">✏️</button><button onclick="delUser('${k}')" style="background:#991b1b; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">🗑️</button></td></tr>`; }
                 document.querySelector("#admin-users-table tbody").innerHTML = aTb;
                 document.getElementById("audit-log-area").innerHTML = appData.logs.map(l=>`<div>${l}</div>`).join("");
                 document.getElementById("area-iad-cases").innerHTML = appData.iad.filter(c=>c.status==="pending").map((c,i)=>`<div style="background:#111; padding:15px; border-left:4px solid #1e40af; margin-bottom:10px;"><div style="color:#60a5fa; font-size:0.8rem;">${c.date}</div><div style="font-weight:bold;">申訴人: ${c.name} ➔ 目標: ${c.target}</div><div style="color:#aaa; font-size:0.9rem; margin:5px 0;">事實: ${c.content}</div><button onclick="openIadAction(${i})" class="btn" style="background:#b45309; padding:5px 10px; font-size:0.8rem;">⚖️ 審理案件</button></div>`).join("") || "<p style='color:#888; text-align:center;'>無待審核案件</p>";
             }
-            // 法庭與新聞
+            
             document.getElementById("area-court").innerHTML = appData.court.map((c,i)=>`<div class="list-item" style="border-left-color:#b45309;"><div style="display:flex; justify-content:space-between;"><div><div class="item-tag" style="background:rgba(180,83,9,0.2); color:#fbbf24;">裁決書 | ${c.date}</div><div class="item-title">被告：${c.def}</div></div><div>${(isAdmin||role==="judge")?`<button class="btn" style="background:#f59e0b; padding:2px 8px; font-size:0.7rem;" onclick="editCourt(${i})">✏️</button><button class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.7rem;" onclick="delCourt(${i})">🗑️</button>`:""}</div></div><div style="color:#fbbf24; margin-bottom:5px; font-weight:bold;">主文：${c.ver}</div><div class="item-text">見解：${c.reason}</div><div style="text-align:right; font-size:0.8rem; color:#888;">法官: ${c.judge}</div></div>`).join("") || "<p style='color:#888; text-align:center;'>無紀錄</p>";
             document.getElementById("area-news").innerHTML = appData.news.map((n,i)=>`<div class="list-item" style="border-left-color:#60a5fa;"><div style="display:flex; justify-content:space-between;"><div><div class="item-tag" style="background:rgba(96,165,250,0.2); color:#60a5fa;">News | ${n.date}</div><div class="item-title">${n.t}</div></div><div>${(isAdmin||role==="reporter")?`<button class="btn" style="background:#f59e0b; padding:2px 8px; font-size:0.7rem;" onclick="editNews(${i})">✏️</button><button class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.7rem;" onclick="delNews(${i})">🗑️</button>`:""}</div></div><div class="item-text">${n.c}</div><div style="text-align:right; font-size:0.8rem; color:#888;">記者: ${n.auth}</div></div>`).join("") || "<p style='color:#888; text-align:center;'>無新聞</p>";
             applyAuthUI();
@@ -788,14 +792,30 @@
             let type = document.getElementById("iad-action-type").value;
             let reason = document.getElementById("iad-action-reason").value;
             if(!reason) return alert("請填寫裁決理由！");
+            
             let c = appData.iad[i]; c.status = "resolved";
             let tUser = Object.keys(appData.users).find(k => appData.users[k].name === c.target || k === c.target); 
             
             let logMsg = "";
             if(type === 'warning') logMsg = `[IAD裁決] 警員 ${c.target} 記申誡一次。理由: ${reason}`;
             else if(type === 'retrain') logMsg = `[IAD裁決] 警員 ${c.target} 強制重新受訓。理由: ${reason}`;
-            else if(type === 'suspend') { if(tUser) appData.users[tUser].status = "pending"; logMsg = `[IAD裁決] 警員 ${c.target} 遭到停職處分。理由: ${reason}`; }
-            else if(type === 'demote') { if(tUser) appData.users[tUser].rank = "降級處分"; logMsg = `[IAD裁決] 警員 ${c.target} 遭到降級處分。理由: ${reason}`; }
+            else if(type === 'suspend') { if(tUser) appData.users[tUser].status = "suspended"; logMsg = `[IAD裁決] 警員 ${c.target} 遭到停職處分。理由: ${reason}`; }
+            else if(type === 'demote') { 
+                if(tUser) {
+                    let currentRank = appData.users[tUser].rank;
+                    let rIdx = RANK_HIERARCHY.indexOf(currentRank);
+                    if(rIdx > 0) {
+                        appData.users[tUser].rank = RANK_HIERARCHY[rIdx - 1]; // 自動降級
+                        logMsg = `[IAD裁決] 警員 ${c.target} 遭到降級處分，降為 ${RANK_HIERARCHY[rIdx - 1]}。理由: ${reason}`;
+                    } else if(rIdx === 0) {
+                        appData.users[tUser].status = "suspended"; // 警校生直接停職
+                        logMsg = `[IAD裁決] 警員 ${c.target} (警校生) 降級處分轉為停職。理由: ${reason}`;
+                    } else {
+                        appData.users[tUser].rank = "Cadet (警校生)"; // 防呆
+                        logMsg = `[IAD裁決] 警員 ${c.target} 遭到降級處分。理由: ${reason}`;
+                    }
+                } 
+            }
             else if(type === 'fire') { if(tUser) delete appData.users[tUser]; logMsg = `[IAD裁決] 警員 ${c.target} 遭到開除註銷。理由: ${reason}`; }
             else if(type === 'dismiss') logMsg = `[IAD裁決] 駁回對 ${c.target} 的指控。理由: ${reason}`;
 
