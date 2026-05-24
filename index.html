@@ -39,7 +39,7 @@
         .hero h1 { font-size: 3.5rem; color: #ffffff; margin-bottom: 15px; letter-spacing: 2px; }
         .hero p { font-size: 1.1rem; color: #cccccc; max-width: 600px; margin: 0 auto; }
 
-        /* 表單面板 */
+        /* 發布面板 (絕對隱藏，由 JS 控制顯示) */
         .form-panel { background-color: #161616; border: 1px dashed #4ade80; padding: 25px; border-radius: 6px; margin-bottom: 30px; display: none; animation: fadeIn 0.3s; }
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-col { flex: 1; min-width: 200px; }
@@ -91,7 +91,7 @@
         .rank-fallen { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
         .memorial-desc { font-size: 0.85rem; color: #999; font-style: italic; }
 
-        /* 表格 (名冊/後台) */
+        /* 表格 */
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(20,20,25,0.9); font-size: 0.9rem; }
         .data-table th, .data-table td { padding: 12px; border: 1px solid #333; text-align: left; }
         .data-table th { background-color: #1e40af; color: white; }
@@ -120,13 +120,13 @@
         .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
         .quiz-options label:hover { background-color: #2a2a2a; border-color: #1e40af; }
 
-        /* 模態框 */
+        /* 模態框 (登入/註冊/編輯) */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .modal-content { background-color: #161616; margin: 5% auto; padding: 30px; border: 2px solid #1e40af; width: 90%; max-width: 450px; border-radius: 8px; box-shadow: 0 0 20px rgba(30,64,175,0.5); position: relative; }
         .close-modal { position: absolute; right: 20px; top: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close-modal:hover { color: white; }
         
-        /* 動態權限顯示控制 */
+        /* 動態權限顯示控制 (核心) */
         .role-admin-only, .role-police-only, .role-judge-only, .role-reporter-only { display: none !important; }
         body.is-admin .role-admin-only { display: inline-block !important; }
         body.is-police .role-police-only { display: inline-block !important; }
@@ -136,7 +136,7 @@
 </head>
 <body id="main-body">
 
-    <!-- 頂部導覽列 (依要求排版) -->
+    <!-- 頂部導覽列 (完美排序) -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -213,7 +213,7 @@
             <div class="form-col" style="margin-bottom:10px;">
                 <label>職位</label>
                 <select id="edit-role">
-                    <option value="警員">警員</option><option value="法官">法官</option><option value="記者">記者</option><option value="管理員">管理員</option>
+                    <option value="police">警員</option><option value="judge">法官</option><option value="reporter">記者</option><option value="admin">管理員</option>
                 </select>
             </div>
             <div class="form-col" style="margin-bottom:10px;">
@@ -227,8 +227,8 @@
             <div class="form-col" style="margin-bottom:20px;">
                 <label>帳號狀態</label>
                 <select id="edit-status">
-                    <option value="核准">✅ 核准 (Approved)</option>
-                    <option value="待審核">⏳ 待審核 (Pending)</option>
+                    <option value="approved">✅ 核准 (Approved)</option>
+                    <option value="pending">⏳ 待審核 (Pending)</option>
                 </select>
             </div>
             <button class="btn" id="btn-edit-user" style="width:100%; background:#f59e0b; color:#000; margin-top:0;" onclick="submitEditUser()">💾 儲存修改</button>
@@ -264,7 +264,7 @@
                 </div>
                 <div class="form-row"><div class="form-col"><label>詳細內容</label><textarea id="post-text" rows="4"></textarea></div></div>
                 <button class="btn" id="btn-ann-submit" onclick="submitAnnounce()" style="background:#166534; margin-top:0;">🚀 確認發佈</button>
-                <button class="btn" onclick="toggleForm('admin-announcement-form')" style="background:#555; margin-top:0;">取消</button>
+                <button class="btn" onclick="closeForm('admin-announcement-form')" style="background:#555; margin-top:0;">收起</button>
             </div>
 
             <div class="list-box" id="area-announcement"><div style="text-align:center; color:#888;">📡 資料同步中...</div></div>
@@ -314,7 +314,7 @@
                 <div class="form-row"><div class="form-col"><label>新聞標題</label><input type="text" id="news-title"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>新聞內文</label><textarea id="news-text" rows="4"></textarea></div></div>
                 <button class="btn" id="btn-news-submit" style="margin-top:0; background-color:#1e40af;" onclick="submitNews()">發佈上網</button>
-                <button class="btn" style="margin-top:0; background-color:#555;" onclick="toggleForm('news-form')">取消</button>
+                <button class="btn" style="margin-top:0; background-color:#555;" onclick="closeForm('news-form')">收起</button>
             </div>
 
             <div class="list-box" id="area-news" style="border-left-color:#60a5fa;"><div style="text-align:center; color:#888;">📡 讀取中...</div></div>
@@ -341,7 +341,7 @@
                     <div class="form-col" style="flex:100%;"><label>法庭見解說明</label><textarea id="court-reason" rows="3"></textarea></div>
                 </div>
                 <button class="btn" id="btn-court-submit" style="margin-top:0; background-color:#b45309;" onclick="submitCourt()">敲槌判決</button>
-                <button class="btn" style="margin-top:0; background-color:#555;" onclick="toggleForm('court-form')">取消</button>
+                <button class="btn" style="margin-top:0; background-color:#555;" onclick="closeForm('court-form')">收起</button>
             </div>
 
             <div class="list-box" id="area-court"><div style="text-align:center; color:#888;">📡 讀取中...</div></div>
@@ -458,7 +458,7 @@
                     <div class="form-col" style="flex:100%;"><label>嫌犯照片 URL</label><input type="text" id="bolo-img" placeholder="https://..."></div>
                 </div>
                 <button class="btn" id="btn-bolo-submit" style="margin-top:0; background-color: #ef4444;" onclick="submitBolo()">🚨 發布通緝</button>
-                <button class="btn" style="margin-top:0; background-color: #555;" onclick="toggleForm('bolo-form-container')">取消</button>
+                <button class="btn" style="margin-top:0; background-color: #555;" onclick="closeForm('bolo-form-container')">收起</button>
             </div>
 
             <div class="bolo-grid" id="area-bolo"><div style="text-align:center; color:#888; width:100%;">📡 讀取中...</div></div>
@@ -671,6 +671,11 @@
             document.getElementById(tabId).classList.add("active");
             if(document.getElementById("nav-" + tabId.replace("page-", ""))) document.getElementById("nav-" + tabId.replace("page-", "")).classList.add("active");
             window.scrollTo(0, 0); 
+        }
+
+        // 強制關閉表單
+        function closeForm(id) {
+            document.getElementById(id).style.display = "none";
         }
 
         function toggleForm(id) {
@@ -887,9 +892,24 @@
         }
         function approveUser(u) { appData.users[u].status="approved"; sysLog(`核准: ${u}`); renderAll(); saveToCloud(); }
         function delUser(u) { if(!confirm("刪除帳號?")) return; delete appData.users[u]; sysLog(`刪除帳號: ${u}`); renderAll(); saveToCloud(); }
-        function resolveIAD(i, action) { appData.iad[i].status = "resolved"; sysLog(`IAD案件 [${action}]: ${appData.iad[i].target}`); renderAll(); saveToCloud(); }
 
-        // --- 發布與編輯表單邏輯 (樂觀渲染) ---
+        // --- IAD 處分邏輯 (處理完自動歸檔) ---
+        function resolveIAD(i, action) { 
+            let targetName = appData.iad[i].target;
+            appData.iad[i].status = "resolved"; 
+            
+            if(action === '處分') {
+                sysLog(`[IAD 裁決] 核實處分：${targetName}`); 
+                alert(`🚨 已對 ${targetName} 執行「核實處分」！\n案件已歸檔至系統日誌，長官可至「帳號管理」針對該員進行降級或停權。`);
+            } else {
+                sysLog(`[IAD 裁決] 駁回指控：${targetName}`); 
+                alert(`✅ 已「駁回」此投訴案件！\n案件已歸檔至系統日誌。`);
+            }
+            renderAll(); 
+            saveToCloud(); 
+        }
+
+        // --- 發布與編輯表單邏輯 (樂觀渲染 + 強制收合) ---
         
         /* 公告 */
         function openAnnForm() { editAnnIdx = -1; document.getElementById("post-title").value=""; document.getElementById("post-text").value=""; document.getElementById("ann-form-title").innerText="📢 發布公告"; document.getElementById("btn-ann-submit").innerText="🚀 確認發佈"; toggleForm('admin-announcement-form'); }
@@ -901,10 +921,9 @@
             if(editAnnIdx > -1) { appData.announcements[editAnnIdx] = {tag:t, title:h, text:c}; sysLog("編輯公告: "+h); editAnnIdx=-1; } 
             else { appData.announcements.unshift({tag:t, title:h, text:c}); sysLog("發佈公告: "+h); }
             
-            document.getElementById("post-title").value=""; document.getElementById("post-text").value="";
-            toggleForm('admin-announcement-form');
+            closeForm('admin-announcement-form');
             renderAll(); 
-            saveToCloud().finally(() => { btn.disabled = false; btn.innerText = "🚀 確認發佈"; });
+            saveToCloud().finally(() => { btn.disabled = false; btn.innerText = "🚀 確認發佈"; document.getElementById("post-title").value=""; document.getElementById("post-text").value=""; });
         }
         function editAnn(i) { editAnnIdx = i; let a = appData.announcements[i]; document.getElementById("post-tag").value=a.tag; document.getElementById("post-title").value=a.title; document.getElementById("post-text").value=a.text; document.getElementById("ann-form-title").innerText="✏️ 編輯公告"; document.getElementById("admin-announcement-form").style.display="block"; document.getElementById("btn-ann-submit").innerText="💾 儲存修改"; window.scrollTo(0, document.getElementById("admin-announcement-form").offsetTop - 100); }
         function delAnn(i) { if(confirm("刪除公告?")) { sysLog("刪除公告"); appData.announcements.splice(i,1); renderAll(); saveToCloud(); } }
@@ -919,7 +938,7 @@
             if(editBoloIdx > -1) { appData.bolos[editBoloIdx] = obj; sysLog("編輯BOLO"); editBoloIdx = -1; } 
             else { appData.bolos.unshift(obj); sysLog("發布BOLO"); }
             
-            toggleForm('bolo-form-container'); renderAll(); 
+            closeForm('bolo-form-container'); renderAll(); 
             saveToCloud().finally(() => { btn.disabled = false; btn.innerText = "🚨 發布通緝"; });
         }
         function editBolo(i) { editBoloIdx = i; let b = appData.bolos[i]; document.getElementById("bolo-title").value=b.title; document.getElementById("bolo-level").value=b.level; document.getElementById("bolo-target").value=b.target; document.getElementById("bolo-plate").value=b.plate; document.getElementById("bolo-law").value=b.law; document.getElementById("bolo-desc").value=b.desc; document.getElementById("bolo-action").value=b.action; document.getElementById("bolo-img").value=b.imgUrl; document.getElementById("bolo-form-title").innerText="✏️ 編輯通緝令"; document.getElementById("bolo-form-container").style.display="block"; document.getElementById("btn-bolo-submit").innerText="💾 儲存修改"; window.scrollTo(0, document.getElementById("bolo-form-container").offsetTop - 100); }
@@ -935,7 +954,7 @@
             if(editCourtIdx > -1) { appData.court[editCourtIdx] = obj; sysLog("編輯判決"); editCourtIdx = -1; } 
             else { appData.court.unshift(obj); sysLog("發布判決"); }
             
-            toggleForm('court-form'); renderAll(); 
+            closeForm('court-form'); renderAll(); 
             saveToCloud().finally(() => { btn.disabled = false; btn.innerText = "敲槌判決"; });
         }
         function editCourt(i) { editCourtIdx = i; let c = appData.court[i]; document.getElementById("court-defendant").value=c.def; document.getElementById("court-verdict").value=c.ver; document.getElementById("court-reason").value=c.reason; document.getElementById("court-form-title").innerText="✏️ 編輯法庭判決"; document.getElementById("court-form").style.display="block"; document.getElementById("btn-court-submit").innerText="💾 儲存修改"; window.scrollTo(0, document.getElementById("court-form").offsetTop - 100); }
@@ -951,7 +970,7 @@
             if(editNewsIdx > -1) { appData.news[editNewsIdx] = obj; sysLog("編輯新聞"); editNewsIdx = -1; } 
             else { appData.news.unshift(obj); sysLog("發布新聞"); }
             
-            toggleForm('news-form'); renderAll(); 
+            closeForm('news-form'); renderAll(); 
             saveToCloud().finally(() => { btn.disabled = false; btn.innerText = "發佈上網"; });
         }
         function editNews(i) { editNewsIdx = i; let n = appData.news[i]; document.getElementById("news-title").value=n.t; document.getElementById("news-text").value=n.c; document.getElementById("news-form-title").innerText="✏️ 編輯新聞"; document.getElementById("news-form").style.display="block"; document.getElementById("btn-news-submit").innerText="💾 儲存修改"; window.scrollTo(0, document.getElementById("news-form").offsetTop - 100); }
@@ -959,17 +978,19 @@
 
         /* 勤務 (樂觀渲染) */
         function clockIn() { 
+            let btn = document.getElementById("btn-clock-in"); btn.disabled = true;
             if(!appData.roster.includes(currentUser)) { 
                 appData.roster.push(currentUser); sysLog("10-8 打卡上線"); 
-                renderAll(); saveToCloud(); 
-            } 
+                renderAll(); saveToCloud().finally(()=>{ btn.disabled=false; }); 
+            } else { btn.disabled = false; }
         }
         function clockOut() { 
+            let btn = document.getElementById("btn-clock-out"); btn.disabled = true;
             let i=appData.roster.indexOf(currentUser); 
             if(i>-1) { 
                 appData.roster.splice(i,1); sysLog("10-7 打卡下線"); 
-                renderAll(); saveToCloud(); 
-            } 
+                renderAll(); saveToCloud().finally(()=>{ btn.disabled=false; }); 
+            } else { btn.disabled = false; }
         }
 
         // --- 法規與精算器 ---
@@ -1016,7 +1037,7 @@
             let btn = document.getElementById("btn-iad-submit"); btn.disabled = true; btn.innerText = "傳送中...";
             appData.iad.unshift({name: n||"匿名市民", target: t, content: c, status: "pending", date: new Date().toLocaleString()});
             
-            renderAll(); // 樂觀渲染到後台
+            renderAll(); 
             saveToCloud().then(()=>{ 
                 alert("已傳送至督察組後台"); 
                 btn.disabled=false; btn.innerText="🔒 提交至督察組後台"; 
