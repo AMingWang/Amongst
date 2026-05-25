@@ -131,17 +131,36 @@
         .close-modal { position: absolute; right: 20px; top: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close-modal:hover { color: white; }
         
-        /* 動態權限顯示控制 (修正，移除 !important 避免卡死 UI) */
+        /* -----------------------------------------------------------------
+           動態權限顯示控制 (終極修正：管理員繼承所有發布/操作權限)
+           ----------------------------------------------------------------- */
         .role-admin-only, .role-police-only, .role-judge-only, .role-reporter-only { display: none; }
-        body.is-admin .role-admin-only { display: inline-block; }
-        body.is-admin div.role-admin-only { display: block; }
+        
+        /* Admin 可以看到所有職業專屬的按鈕與面板 */
+        body.is-admin .role-admin-only,
+        body.is-admin .role-police-only,
+        body.is-admin .role-judge-only,
+        body.is-admin .role-reporter-only { display: inline-block; }
+        
+        body.is-admin div.role-admin-only,
+        body.is-admin div.role-police-only,
+        body.is-admin div.role-judge-only,
+        body.is-admin div.role-reporter-only { display: block; }
+        
+        /* 各職業專屬權限 */
         body.is-police .role-police-only { display: inline-block; }
+        body.is-police div.role-police-only { display: block; }
+        
         body.is-judge .role-judge-only { display: inline-block; }
+        body.is-judge div.role-judge-only { display: block; }
+        
         body.is-reporter .role-reporter-only { display: inline-block; }
+        body.is-reporter div.role-reporter-only { display: block; }
     </style>
 </head>
 <body id="main-body">
 
+    <!-- 頂部導覽列 -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -163,6 +182,7 @@
         </nav>
     </header>
 
+    <!-- 登入/註冊 Modal -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -187,6 +207,7 @@
                         <option value="reporter">📰 新聞記者</option>
                     </select>
                 </div>
+                <!-- 動態隱藏區 -->
                 <div id="reg-police-fields">
                     <div class="form-col" style="margin-bottom:10px;">
                         <label>所屬部門</label>
@@ -221,6 +242,7 @@
         </div>
     </div>
 
+    <!-- 管理員編輯成員 Modal -->
     <div id="edit-user-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -261,6 +283,7 @@
         </div>
     </div>
 
+    <!-- IAD 處分裁決 Modal -->
     <div id="iad-action-modal" class="modal">
         <div class="modal-content" style="border-color:#ef4444;">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -285,6 +308,7 @@
         </div>
     </div>
 
+    <!-- ================= 1. 首頁大廳 ================= -->
     <div id="page-home" class="tab-content active">
         <section style="padding-top: 20px;">
             <div class="hero">
@@ -297,6 +321,7 @@
                 <button class="btn role-admin-only" onclick="UI.openForm('admin-announcement-form')">➕ 新增公告</button>
             </h2>
             
+            <!-- 表單面版 -->
             <div class="form-panel" id="admin-announcement-form">
                 <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布公告</h3>
                 <div class="form-row">
@@ -345,6 +370,7 @@
         </section>
     </div>
 
+    <!-- ================= 2. 洛城新聞 ================= -->
     <div id="page-news" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -364,6 +390,7 @@
         </section>
     </div>
 
+    <!-- ================= 3. 司法判決 ================= -->
     <div id="page-court" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -390,6 +417,7 @@
         </section>
     </div>
 
+    <!-- ================= 4. 法規/SOP ================= -->
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">⚖️ 法規全書與標準作業程序 (SOP)</h2>
@@ -445,6 +473,7 @@
                 <button class="accordion">👥 9. PC - 幫派與公共秩序</button><div class="panel" id="law-cat-9"></div>
             </div>
 
+            <!-- 匿名舉報 -->
             <div class="tip-box" style="margin-top:50px;">
                 <h2 class="section-title" style="border-left-color:#f59e0b; margin-bottom: 10px;">📨 市民匿名檢舉情報信箱</h2>
                 <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情資直接廣播至內網。</div>
@@ -453,6 +482,7 @@
                 <button class="btn" id="btn-tip-submit" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
             </div>
 
+            <!-- IAD 內務部投訴 -->
             <div class="tip-box" style="border-top-color: #1e40af; margin-top:30px;">
                 <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 10px;">🏛️ 內務監察部 (IAD) 官方市民投訴箱</h2>
                 <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">市民可在此檢舉執法人員之不當執法或受賄。案件將直接傳送至後台進行審核。</p>
@@ -463,6 +493,7 @@
         </section>
     </div>
 
+    <!-- ================= 5. BOLO ================= -->
     <div id="page-bolo" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -503,6 +534,7 @@
         </section>
     </div>
 
+    <!-- ================= 6. 執法人員名冊 ================= -->
     <div id="page-roster" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📋 官方執法人員名冊</h2>
@@ -515,6 +547,7 @@
         </section>
     </div>
 
+    <!-- ================= 7. 在線警員 ================= -->
     <div id="page-dispatch" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📡 勤務調度系統 (CAD)</h2>
@@ -534,6 +567,7 @@
         </section>
     </div>
 
+    <!-- ================= 8. 警校招募 ================= -->
     <div id="page-apply" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">警校邏輯測驗中心</h2>
@@ -565,7 +599,7 @@
                     <div class="quiz-options"><label><input type="radio" name="q5" value="A"> A. 用電擊槍擊倒強制逮捕。</label><label><input type="radio" name="q5" value="B"> B. 保持冷靜專業，開完罰單請其離開。</label><label><input type="radio" name="q5" value="C"> C. 用髒話當場痛罵回去。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">6. 噪音報案開門見沙發有三把步槍，單人值勤你該？</div>
-                    <div class="quiz-options"><label><input type="radio" name="q6" value="A"> A. 拔槍衝進去過肩摔制伏。</label><label><input type="radio" name="q6" value="B"> B. 不打草驚蛇，退回安全距離呼叫支援。</label><label><input type="radio" name="q6" value="C"> C. 當作沒看到拿錢走人。</label></div></div>
+                    <div class="quiz-options"><label><input type="radio" name="q6" value="A"> A. 拔槍衝進去過肩摔制伏。</label><label><input type="radio" name="q6" value="B"> B. 退回安全距離呼叫支援。</label><label><input type="radio" name="q6" value="C"> C. 當作沒看到拿錢走人。</label></div></div>
 
                     <div class="quiz-item" style="margin-top:20px;"><div class="quiz-q">7. 新手不熟按鍵撞到警車，你該？</div>
                     <div class="quiz-options"><label><input type="radio" name="q7" value="A"> A. 視為襲警當場擊斃。</label><label><input type="radio" name="q7" value="B"> B. RP口頭訓誡並引導教學。</label><label><input type="radio" name="q7" value="C"> C. 假裝沒看到直接開走。</label></div></div>
@@ -590,6 +624,7 @@
         </section>
     </div>
 
+    <!-- ================= 9. 管理後台 (ADMIN ONLY) ================= -->
     <div id="page-admin" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title" style="color:#ef4444; border-left-color:#ef4444;">⚙️ 系統管理後台 (IAD)</h2>
@@ -619,6 +654,7 @@
         </section>
     </div>
 
+    <!-- ================= JavaScript 核心邏輯 ================= -->
     <script>
         // --- 終極核心：強制控制所有 UI 收納的控制器 ---
         const UI = {
