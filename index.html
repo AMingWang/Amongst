@@ -39,7 +39,7 @@
         .hero h1 { font-size: 3.5rem; color: #ffffff; margin-bottom: 15px; letter-spacing: 2px; }
         .hero p { font-size: 1.1rem; color: #cccccc; max-width: 600px; margin: 0 auto; }
 
-        /* 發布面板 (預設強制隱藏) */
+        /* 發布面板 (預設隱藏，由 JS 控制顯示) */
         .form-panel { background-color: #161616; border: 1px dashed #4ade80; padding: 25px; border-radius: 6px; margin-bottom: 30px; display: none; animation: fadeIn 0.3s; }
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-col { flex: 1; min-width: 200px; }
@@ -120,6 +120,8 @@
         /* 匿名與內務舉報箱 */
         .tip-box { background-color: rgba(26,26,26,0.9); border: 1px solid #333; border-radius: 8px; padding: 30px; border-top: 4px solid #f59e0b; margin-top: 40px; }
         .tip-warning-box { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #fbbf24; font-size: 0.9rem; }
+
+        /* 測驗中心 */
         .quiz-box { background-color: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; }
         .quiz-q { margin-bottom: 15px; color: #e0e0e0; font-weight: bold; font-size: 1.1rem; }
         .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
@@ -160,7 +162,6 @@
 </head>
 <body id="main-body">
 
-    <!-- 頂部導覽列 -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -182,7 +183,6 @@
         </nav>
     </header>
 
-    <!-- 登入/註冊 Modal -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -207,7 +207,6 @@
                         <option value="reporter">📰 新聞記者</option>
                     </select>
                 </div>
-                <!-- 動態隱藏區 -->
                 <div id="reg-police-fields">
                     <div class="form-col" style="margin-bottom:10px;">
                         <label>所屬部門</label>
@@ -242,7 +241,6 @@
         </div>
     </div>
 
-    <!-- 管理員編輯成員 Modal -->
     <div id="edit-user-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -251,11 +249,15 @@
             <div class="form-col" style="margin-bottom:10px;"><label>角色姓名</label><input type="text" id="edit-name"></div>
             <div class="form-col" style="margin-bottom:10px;">
                 <label>職位</label>
-                <select id="edit-role"><option value="police">警員</option><option value="judge">法官</option><option value="reporter">記者</option><option value="admin">管理員</option></select>
+                <select id="edit-role">
+                    <option value="police">警員</option><option value="judge">法官</option><option value="reporter">記者</option><option value="admin">管理員</option>
+                </select>
             </div>
             <div class="form-col" style="margin-bottom:10px;">
                 <label>部門</label>
-                <select id="edit-dept"><option value="LAPD">LAPD</option><option value="LASD">LASD</option><option value="CHP">CHP</option><option value="LAFD">LAFD</option><option value="市政府">市府/其他</option></select>
+                <select id="edit-dept">
+                    <option value="LAPD">LAPD</option><option value="LASD">LASD</option><option value="CHP">CHP</option><option value="LAFD">LAFD</option><option value="市政府">市府/其他</option>
+                </select>
             </div>
             <div class="form-col" style="margin-bottom:10px;"><label>警號</label><input type="text" id="edit-badge"></div>
             <div class="form-col" style="margin-bottom:10px;">
@@ -277,13 +279,16 @@
             </div>
             <div class="form-col" style="margin-bottom:20px;">
                 <label>帳號狀態</label>
-                <select id="edit-status"><option value="approved">✅ 核准 (Approved)</option><option value="pending">⏳ 待審核 (Pending)</option><option value="suspended">⛔ 停職 (Suspended)</option></select>
+                <select id="edit-status">
+                    <option value="approved">✅ 核准 (Approved)</option>
+                    <option value="pending">⏳ 待審核 (Pending)</option>
+                    <option value="suspended">⛔ 停職 (Suspended)</option>
+                </select>
             </div>
             <button class="btn" id="btn-edit-user" style="width:100%; background:#f59e0b; color:#000; margin-top:0;" onclick="submitEditUser()">💾 儲存修改</button>
         </div>
     </div>
 
-    <!-- IAD 處分裁決 Modal -->
     <div id="iad-action-modal" class="modal">
         <div class="modal-content" style="border-color:#ef4444;">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -308,7 +313,6 @@
         </div>
     </div>
 
-    <!-- ================= 1. 首頁大廳 ================= -->
     <div id="page-home" class="tab-content active">
         <section style="padding-top: 20px;">
             <div class="hero">
@@ -321,13 +325,17 @@
                 <button class="btn role-admin-only" onclick="UI.openForm('admin-announcement-form')">➕ 新增公告</button>
             </h2>
             
-            <!-- 表單面版 -->
             <div class="form-panel" id="admin-announcement-form">
                 <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布公告</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>分類標籤</label>
-                        <select id="post-tag"><option value="📢 [全州通告]">📢 [全州通告]</option><option value="🚨 [緊急法令]">🚨 [緊急法令]</option><option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option><option value="⚙️ [系統維護]">⚙️ [系統維護]</option></select>
+                        <select id="post-tag">
+                            <option value="📢 [全州通告]">📢 [全州通告]</option>
+                            <option value="🚨 [緊急法令]">🚨 [緊急法令]</option>
+                            <option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option>
+                            <option value="⚙️ [系統維護]">⚙️ [系統維護]</option>
+                        </select>
                     </div>
                     <div class="form-col"><label>公告標題</label><input type="text" id="post-title"></div>
                 </div>
@@ -370,7 +378,6 @@
         </section>
     </div>
 
-    <!-- ================= 2. 洛城新聞 ================= -->
     <div id="page-news" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -390,7 +397,6 @@
         </section>
     </div>
 
-    <!-- ================= 3. 司法判決 ================= -->
     <div id="page-court" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -417,7 +423,6 @@
         </section>
     </div>
 
-    <!-- ================= 4. 法規/SOP ================= -->
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">⚖️ 法規全書與標準作業程序 (SOP)</h2>
@@ -473,7 +478,6 @@
                 <button class="accordion">👥 9. PC - 幫派與公共秩序</button><div class="panel" id="law-cat-9"></div>
             </div>
 
-            <!-- 匿名舉報 -->
             <div class="tip-box" style="margin-top:50px;">
                 <h2 class="section-title" style="border-left-color:#f59e0b; margin-bottom: 10px;">📨 市民匿名檢舉情報信箱</h2>
                 <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情資直接廣播至內網。</div>
@@ -482,7 +486,6 @@
                 <button class="btn" id="btn-tip-submit" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
             </div>
 
-            <!-- IAD 內務部投訴 -->
             <div class="tip-box" style="border-top-color: #1e40af; margin-top:30px;">
                 <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 10px;">🏛️ 內務監察部 (IAD) 官方市民投訴箱</h2>
                 <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">市民可在此檢舉執法人員之不當執法或受賄。案件將直接傳送至後台進行審核。</p>
@@ -493,7 +496,6 @@
         </section>
     </div>
 
-    <!-- ================= 5. BOLO ================= -->
     <div id="page-bolo" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -534,7 +536,6 @@
         </section>
     </div>
 
-    <!-- ================= 6. 執法人員名冊 ================= -->
     <div id="page-roster" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📋 官方執法人員名冊</h2>
@@ -547,7 +548,6 @@
         </section>
     </div>
 
-    <!-- ================= 7. 在線警員 ================= -->
     <div id="page-dispatch" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📡 勤務調度系統 (CAD)</h2>
@@ -567,7 +567,6 @@
         </section>
     </div>
 
-    <!-- ================= 8. 警校招募 ================= -->
     <div id="page-apply" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">警校邏輯測驗中心</h2>
@@ -624,7 +623,6 @@
         </section>
     </div>
 
-    <!-- ================= 9. 管理後台 (ADMIN ONLY) ================= -->
     <div id="page-admin" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title" style="color:#ef4444; border-left-color:#ef4444;">⚙️ 系統管理後台 (IAD)</h2>
@@ -654,7 +652,6 @@
         </section>
     </div>
 
-    <!-- ================= JavaScript 核心邏輯 ================= -->
     <script>
         // --- 終極核心：強制控制所有 UI 收納的控制器 ---
         const UI = {
@@ -878,8 +875,7 @@
         function approveUser(u) { appData.users[u].status="approved"; sysLog(`核准: ${u}`); renderAll(); saveToCloud(); }
         function delUser(u) { if(!confirm("刪除帳號?")) return; delete appData.users[u]; sysLog(`刪除帳號: ${u}`); renderAll(); saveToCloud(); }
 
-        // --- 發布表單 (全部綁定 UI.closeAllForms) ---
-        function openAnnForm() { editAnnIdx=-1; document.getElementById("post-title").value=""; document.getElementById("post-text").value=""; document.getElementById("ann-form-title").innerText="📢 發布公告"; document.getElementById("btn-ann-submit").innerText="🚀 確認發佈"; UI.openForm('admin-announcement-form'); }
+        // --- 發布表單 (全綁定 UI.closeAllForms) ---
         function submitAnnounce() {
             let t=document.getElementById("post-tag").value, h=document.getElementById("post-title").value, c=document.getElementById("post-text").value; if(!h||!c) return alert("未填完整");
             let btn=document.getElementById("btn-ann-submit"); btn.disabled=true; btn.innerText="處理中...";
@@ -890,7 +886,6 @@
         function editAnn(i) { editAnnIdx=i; let a=appData.announcements[i]; document.getElementById("post-tag").value=a.tag; document.getElementById("post-title").value=a.title; document.getElementById("post-text").value=a.text; document.getElementById("ann-form-title").innerText="✏️ 編輯公告"; document.getElementById("btn-ann-submit").innerText="💾 儲存修改"; UI.openForm('admin-announcement-form'); window.scrollTo(0, 0); }
         function delAnn(i) { if(confirm("刪除?")){ sysLog("刪除公告"); appData.announcements.splice(i,1); renderAll(); saveToCloud(); } }
 
-        function openBoloForm() { editBoloIdx=-1; document.getElementById("bolo-title").value=""; document.getElementById("bolo-form-title").innerText="🚨 建立通緝令"; document.getElementById("btn-bolo-submit").innerText="🚨 發布通緝"; UI.openForm('bolo-form-container'); }
         function submitBolo() { 
             let h=document.getElementById("bolo-title").value; if(!h) return alert("請填標題"); let btn=document.getElementById("btn-bolo-submit"); btn.disabled=true; btn.innerText="處理中...";
             let obj={title:h, level:document.getElementById("bolo-level").value, target:document.getElementById("bolo-target").value, plate:document.getElementById("bolo-plate").value, law:document.getElementById("bolo-law").value, desc:document.getElementById("bolo-desc").value, action:document.getElementById("bolo-action").value, imgUrl:document.getElementById("bolo-img").value||"https://images.unsplash.com/photo-1555864326-5bc22fa6f8cb?w=600", officer:currentUser};
@@ -900,7 +895,6 @@
         function editBolo(i) { editBoloIdx=i; let b=appData.bolos[i]; document.getElementById("bolo-title").value=b.title; document.getElementById("bolo-level").value=b.level; document.getElementById("bolo-target").value=b.target; document.getElementById("bolo-plate").value=b.plate; document.getElementById("bolo-law").value=b.law; document.getElementById("bolo-desc").value=b.desc; document.getElementById("bolo-action").value=b.action; document.getElementById("bolo-img").value=b.imgUrl; document.getElementById("bolo-form-title").innerText="✏️ 編輯通緝令"; document.getElementById("btn-bolo-submit").innerText="💾 儲存修改"; UI.openForm('bolo-form-container'); window.scrollTo(0, 0); }
         function delBolo(i) { if(confirm("撤銷?")){ sysLog("撤銷通緝"); appData.bolos.splice(i,1); renderAll(); saveToCloud(); } }
 
-        function openCourtForm() { editCourtIdx=-1; document.getElementById("court-defendant").value=""; document.getElementById("court-form-title").innerText="⚖️ 新增法庭判決"; document.getElementById("btn-court-submit").innerText="敲槌判決"; UI.openForm('court-form'); }
         function submitCourt() { 
             let d=document.getElementById("court-defendant").value, v=document.getElementById("court-verdict").value, r=document.getElementById("court-reason").value; if(!d||!v) return alert("必填"); let btn=document.getElementById("btn-court-submit"); btn.disabled=true; btn.innerText="處理中...";
             let obj={def:d, ver:v, reason:r, judge:currentUser, date:new Date().toLocaleDateString()};
@@ -910,7 +904,6 @@
         function editCourt(i) { editCourtIdx=i; let c=appData.court[i]; document.getElementById("court-defendant").value=c.def; document.getElementById("court-verdict").value=c.ver; document.getElementById("court-reason").value=c.reason; document.getElementById("court-form-title").innerText="✏️ 編輯判決"; document.getElementById("btn-court-submit").innerText="💾 儲存修改"; UI.openForm('court-form'); window.scrollTo(0, 0); }
         function delCourt(i) { if(confirm("刪除?")){ sysLog("刪除判決"); appData.court.splice(i,1); renderAll(); saveToCloud(); } }
 
-        function openNewsForm() { editNewsIdx=-1; document.getElementById("news-title").value=""; document.getElementById("news-form-title").innerText="📰 發布新聞"; document.getElementById("btn-news-submit").innerText="發佈上網"; UI.openForm('news-form'); }
         function submitNews() { 
             let t=document.getElementById("news-title").value, c=document.getElementById("news-text").value; if(!t||!c) return alert("必填"); let btn=document.getElementById("btn-news-submit"); btn.disabled=true; btn.innerText="處理中...";
             let obj={t:t, c:c, auth:currentUser, date:new Date().toLocaleDateString()};
