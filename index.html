@@ -34,11 +34,6 @@
         .btn:hover:not(:disabled) { filter: brightness(1.2); }
         .btn:disabled { background-color: #555 !important; cursor: not-allowed; }
 
-        /* 英雄區塊 */
-        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(rgba(18, 18, 18, 0.5), rgba(18, 18, 18, 0.9)); border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; }
-        .hero h1 { font-size: 3.5rem; color: #ffffff; margin-bottom: 15px; letter-spacing: 2px; }
-        .hero p { font-size: 1.1rem; color: #cccccc; max-width: 600px; margin: 0 auto; }
-
         /* 發布面板 (預設隱藏，由 JS 控制顯示) */
         .form-panel { background-color: #161616; border: 1px dashed #4ade80; padding: 25px; border-radius: 6px; margin-bottom: 30px; display: none; animation: fadeIn 0.3s; }
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
@@ -120,8 +115,6 @@
         /* 匿名與內務舉報箱 */
         .tip-box { background-color: rgba(26,26,26,0.9); border: 1px solid #333; border-radius: 8px; padding: 30px; border-top: 4px solid #f59e0b; margin-top: 40px; }
         .tip-warning-box { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #fbbf24; font-size: 0.9rem; }
-
-        /* 測驗中心 */
         .quiz-box { background-color: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; }
         .quiz-q { margin-bottom: 15px; color: #e0e0e0; font-weight: bold; font-size: 1.1rem; }
         .quiz-options label { display: block; margin-bottom: 10px; color: #aaa; cursor: pointer; padding: 10px; background-color: #121212; border-radius: 4px; border: 1px solid #222; transition: 0.2s; }
@@ -134,34 +127,41 @@
         .close-modal:hover { color: white; }
         
         /* -----------------------------------------------------------------
-           動態權限顯示控制 (終極修正：管理員繼承所有發布/操作權限)
+           動態權限顯示控制 (修正，移除 !important 避免卡死 UI，利用 CSS 層級覆蓋)
            ----------------------------------------------------------------- */
-        .role-admin-only, .role-police-only, .role-judge-only, .role-reporter-only { display: none; }
+        .role-admin-only, .role-supervisor-only, .role-police-only, .role-judge-only, .role-reporter-only { display: none; }
         
         /* Admin 可以看到所有職業專屬的按鈕與面板 */
         body.is-admin .role-admin-only,
+        body.is-admin .role-supervisor-only,
         body.is-admin .role-police-only,
         body.is-admin .role-judge-only,
         body.is-admin .role-reporter-only { display: inline-block; }
         
         body.is-admin div.role-admin-only,
+        body.is-admin div.role-supervisor-only,
         body.is-admin div.role-police-only,
         body.is-admin div.role-judge-only,
         body.is-admin div.role-reporter-only { display: block; }
         
-        /* 各職業專屬權限 */
+        /* 主管權限 */
+        body.is-supervisor .role-supervisor-only,
+        body.is-supervisor .role-police-only { display: inline-block; }
+        body.is-supervisor div.role-supervisor-only,
+        body.is-supervisor div.role-police-only { display: block; }
+
+        /* 一般職業專屬權限 */
         body.is-police .role-police-only { display: inline-block; }
         body.is-police div.role-police-only { display: block; }
-        
         body.is-judge .role-judge-only { display: inline-block; }
         body.is-judge div.role-judge-only { display: block; }
-        
         body.is-reporter .role-reporter-only { display: inline-block; }
         body.is-reporter div.role-reporter-only { display: block; }
     </style>
 </head>
 <body id="main-body">
 
+    <!-- 頂部導覽列 -->
     <header>
         <div class="logo-area">
             <div class="logo">Los Angeles</div>
@@ -177,12 +177,14 @@
                 <li><a onclick="openTab('page-roster')" id="nav-roster">執法人員名冊</a></li>
                 <li><a onclick="openTab('page-dispatch')" id="nav-dispatch">在線警員</a></li>
                 <li><a onclick="openTab('page-apply')" id="nav-apply">警校招募</a></li>
-                <li><a id="nav-admin" class="role-admin-only" style="background:#991b1b;" onclick="openTab('page-admin')">⚙️ 後台管理</a></li>
+                <li><a id="nav-supervisor" class="role-supervisor-only" style="background:#b45309;" onclick="openTab('page-supervisor')">🏢 主管辦公室</a></li>
+                <li><a id="nav-admin" class="role-admin-only" style="background:#991b1b;" onclick="openTab('page-admin')">⚙️ 系統後台</a></li>
                 <li><a id="nav-login" class="nav-login-btn" onclick="openAuthModal()">👤 登入/註冊</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- 登入/註冊 Modal -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -202,11 +204,13 @@
                 <div class="form-col" style="margin-bottom:10px;">
                     <label>申請職位身分</label>
                     <select id="reg-role" onchange="toggleRegFields()">
-                        <option value="police">🚓 執法警員</option>
+                        <option value="police">🚓 一般警員</option>
+                        <option value="supervisor">🦅 高階主管 (Command)</option>
                         <option value="judge">⚖️ 司法官員 / 法官</option>
                         <option value="reporter">📰 新聞記者</option>
                     </select>
                 </div>
+                <!-- 動態隱藏區：警員與主管都需要填寫部門警號 -->
                 <div id="reg-police-fields">
                     <div class="form-col" style="margin-bottom:10px;">
                         <label>所屬部門</label>
@@ -241,6 +245,7 @@
         </div>
     </div>
 
+    <!-- 管理員編輯成員 Modal -->
     <div id="edit-user-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -250,14 +255,16 @@
             <div class="form-col" style="margin-bottom:10px;">
                 <label>職位</label>
                 <select id="edit-role">
-                    <option value="police">警員</option><option value="judge">法官</option><option value="reporter">記者</option><option value="admin">管理員</option>
+                    <option value="police">警員</option>
+                    <option value="supervisor">高階主管</option>
+                    <option value="judge">法官</option>
+                    <option value="reporter">記者</option>
+                    <option value="admin">管理員</option>
                 </select>
             </div>
             <div class="form-col" style="margin-bottom:10px;">
                 <label>部門</label>
-                <select id="edit-dept">
-                    <option value="LAPD">LAPD</option><option value="LASD">LASD</option><option value="CHP">CHP</option><option value="LAFD">LAFD</option><option value="市政府">市府/其他</option>
-                </select>
+                <select id="edit-dept"><option value="LAPD">LAPD</option><option value="LASD">LASD</option><option value="CHP">CHP</option><option value="LAFD">LAFD</option><option value="市政府">市府/其他</option></select>
             </div>
             <div class="form-col" style="margin-bottom:10px;"><label>警號</label><input type="text" id="edit-badge"></div>
             <div class="form-col" style="margin-bottom:10px;">
@@ -279,16 +286,13 @@
             </div>
             <div class="form-col" style="margin-bottom:20px;">
                 <label>帳號狀態</label>
-                <select id="edit-status">
-                    <option value="approved">✅ 核准 (Approved)</option>
-                    <option value="pending">⏳ 待審核 (Pending)</option>
-                    <option value="suspended">⛔ 停職 (Suspended)</option>
-                </select>
+                <select id="edit-status"><option value="approved">✅ 核准 (Approved)</option><option value="pending">⏳ 待審核 (Pending)</option><option value="suspended">⛔ 停職 (Suspended)</option></select>
             </div>
             <button class="btn" id="btn-edit-user" style="width:100%; background:#f59e0b; color:#000; margin-top:0;" onclick="submitEditUser()">💾 儲存修改</button>
         </div>
     </div>
 
+    <!-- IAD 處分裁決 Modal -->
     <div id="iad-action-modal" class="modal">
         <div class="modal-content" style="border-color:#ef4444;">
             <span class="close-modal" onclick="UI.closeAllForms()">&times;</span>
@@ -313,6 +317,7 @@
         </div>
     </div>
 
+    <!-- ================= 1. 首頁大廳 ================= -->
     <div id="page-home" class="tab-content active">
         <section style="padding-top: 20px;">
             <div class="hero">
@@ -325,17 +330,13 @@
                 <button class="btn role-admin-only" onclick="UI.openForm('admin-announcement-form')">➕ 新增公告</button>
             </h2>
             
+            <!-- 表單面版 -->
             <div class="form-panel" id="admin-announcement-form">
                 <h3 style="color:#4ade80; margin-bottom:15px;" id="ann-form-title">📢 發布公告</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <label>分類標籤</label>
-                        <select id="post-tag">
-                            <option value="📢 [全州通告]">📢 [全州通告]</option>
-                            <option value="🚨 [緊急法令]">🚨 [緊急法令]</option>
-                            <option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option>
-                            <option value="⚙️ [系統維護]">⚙️ [系統維護]</option>
-                        </select>
+                        <select id="post-tag"><option value="📢 [全州通告]">📢 [全州通告]</option><option value="🚨 [緊急法令]">🚨 [緊急法令]</option><option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option><option value="⚙️ [系統維護]">⚙️ [系統維護]</option></select>
                     </div>
                     <div class="form-col"><label>公告標題</label><input type="text" id="post-title"></div>
                 </div>
@@ -353,31 +354,10 @@
                 <div class="card dept-card dept-chp"><span class="badge-title" style="background:rgba(180,83,9,0.2); color:#fbbf24;">CHP</span><h3>加州公路巡警</h3><p style="font-style:italic; color:#888;">"Safety and Service"</p><p>城市交通大動脈守護者。專職高速公路飛車追捕 (10-80)、重大交通攔停及公路車禍還原。</p></div>
                 <div class="card dept-card dept-lafd"><span class="badge-title" style="background:rgba(153,27,27,0.2); color:#f87171;">LAFD</span><h3>洛杉磯消防局</h3><p style="font-style:italic; color:#888;">"Serving with Courage"</p><p>負責重大火災撲滅、車禍破壞剪救援、以及第一線受傷平民與中槍嫌犯的緊急醫療救護 (EMS)。</p></div>
             </div>
-
-            <div class="memorial-section">
-                <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 執法部門榮譽殿堂與紀念碑</h2>
-                <h3 style="color: #f59e0b; margin-top: 25px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🌟 傳奇勳章．榮譽殿堂</h3>
-                <div class="memorial-grid">
-                    <div class="memorial-card">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80" alt="Legend" class="memorial-avatar avatar-gold">
-                        <div class="memorial-name">William_Gates</div>
-                        <span class="memorial-rank rank-legend">LAPD 終身榮譽局長</span>
-                        <div class="memorial-desc">「建立並奠定了市區現代化巡邏體系與 SWAT 戰術規章。」</div>
-                    </div>
-                </div>
-                <h3 style="color: #ef4444; margin-top: 30px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🖤 永恆警徽．殉職官員紀念碑</h3>
-                <div class="memorial-grid">
-                    <div class="memorial-card">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Fallen" class="memorial-avatar avatar-black">
-                        <div class="memorial-name">James_Donovan</div>
-                        <span class="memorial-rank rank-fallen">LASD 殉職副警長</span>
-                        <div class="memorial-desc">「太平洋標準銀行重大武裝搶劫案中英勇犧牲。Code 4，您可以下班了。」</div>
-                    </div>
-                </div>
-            </div>
         </section>
     </div>
 
+    <!-- ================= 2. 洛城新聞 ================= -->
     <div id="page-news" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -397,6 +377,7 @@
         </section>
     </div>
 
+    <!-- ================= 3. 司法判決 ================= -->
     <div id="page-court" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -423,6 +404,7 @@
         </section>
     </div>
 
+    <!-- ================= 4. 法規/SOP ================= -->
     <div id="page-rules" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">⚖️ 法規全書與標準作業程序 (SOP)</h2>
@@ -478,6 +460,7 @@
                 <button class="accordion">👥 9. PC - 幫派與公共秩序</button><div class="panel" id="law-cat-9"></div>
             </div>
 
+            <!-- 匿名舉報 -->
             <div class="tip-box" style="margin-top:50px;">
                 <h2 class="section-title" style="border-left-color:#f59e0b; margin-bottom: 10px;">📨 市民匿名檢舉情報信箱</h2>
                 <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情資直接廣播至內網。</div>
@@ -486,6 +469,7 @@
                 <button class="btn" id="btn-tip-submit" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
             </div>
 
+            <!-- IAD 內務部投訴 -->
             <div class="tip-box" style="border-top-color: #1e40af; margin-top:30px;">
                 <h2 class="section-title" style="border-left-color: #1e40af; margin-bottom: 10px;">🏛️ 內務監察部 (IAD) 官方市民投訴箱</h2>
                 <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">市民可在此檢舉執法人員之不當執法或受賄。案件將直接傳送至後台進行審核。</p>
@@ -496,6 +480,7 @@
         </section>
     </div>
 
+    <!-- ================= 5. BOLO ================= -->
     <div id="page-bolo" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">
@@ -536,6 +521,7 @@
         </section>
     </div>
 
+    <!-- ================= 6. 執法人員名冊 ================= -->
     <div id="page-roster" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📋 官方執法人員名冊</h2>
@@ -548,6 +534,7 @@
         </section>
     </div>
 
+    <!-- ================= 7. 在線警員 ================= -->
     <div id="page-dispatch" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">📡 勤務調度系統 (CAD)</h2>
@@ -567,6 +554,7 @@
         </section>
     </div>
 
+    <!-- ================= 8. 警校招募 ================= -->
     <div id="page-apply" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">警校邏輯測驗中心</h2>
@@ -623,9 +611,39 @@
         </section>
     </div>
 
+    <!-- ================= 全新：主管辦公室 (SUPERVISOR ONLY) ================= -->
+    <div id="page-supervisor" class="tab-content">
+        <section style="padding-top: 20px;">
+            <h2 class="section-title" style="color:#f59e0b; border-left-color:#f59e0b;">🏢 高階主管辦公室 (Command & Staff)</h2>
+            <p style="color:#aaa; margin-bottom:20px;">此區域專供警務高層進行人事調動與內務裁決。</p>
+            
+            <div class="grid-container" style="grid-template-columns: 1fr;">
+                
+                <!-- 人事考核 -->
+                <div class="card" style="border-top-color: #f59e0b;">
+                    <h3>📋 警局人事與階級管理</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="supervisor-roster-table">
+                            <thead><tr><th>部門</th><th>警號</th><th>姓名</th><th>當前階級</th><th>人事操作</th></tr></thead>
+                            <tbody><tr><td colspan="5" style="text-align:center; color:#888;">讀取中...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 內務督察 -->
+                <div class="card" style="border-top-color: #1e40af;">
+                    <h3>🛡️ 內務督察 (IAD) 案件審核</h3>
+                    <div id="supervisor-iad-cases"><div style="text-align:center; color:#888;">讀取中...</div></div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= 9. 系統管理後台 (ADMIN ONLY) ================= -->
     <div id="page-admin" class="tab-content">
         <section style="padding-top: 20px;">
-            <h2 class="section-title" style="color:#ef4444; border-left-color:#ef4444;">⚙️ 系統管理後台 (IAD)</h2>
+            <h2 class="section-title" style="color:#ef4444; border-left-color:#ef4444;">⚙️ 系統管理後台 (SysAdmin)</h2>
             <div class="grid-container" style="grid-template-columns: 1fr;">
                 
                 <div class="card" style="border-top-color: #1e40af;">
@@ -652,6 +670,7 @@
         </section>
     </div>
 
+    <!-- ================= JavaScript 核心邏輯 ================= -->
     <script>
         // --- 終極核心：強制控制所有 UI 收納的控制器 ---
         const UI = {
@@ -751,7 +770,8 @@
         // --- 登入註冊 ---
         function toggleRegFields() {
             let role = document.getElementById("reg-role").value;
-            document.getElementById("reg-police-fields").style.display = role === "police" ? "block" : "none";
+            // Supervisor and Police both need police fields
+            document.getElementById("reg-police-fields").style.display = (role === "police" || role === "supervisor") ? "block" : "none";
         }
         function openAuthModal() { if(currentUser){ if(confirm("確定登出嗎？")) logout(); } else UI.openForm('auth-modal'); }
         function toggleAuthMode() {
@@ -775,7 +795,8 @@
             if(appData.users[user] || user === "ADMIN") return alert("ID 已使用！");
 
             let btn = document.getElementById("btn-reg-submit"); btn.disabled = true; btn.innerText = "提交中...";
-            appData.users[user] = { pwd:pass, name:name, role:role, dept: role==="police"?document.getElementById("reg-dept").value:"", badge: role==="police"?document.getElementById("reg-badge").value:"", rank: role==="police"?document.getElementById("reg-rank").value:"", status: "pending" };
+            let isPolice = (role === "police" || role === "supervisor");
+            appData.users[user] = { pwd:pass, name:name, role:role, dept: isPolice?document.getElementById("reg-dept").value:"", badge: isPolice?document.getElementById("reg-badge").value:"", rank: isPolice?document.getElementById("reg-rank").value:"", status: "pending" };
             sysLog(`新註冊: ${user} (${role})`);
             saveToCloud().then(() => { alert("註冊成功！待核准。"); toggleAuthMode(); }).finally(() => { btn.disabled = false; btn.innerText = "提交申請"; });
         }
@@ -801,23 +822,73 @@
         function saveToCloud() { isSyncing = true; let p = JSON.stringify(appData); lastHash = p; return fetch(CLOUD_API_URL, {method:"POST", body:p}).then(r=>r.text()).finally(()=>{isSyncing = false;}); }
         function sysLog(msg) { let d = new Date().toLocaleString("en-US",{timeZone:"America/Los_Angeles"}); appData.logs.unshift(`[${d}] [${currentUser||'SYS'}] ${msg}`); if(appData.logs.length>50) appData.logs.pop(); }
 
+        // --- 主管專用操作：升階、降階、停職 ---
+        function supPromote(u) {
+            let acc = appData.users[u];
+            let rIdx = RANK_HIERARCHY.indexOf(acc.rank);
+            if(rIdx < RANK_HIERARCHY.length - 1) {
+                acc.rank = RANK_HIERARCHY[rIdx + 1];
+                if(acc.status === 'suspended') acc.status = 'approved';
+                sysLog(`[人事命令] 主管將 ${u} 升階為 ${acc.rank}`);
+                renderAll(); saveToCloud(); alert(`已將 ${acc.name} 升階為 ${acc.rank}`);
+            } else { alert("已是最高階級！"); }
+        }
+        function supDemote(u) {
+            let acc = appData.users[u];
+            let rIdx = RANK_HIERARCHY.indexOf(acc.rank);
+            if(rIdx > 0) {
+                acc.rank = RANK_HIERARCHY[rIdx - 1];
+                sysLog(`[人事命令] 主管將 ${u} 降階為 ${acc.rank}`);
+                renderAll(); saveToCloud(); alert(`已將 ${acc.name} 降階為 ${acc.rank}`);
+            } else { alert("已是最低階級！"); }
+        }
+        function supSuspend(u) {
+            if(confirm(`確定要將 ${appData.users[u].name} 停職嗎？`)) {
+                appData.users[u].status = 'suspended';
+                sysLog(`[人事命令] 主管將 ${u} 停職`);
+                renderAll(); saveToCloud(); alert(`已將 ${appData.users[u].name} 停職！`);
+            }
+        }
+
         // --- 渲染 UI ---
         function renderAll() {
             let isAdmin = (currentUser === "ADMIN"), role = isAdmin ? "admin" : (appData.users[currentUser]?.role || "guest");
             
             document.getElementById("area-announcement").innerHTML = appData.announcements.map((a,i)=>`<div class="list-item"><div style="display:flex; justify-content:space-between;"><div><div class="item-tag">${a.tag}</div><div class="item-title">${a.title}</div></div><div>${isAdmin?`<button class="btn" style="background:#f59e0b; padding:2px 8px; font-size:0.7rem;" onclick="editAnn(${i})">✏️</button><button class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.7rem;" onclick="delAnn(${i})">🗑️</button>`:""}</div></div><div class="item-text">${a.text}</div></div>`).join("") || "<p style='color:#888; text-align:center;'>無公告</p>";
             
-            document.getElementById("area-bolo").innerHTML = appData.bolos.map((b,i)=>`<div class="bolo-card"><div class="bolo-header ${b.level==='red'?'bolo-red':(b.level==='yellow'?'bolo-yellow':'bolo-blue')}"><span>WANTED</span><div>${(isAdmin||role==="police")?`<span onclick="editBolo(${i})" style="cursor:pointer; background:#f59e0b; color:000; padding:2px 5px; border-radius:3px; font-size:0.8rem;">✏️</span><span onclick="delBolo(${i})" style="cursor:pointer; background:#fff; color:red; padding:2px 5px; border-radius:3px; margin-left:5px; font-size:0.8rem;">🗑️</span>`:""}</div></div><img src="${b.imgUrl}" class="bolo-img"><div class="bolo-body"><div class="bolo-title">${b.title}</div><div class="bolo-detail"><div class="bolo-detail-label">目標：</div>${b.target}</div><div class="bolo-detail"><div class="bolo-detail-label">車牌：</div>${b.plate}</div><div class="bolo-detail"><div class="bolo-detail-label">法條：</div>${b.law}</div></div><div class="bolo-footer">⚠️ ${b.action}<br>發布: ${b.officer}</div></div>`).join("") || "<p style='color:#888; width:100%; text-align:center;'>無通緝</p>";
+            document.getElementById("area-bolo").innerHTML = appData.bolos.map((b,i)=>`<div class="bolo-card"><div class="bolo-header ${b.level==='red'?'bolo-red':(b.level==='yellow'?'bolo-yellow':'bolo-blue')}"><span>WANTED</span><div>${(isAdmin||role==="police"||role==="supervisor")?`<span onclick="editBolo(${i})" style="cursor:pointer; background:#f59e0b; color:000; padding:2px 5px; border-radius:3px; font-size:0.8rem;">✏️</span><span onclick="delBolo(${i})" style="cursor:pointer; background:#fff; color:red; padding:2px 5px; border-radius:3px; margin-left:5px; font-size:0.8rem;">🗑️</span>`:""}</div></div><img src="${b.imgUrl}" class="bolo-img"><div class="bolo-body"><div class="bolo-title">${b.title}</div><div class="bolo-detail"><div class="bolo-detail-label">目標：</div>${b.target}</div><div class="bolo-detail"><div class="bolo-detail-label">車牌：</div>${b.plate}</div><div class="bolo-detail"><div class="bolo-detail-label">法條：</div>${b.law}</div></div><div class="bolo-footer">⚠️ ${b.action}<br>發布: ${b.officer}</div></div>`).join("") || "<p style='color:#888; width:100%; text-align:center;'>無通緝</p>";
             
             document.getElementById("area-roster").innerHTML = appData.roster.map(u=>`<div style="padding:10px; background:#1a1a1a; border-radius:4px; margin-bottom:5px; border-left:4px solid #4ade80;">👮 ${u} <span style="float:right; color:#4ade80;">上線值勤中</span></div>`).join("") || "<p style='color:#888;'>無警力</p>";
-            let rTb = ""; for(let k in appData.users){ let u=appData.users[k]; if(u.status==='approved' && u.role==='police') rTb+=`<tr><td>${u.dept}</td><td>${u.rank}</td><td>${u.name}</td><td>${k} (#${u.badge})</td></tr>`; }
-            document.querySelector("#table-roster tbody").innerHTML = rTb || "<tr><td colspan='4' style='text-align:center;'>無資料</td></tr>";
             
+            let rTb = ""; for(let k in appData.users){ let u=appData.users[k]; if(u.status==='approved' && (u.role==='police' || u.role==='supervisor')) rTb+=`<tr><td>${u.dept}</td><td>${u.rank}</td><td>${u.name}</td><td>${k} (#${u.badge})</td></tr>`; }
+            document.querySelector("#table-roster tbody").innerHTML = rTb || "<tr><td colspan='4' style='text-align:center;'>無資料</td></tr>";
+
+            // 主管辦公室 (Supervisor & Admin)
+            if(role === 'supervisor' || isAdmin) {
+                let sTb = "";
+                for(let k in appData.users){
+                    let u = appData.users[k];
+                    if((u.role === 'police' || u.role === 'supervisor') && u.status !== 'pending') {
+                        sTb += `<tr><td>${u.dept}</td><td>${u.badge}</td><td>${u.name}</td><td><span style="color:${u.status==='suspended'?'#ef4444':'#fff'}">${u.status==='suspended'?'(停職) ':''}${u.rank}</span></td>
+                        <td>
+                            <button onclick="supPromote('${k}')" class="btn" style="background:#166534; padding:2px 8px; font-size:0.75rem; margin:0;">🎖️ 升階</button>
+                            <button onclick="supDemote('${k}')" class="btn" style="background:#b45309; padding:2px 8px; font-size:0.75rem; margin:0;">📉 降階</button>
+                            <button onclick="supSuspend('${k}')" class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.75rem; margin:0;">🛑 停職</button>
+                        </td></tr>`;
+                    }
+                }
+                document.querySelector("#supervisor-roster-table tbody").innerHTML = sTb || "<tr><td colspan='5' style='text-align:center;'>無警員資料</td></tr>";
+                
+                let iadHtml = appData.iad.filter(c=>c.status==="pending").map((c,i)=>`<div style="background:#111; padding:15px; border-left:4px solid #1e40af; margin-bottom:10px;"><div style="color:#60a5fa; font-size:0.8rem;">${c.date}</div><div style="font-weight:bold;">申訴人: ${c.name} ➔ 目標: ${c.target}</div><div style="color:#aaa; font-size:0.9rem; margin:5px 0;">事實: ${c.content}</div><button onclick="openIadAction(${i})" class="btn" style="background:#b45309; padding:5px 10px; font-size:0.8rem;">⚖️ 審理案件</button></div>`).join("");
+                document.getElementById("supervisor-iad-cases").innerHTML = iadHtml || "<p style='color:#888; text-align:center;'>無待審核案件</p>";
+                if(document.getElementById("area-iad-cases")) document.getElementById("area-iad-cases").innerHTML = iadHtml || "<p style='color:#888; text-align:center;'>無待審核案件</p>";
+            }
+            
+            // 系統後台 (Admin Only)
             if(isAdmin) {
                 let aTb = ""; for(let k in appData.users){ let u=appData.users[k]; aTb+=`<tr><td>${k}</td><td>${u.role}</td><td>${u.name}</td><td>${u.dept||'-'}</td><td style="color:${u.status==='approved'?'#4ade80':'#f59e0b'}">${u.status}</td><td>${u.status==='pending'?`<button onclick="approveUser('${k}')" style="background:#166534; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">核准</button>`:''}<button onclick="editUser('${k}')" style="background:#f59e0b; border:none; padding:3px 8px; border-radius:3px; cursor:pointer; margin:0 5px;">✏️</button><button onclick="delUser('${k}')" style="background:#991b1b; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">🗑️</button></td></tr>`; }
                 document.querySelector("#admin-users-table tbody").innerHTML = aTb;
                 document.getElementById("audit-log-area").innerHTML = appData.logs.map(l=>`<div>${l}</div>`).join("");
-                document.getElementById("area-iad-cases").innerHTML = appData.iad.filter(c=>c.status==="pending").map((c,i)=>`<div style="background:#111; padding:15px; border-left:4px solid #1e40af; margin-bottom:10px;"><div style="color:#60a5fa; font-size:0.8rem;">${c.date}</div><div style="font-weight:bold;">申訴人: ${c.name} ➔ 目標: ${c.target}</div><div style="color:#aaa; font-size:0.9rem; margin:5px 0;">事實: ${c.content}</div><button onclick="openIadAction(${i})" class="btn" style="background:#b45309; padding:5px 10px; font-size:0.8rem;">⚖️ 審理案件</button></div>`).join("") || "<p style='color:#888; text-align:center;'>無待審核案件</p>";
             }
             
             document.getElementById("area-court").innerHTML = appData.court.map((c,i)=>`<div class="list-item" style="border-left-color:#b45309;"><div style="display:flex; justify-content:space-between;"><div><div class="item-tag" style="background:rgba(180,83,9,0.2); color:#fbbf24;">裁決書 | ${c.date}</div><div class="item-title">被告：${c.def}</div></div><div>${(isAdmin||role==="judge")?`<button class="btn" style="background:#f59e0b; padding:2px 8px; font-size:0.7rem;" onclick="editCourt(${i})">✏️</button><button class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.7rem;" onclick="delCourt(${i})">🗑️</button>`:""}</div></div><div style="color:#fbbf24; margin-bottom:5px; font-weight:bold;">主文：${c.ver}</div><div class="item-text">見解：${c.reason}</div><div style="text-align:right; font-size:0.8rem; color:#888;">法官: ${c.judge}</div></div>`).join("") || "<p style='color:#888; text-align:center;'>無紀錄</p>";
