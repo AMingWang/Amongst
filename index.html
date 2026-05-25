@@ -336,7 +336,12 @@
                 <div class="form-row">
                     <div class="form-col">
                         <label>分類標籤</label>
-                        <select id="post-tag"><option value="📢 [全州通告]">📢 [全州通告]</option><option value="🚨 [緊急法令]">🚨 [緊急法令]</option><option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option><option value="⚙️ [系統維護]">⚙️ [系統維護]</option></select>
+                        <select id="post-tag">
+                            <option value="📢 [全州通告]">📢 [全州通告]</option>
+                            <option value="🚨 [緊急法令]">🚨 [緊急法令]</option>
+                            <option value="🎖️ [人事升遷]">🎖️ [人事升遷]</option>
+                            <option value="⚙️ [系統維護]">⚙️ [系統維護]</option>
+                        </select>
                     </div>
                     <div class="form-col"><label>公告標題</label><input type="text" id="post-title"></div>
                 </div>
@@ -353,6 +358,28 @@
                 <div class="card dept-card dept-lasd"><span class="badge-title" style="background:rgba(22,101,52,0.2); color:#4ade80;">LASD</span><h3>洛杉磯郡警長局</h3><p style="font-style:italic; color:#888;">"Tradition of Service"</p><p>負責周邊偏遠郡縣巡邏，全權主管監獄看守、受刑人移送與法庭安全維護。</p></div>
                 <div class="card dept-card dept-chp"><span class="badge-title" style="background:rgba(180,83,9,0.2); color:#fbbf24;">CHP</span><h3>加州公路巡警</h3><p style="font-style:italic; color:#888;">"Safety and Service"</p><p>城市交通大動脈守護者。專職高速公路飛車追捕 (10-80)、重大交通攔停及公路車禍還原。</p></div>
                 <div class="card dept-card dept-lafd"><span class="badge-title" style="background:rgba(153,27,27,0.2); color:#f87171;">LAFD</span><h3>洛杉磯消防局</h3><p style="font-style:italic; color:#888;">"Serving with Courage"</p><p>負責重大火災撲滅、車禍破壞剪救援、以及第一線受傷平民與中槍嫌犯的緊急醫療救護 (EMS)。</p></div>
+            </div>
+
+            <div class="memorial-section">
+                <h2 class="section-title" style="border-left-color: #f59e0b; margin-bottom: 10px;">🛡️ 執法部門榮譽殿堂與紀念碑</h2>
+                <h3 style="color: #f59e0b; margin-top: 25px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🌟 傳奇勳章．榮譽殿堂</h3>
+                <div class="memorial-grid">
+                    <div class="memorial-card">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80" alt="Legend" class="memorial-avatar avatar-gold">
+                        <div class="memorial-name">William_Gates</div>
+                        <span class="memorial-rank rank-legend">LAPD 終身榮譽局長</span>
+                        <div class="memorial-desc">「建立並奠定了市區現代化巡邏體系與 SWAT 戰術規章。」</div>
+                    </div>
+                </div>
+                <h3 style="color: #ef4444; margin-top: 30px; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 5px;">🖤 永恆警徽．殉職官員紀念碑</h3>
+                <div class="memorial-grid">
+                    <div class="memorial-card">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Fallen" class="memorial-avatar avatar-black">
+                        <div class="memorial-name">James_Donovan</div>
+                        <span class="memorial-rank rank-fallen">LASD 殉職副警長</span>
+                        <div class="memorial-desc">「太平洋標準銀行重大武裝搶劫案中英勇犧牲。Code 4，您可以下班了。」</div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -822,7 +849,7 @@
         function saveToCloud() { isSyncing = true; let p = JSON.stringify(appData); lastHash = p; return fetch(CLOUD_API_URL, {method:"POST", body:p}).then(r=>r.text()).finally(()=>{isSyncing = false;}); }
         function sysLog(msg) { let d = new Date().toLocaleString("en-US",{timeZone:"America/Los_Angeles"}); appData.logs.unshift(`[${d}] [${currentUser||'SYS'}] ${msg}`); if(appData.logs.length>50) appData.logs.pop(); }
 
-        // --- 主管專用操作：升階、降階、停職 ---
+        // --- 主管專用操作：升階、降階、停職、復職 ---
         function supPromote(u) {
             let acc = appData.users[u];
             let rIdx = RANK_HIERARCHY.indexOf(acc.rank);
@@ -849,6 +876,13 @@
                 renderAll(); saveToCloud(); alert(`已將 ${appData.users[u].name} 停職！`);
             }
         }
+        function supRestore(u) {
+            if(confirm(`確定要讓 ${appData.users[u].name} 恢復原職嗎？`)) {
+                appData.users[u].status = 'approved';
+                sysLog(`[人事命令] 主管將 ${u} 復職`);
+                renderAll(); saveToCloud(); alert(`已將 ${appData.users[u].name} 復職！`);
+            }
+        }
 
         // --- 渲染 UI ---
         function renderAll() {
@@ -869,12 +903,19 @@
                 for(let k in appData.users){
                     let u = appData.users[k];
                     if((u.role === 'police' || u.role === 'supervisor') && u.status !== 'pending') {
-                        sTb += `<tr><td>${u.dept}</td><td>${u.badge}</td><td>${u.name}</td><td><span style="color:${u.status==='suspended'?'#ef4444':'#fff'}">${u.status==='suspended'?'(停職) ':''}${u.rank}</span></td>
-                        <td>
+                        let actionBtns = `
                             <button onclick="supPromote('${k}')" class="btn" style="background:#166534; padding:2px 8px; font-size:0.75rem; margin:0;">🎖️ 升階</button>
                             <button onclick="supDemote('${k}')" class="btn" style="background:#b45309; padding:2px 8px; font-size:0.75rem; margin:0;">📉 降階</button>
-                            <button onclick="supSuspend('${k}')" class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.75rem; margin:0;">🛑 停職</button>
-                        </td></tr>`;
+                        `;
+                        // 動態判斷是顯示停職還是復職
+                        if (u.status === 'suspended') {
+                            actionBtns += `<button onclick="supRestore('${k}')" class="btn" style="background:#2563eb; padding:2px 8px; font-size:0.75rem; margin:0;">🟢 復職</button>`;
+                        } else {
+                            actionBtns += `<button onclick="supSuspend('${k}')" class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.75rem; margin:0;">🛑 停職</button>`;
+                        }
+
+                        sTb += `<tr><td>${u.dept}</td><td>${u.badge}</td><td>${u.name}</td><td><span style="color:${u.status==='suspended'?'#ef4444':'#fff'}">${u.status==='suspended'?'(停職) ':''}${u.rank}</span></td>
+                        <td>${actionBtns}</td></tr>`;
                     }
                 }
                 document.querySelector("#supervisor-roster-table tbody").innerHTML = sTb || "<tr><td colspan='5' style='text-align:center;'>無警員資料</td></tr>";
@@ -886,7 +927,7 @@
             
             // 系統後台 (Admin Only)
             if(isAdmin) {
-                let aTb = ""; for(let k in appData.users){ let u=appData.users[k]; aTb+=`<tr><td>${k}</td><td>${u.role}</td><td>${u.name}</td><td>${u.dept||'-'}</td><td style="color:${u.status==='approved'?'#4ade80':'#f59e0b'}">${u.status}</td><td>${u.status==='pending'?`<button onclick="approveUser('${k}')" style="background:#166534; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">核准</button>`:''}<button onclick="editUser('${k}')" style="background:#f59e0b; border:none; padding:3px 8px; border-radius:3px; cursor:pointer; margin:0 5px;">✏️</button><button onclick="delUser('${k}')" style="background:#991b1b; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">🗑️</button></td></tr>`; }
+                let aTb = ""; for(let k in appData.users){ let u=appData.users[k]; aTb+=`<tr><td>${k}</td><td>${u.role}</td><td>${u.name}</td><td>${u.dept||'-'}</td><td style="color:${u.status==='approved'?'#4ade80':(u.status==='suspended'?'#ef4444':'#f59e0b')}">${u.status}</td><td>${u.status==='pending'?`<button onclick="approveUser('${k}')" style="background:#166534; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">核准</button>`:''}<button onclick="editUser('${k}')" style="background:#f59e0b; border:none; padding:3px 8px; border-radius:3px; cursor:pointer; margin:0 5px;">✏️</button><button onclick="delUser('${k}')" style="background:#991b1b; color:white; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">🗑️</button></td></tr>`; }
                 document.querySelector("#admin-users-table tbody").innerHTML = aTb;
                 document.getElementById("audit-log-area").innerHTML = appData.logs.map(l=>`<div>${l}</div>`).join("");
             }
