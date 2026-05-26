@@ -624,7 +624,7 @@
             
             <div class="grid-container" style="grid-template-columns: 1fr;">
                 
-                <!-- 1. 情報接收端 (移動至此) -->
+                <!-- 1. 情報接收端 -->
                 <div class="card" style="border-top-color: #4ade80;">
                     <h3 style="color:#4ade80;">📨 警網內部：市民情報接收端</h3>
                     <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">即時接收來自市民的匿名線索。可由主管或管理員進行審閱與刪除。</p>
@@ -705,7 +705,7 @@
         const ANONYMOUS_TIP_WEBHOOK_URL = "https://discord.com/api/webhooks/1506542930486362134/czetEiPxrvaxzo7lDNgwUeI-y-pYbm4Ny6NGRqNPOjhlOrNOnld6z_A1H97u3RmISKaE"; 
         const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwPuG2Vv7gOdPMtPv9jymzavc91HLA0crUmJOR5wUVn3P340jzAwZ5i8QmJdramLFnl/exec";
         
-        let appData = { announcements: [], bolos: [], roster: [], logs: [], court: [], news: [], tips: [], users: {}, iad: [] };
+        let appData = { announcements: [], bolos: [], logs: [], court: [], news: [], tips: [], users: {}, iad: [] };
         let currentUser = sessionStorage.getItem("currentUser") || "";
         let lastHash = "";
         let isSyncing = false; 
@@ -782,6 +782,7 @@
         // --- 登入註冊 ---
         function toggleRegFields() {
             let role = document.getElementById("reg-role").value;
+            // Supervisor and Police both need police fields
             document.getElementById("reg-police-fields").style.display = (role === "police" || role === "supervisor") ? "block" : "none";
         }
         function openAuthModal() { if(currentUser){ if(confirm("確定登出嗎？")) logout(); } else UI.openForm('auth-modal'); }
@@ -828,33 +829,25 @@
             fetch(CLOUD_API_URL).then(r=>r.text()).then(txt=>{
                 if(txt === lastHash || !txt) return;
                 lastHash = txt; let d = JSON.parse(txt);
-                appData.announcements = d.announcements||[]; appData.bolos = d.bolos||[]; appData.roster = d.roster||[]; appData.logs = d.logs||[]; appData.court = d.court||[]; appData.news = d.news||[]; appData.tips = d.tips||[]; appData.users = d.users||{}; appData.iad = d.iad||[]; 
+                appData.announcements = d.announcements||[]; appData.bolos = d.bolos||[]; appData.logs = d.logs||[]; appData.court = d.court||[]; appData.news = d.news||[]; appData.tips = d.tips||[]; appData.users = d.users||{}; appData.iad = d.iad||[]; 
                 renderAll();
             }).catch(e=>{});
         }
         function saveToCloud() { isSyncing = true; let p = JSON.stringify(appData); lastHash = p; return fetch(CLOUD_API_URL, {method:"POST", body:p}).then(r=>r.text()).finally(()=>{isSyncing = false;}); }
         function sysLog(msg) { let d = new Date().toLocaleString("en-US",{timeZone:"America/Los_Angeles"}); appData.logs.unshift(`[${d}] [${currentUser||'SYS'}] ${msg}`); if(appData.logs.length>50) appData.logs.pop(); }
 
-        // --- 主管專用操作：升階、降階、停職、復職 ---
-        function supPromote(u) {
-            let acc = appData.users[u];
-            let rIdx = RANK_HIERARCHY.indexOf(acc.rank);
-            if(rIdx < RANK_HIERARCHY.length - 1) {
-                acc.rank = RANK_HIERARCHY[rIdx + 1];
-                if(acc.status === 'suspended') acc.status = 'approved';
-                sysLog(`[人事命令] 主管將 ${u} 升階為 ${acc.rank}`);
-                renderAll(); saveToCloud(); alert(`已將 ${acc.name} 升階為 ${acc.rank}`);
-            } else { alert("已是最高階級！"); }
+        // --- 主管專用操作：下拉選單切換階級、停職、復職 ---
+        function supChangeRank(u, newRank) {
+            if(confirm(`確定要將 ${appData.users[u].name} 的階級更改為 ${newRank} 嗎？`)) {
+                let oldRank = appData.users[u].rank;
+                appData.users[u].rank = newRank;
+                sysLog(`[人事命令] 主管將 ${u} 的階級從 ${oldRank} 變更為 ${newRank}`);
+                renderAll(); saveToCloud(); alert(`已將 ${appData.users[u].name} 階級變更為 ${newRank}`);
+            } else {
+                renderAll(); // 若使用者按取消，重新渲染以恢復下拉選單原本的狀態
+            }
         }
-        function supDemote(u) {
-            let acc = appData.users[u];
-            let rIdx = RANK_HIERARCHY.indexOf(acc.rank);
-            if(rIdx > 0) {
-                acc.rank = RANK_HIERARCHY[rIdx - 1];
-                sysLog(`[人事命令] 主管將 ${u} 降階為 ${acc.rank}`);
-                renderAll(); saveToCloud(); alert(`已將 ${acc.name} 降階為 ${acc.rank}`);
-            } else { alert("已是最低階級！"); }
-        }
+
         function supSuspend(u) {
             if(confirm(`確定要將 ${appData.users[u].name} 停職嗎？`)) {
                 appData.users[u].status = 'suspended';
@@ -862,6 +855,7 @@
                 renderAll(); saveToCloud(); alert(`已將 ${appData.users[u].name} 停職！`);
             }
         }
+        
         function supRestore(u) {
             if(confirm(`確定要讓 ${appData.users[u].name} 恢復原職嗎？`)) {
                 appData.users[u].status = 'approved';
@@ -893,6 +887,7 @@
                 document.getElementById("area-tips").innerHTML = appData.tips.map((t,i)=>`<div style="background:#1a1a1a; border-left:4px solid #f59e0b; padding:10px; margin-bottom:10px; border-radius:4px;"><div style="color:#f59e0b; font-size:0.8rem; font-weight:bold;">🕒 ${t.date} | [${t.type}]</div><div style="font-size:0.9rem; margin-top:5px;"><span style="color:#888;">📍 地點:</span> ${t.loc}</div><div style="font-size:0.9rem;"><span style="color:#888;">👤 特徵:</span> ${t.sus}</div><div style="font-size:0.95rem; margin-top:5px; color:#ddd; white-space:pre-wrap;">${t.txt}</div>${isAdmin?`<button onclick="delTip(${i})" style="margin-top:8px; background:#991b1b; border:none; color:white; padding:4px 8px; border-radius:3px; cursor:pointer; font-size:0.75rem;">🗑️ 刪除線索</button>`:''}</div>`).join("") || "<p style='color:#888;'>目前無最新情報</p>";
             }
 
+            // 執法名冊渲染
             let rTb = ""; for(let k in appData.users){ let u=appData.users[k]; if(u.status==='approved' && (u.role==='police' || u.role==='supervisor')) rTb+=`<tr><td>${u.dept}</td><td>${u.rank}</td><td>${u.name}</td><td>${k} (#${u.badge})</td></tr>`; }
             document.querySelector("#table-roster tbody").innerHTML = rTb || "<tr><td colspan='4' style='text-align:center;'>無資料</td></tr>";
 
@@ -902,10 +897,8 @@
                 for(let k in appData.users){
                     let u = appData.users[k];
                     if((u.role === 'police' || u.role === 'supervisor') && u.status !== 'pending') {
-                        let actionBtns = `
-                            <button onclick="supPromote('${k}')" class="btn" style="background:#166534; padding:2px 8px; font-size:0.75rem; margin:0;">🎖️ 升階</button>
-                            <button onclick="supDemote('${k}')" class="btn" style="background:#b45309; padding:2px 8px; font-size:0.75rem; margin:0;">📉 降階</button>
-                        `;
+                        let actionBtns = "";
+                        
                         // 動態判斷是顯示停職還是復職
                         if (u.status === 'suspended') {
                             actionBtns += `<button onclick="supRestore('${k}')" class="btn" style="background:#2563eb; padding:2px 8px; font-size:0.75rem; margin:0;">🟢 復職</button>`;
@@ -913,7 +906,12 @@
                             actionBtns += `<button onclick="supSuspend('${k}')" class="btn" style="background:#991b1b; padding:2px 8px; font-size:0.75rem; margin:0;">🛑 停職</button>`;
                         }
 
-                        sTb += `<tr><td>${u.dept}</td><td>${u.badge}</td><td>${u.name}</td><td><span style="color:${u.status==='suspended'?'#ef4444':'#fff'}">${u.status==='suspended'?'(停職) ':''}${u.rank}</span></td>
+                        // 將純文字階級替換為下拉式選單
+                        let rankOptions = RANK_HIERARCHY.map(r => `<option value="${r}" ${u.rank === r ? 'selected' : ''}>${r}</option>`).join('');
+                        let rankDropdown = `<select onchange="supChangeRank('${k}', this.value)" style="background:#1a1a1a; color:#f59e0b; border:1px solid #f59e0b; padding:4px; border-radius:4px; cursor:pointer; outline:none; font-size:0.85rem;">${rankOptions}</select>`;
+                        let statusTxt = u.status === 'suspended' ? '<span style="color:#ef4444; font-weight:bold; margin-right:5px;">(停職)</span>' : '';
+
+                        sTb += `<tr><td>${u.dept}</td><td>${u.badge}</td><td>${u.name}</td><td>${statusTxt}${rankDropdown}</td>
                         <td>${actionBtns}</td></tr>`;
                     }
                 }
