@@ -175,7 +175,6 @@
                 <li><a onclick="openTab('page-rules')" id="nav-rules">法規/SOP</a></li>
                 <li><a onclick="openTab('page-bolo')" id="nav-bolo" style="color:#ef4444; font-weight:bold;">BOLO</a></li>
                 <li><a onclick="openTab('page-roster')" id="nav-roster">執法人員名冊</a></li>
-                <li><a onclick="openTab('page-dispatch')" id="nav-dispatch">在線警員</a></li>
                 <li><a onclick="openTab('page-apply')" id="nav-apply">警校招募</a></li>
                 <li><a id="nav-supervisor" class="role-supervisor-only" style="background:#b45309;" onclick="openTab('page-supervisor')">🏢 主管辦公室</a></li>
                 <li><a id="nav-admin" class="role-admin-only" style="background:#991b1b;" onclick="openTab('page-admin')">⚙️ 系統後台</a></li>
@@ -489,7 +488,7 @@
             <!-- 匿名舉報 -->
             <div class="tip-box" style="margin-top:50px;">
                 <h2 class="section-title" style="border-left-color:#f59e0b; margin-bottom: 10px;">📨 市民匿名檢舉情報信箱</h2>
-                <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情報將直接傳送至警網內部與勤務調度中心。</div>
+                <div class="tip-warning-box">🔒 司法端對端去識別安全聲明：本加密投遞端不紀錄真實 IP，情報將直接傳送至警網內部與主管辦公室。</div>
                 <div class="form-row"><div class="form-col"><label>犯罪類型</label><select id="tip-type"><option>重大毒品交易</option><option>軍火走私</option><option>武裝強盜</option><option>非法飆車</option><option>幫派犯罪</option></select></div><div class="form-col"><label>案發地點</label><input type="text" id="tip-loc"></div></div>
                 <div class="form-row"><div class="form-col" style="flex:100%;"><label>嫌疑特徵/車牌</label><input type="text" id="tip-sus"></div><div class="form-col" style="flex:100%;"><label>情報詳情</label><textarea id="tip-txt" rows="3"></textarea></div></div>
                 <button class="btn" id="btn-tip-submit" onclick="submitTip()" style="background:#b45309; width:100%; margin-top:0;">🔒 加密送出情報</button>
@@ -560,35 +559,7 @@
         </section>
     </div>
 
-    <!-- ================= 7. 在線警員 (勤務調度與情報中心) ================= -->
-    <div id="page-dispatch" class="tab-content">
-        <section style="padding-top: 20px;">
-            <h2 class="section-title">📡 勤務調度與情報中心 (CAD)</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">警力名單與市民線索每 5 秒靜默同步，無須手動重新整理。</p>
-
-            <div class="role-police-only" style="margin-bottom: 25px;">
-                <button class="btn" id="btn-clock-in" style="background-color: #166534; margin-top:0;" onclick="clockIn()">🟢 10-8 開始值勤 (上線)</button>
-                <button class="btn" id="btn-clock-out" style="background-color: #991b1b; margin-top:0;" onclick="clockOut()">🔴 10-7 結束值勤 (下線)</button>
-            </div>
-
-            <!-- 分成左右兩欄：警力狀態 & 情報中心 -->
-            <div class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                <div class="card" style="border-top-color: #4ade80;">
-                    <h3 style="color:#4ade80;">🟢 目前上線值勤中警力</h3>
-                    <div id="area-roster" style="margin-top: 15px; display:flex; flex-direction:column; gap:8px;"><div style="color:#888;">讀取中...</div></div>
-                </div>
-
-                <!-- 全新：情報接收端 (僅限警察可見) -->
-                <div class="card role-police-only" style="border-top-color: #f59e0b;">
-                    <h3 style="color:#f59e0b;">📨 警網內部：市民情報接收端</h3>
-                    <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">此區域僅限執法人員查看。即時接收來自市民的匿名線索。</p>
-                    <div id="area-tips" style="max-height: 400px; overflow-y: auto;"><div style="color:#888;">讀取中...</div></div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- ================= 8. 警校招募 ================= -->
+    <!-- ================= 7. 警校招募 ================= -->
     <div id="page-apply" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title">警校邏輯測驗中心</h2>
@@ -645,15 +616,22 @@
         </section>
     </div>
 
-    <!-- ================= 9. 主管辦公室 (SUPERVISOR ONLY) ================= -->
+    <!-- ================= 8. 主管辦公室 (SUPERVISOR ONLY) ================= -->
     <div id="page-supervisor" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title" style="color:#f59e0b; border-left-color:#f59e0b;">🏢 高階主管辦公室 (Command & Staff)</h2>
-            <p style="color:#aaa; margin-bottom:20px;">此區域專供警務高層進行人事調動與內務裁決。</p>
+            <p style="color:#aaa; margin-bottom:20px;">此區域專供警務高層進行人事調動、情報分析與內務裁決。</p>
             
             <div class="grid-container" style="grid-template-columns: 1fr;">
                 
-                <!-- 人事考核 -->
+                <!-- 1. 情報接收端 (移動至此) -->
+                <div class="card" style="border-top-color: #4ade80;">
+                    <h3 style="color:#4ade80;">📨 警網內部：市民情報接收端</h3>
+                    <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">即時接收來自市民的匿名線索。可由主管或管理員進行審閱與刪除。</p>
+                    <div id="area-tips" style="max-height: 400px; overflow-y: auto;"><div style="color:#888;">讀取中...</div></div>
+                </div>
+
+                <!-- 2. 人事考核 -->
                 <div class="card" style="border-top-color: #f59e0b;">
                     <h3>📋 警局人事與階級管理</h3>
                     <div style="overflow-x: auto;">
@@ -664,7 +642,7 @@
                     </div>
                 </div>
 
-                <!-- 內務督察 -->
+                <!-- 3. 內務督察 -->
                 <div class="card" style="border-top-color: #1e40af;">
                     <h3>🛡️ 內務督察 (IAD) 案件審核</h3>
                     <div id="supervisor-iad-cases"><div style="text-align:center; color:#888;">讀取中...</div></div>
@@ -674,7 +652,7 @@
         </section>
     </div>
 
-    <!-- ================= 10. 系統管理後台 (ADMIN ONLY) ================= -->
+    <!-- ================= 9. 系統管理後台 (ADMIN ONLY) ================= -->
     <div id="page-admin" class="tab-content">
         <section style="padding-top: 20px;">
             <h2 class="section-title" style="color:#ef4444; border-left-color:#ef4444;">⚙️ 系統管理後台 (SysAdmin)</h2>
@@ -804,7 +782,6 @@
         // --- 登入註冊 ---
         function toggleRegFields() {
             let role = document.getElementById("reg-role").value;
-            // Supervisor and Police both need police fields
             document.getElementById("reg-police-fields").style.display = (role === "police" || role === "supervisor") ? "block" : "none";
         }
         function openAuthModal() { if(currentUser){ if(confirm("確定登出嗎？")) logout(); } else UI.openForm('auth-modal'); }
@@ -836,7 +813,9 @@
         }
 
         function loginSuccess(user) { currentUser=user; sessionStorage.setItem("currentUser", user); sysLog(`登入`); saveToCloud(); applyAuthUI(); UI.closeAllForms(); alert(`歡迎 ${user}`); renderAll(); }
-        function logout() { if(appData.roster.includes(currentUser)) clockOut(); sysLog(`登出`); saveToCloud(); currentUser=""; sessionStorage.removeItem("currentUser"); applyAuthUI(); renderAll(); openTab('page-home'); }
+        
+        // 修改登出功能：移除了在線警員打卡功能，僅需清除 sessionStorage 即可
+        function logout() { sysLog(`登出`); saveToCloud(); currentUser=""; sessionStorage.removeItem("currentUser"); applyAuthUI(); renderAll(); openTab('page-home'); }
 
         function applyAuthUI() {
             let role = currentUser === "ADMIN" ? "admin" : (appData.users[currentUser]?.role || "guest");
@@ -909,9 +888,10 @@
             
             document.getElementById("area-bolo").innerHTML = appData.bolos.map((b,i)=>`<div class="bolo-card"><div class="bolo-header ${b.level==='red'?'bolo-red':(b.level==='yellow'?'bolo-yellow':'bolo-blue')}"><span>WANTED</span><div>${(isAdmin||role==="police"||role==="supervisor")?`<span onclick="editBolo(${i})" style="cursor:pointer; background:#f59e0b; color:000; padding:2px 5px; border-radius:3px; font-size:0.8rem;">✏️</span><span onclick="delBolo(${i})" style="cursor:pointer; background:#fff; color:red; padding:2px 5px; border-radius:3px; margin-left:5px; font-size:0.8rem;">🗑️</span>`:""}</div></div><img src="${b.imgUrl}" class="bolo-img"><div class="bolo-body"><div class="bolo-title">${b.title}</div><div class="bolo-detail"><div class="bolo-detail-label">目標：</div>${b.target}</div><div class="bolo-detail"><div class="bolo-detail-label">車牌：</div>${b.plate}</div><div class="bolo-detail"><div class="bolo-detail-label">法條：</div>${b.law}</div></div><div class="bolo-footer">⚠️ ${b.action}<br>發布: ${b.officer}</div></div>`).join("") || "<p style='color:#888; width:100%; text-align:center;'>無通緝</p>";
             
-            // 渲染警力與情報
-            document.getElementById("area-roster").innerHTML = appData.roster.map(u=>`<div style="padding:10px; background:#1a1a1a; border-radius:4px; margin-bottom:5px; border-left:4px solid #4ade80;">👮 ${u} <span style="float:right; color:#4ade80;">上線值勤中</span></div>`).join("") || "<p style='color:#888;'>無警力</p>";
-            document.getElementById("area-tips").innerHTML = appData.tips.map((t,i)=>`<div style="background:#1a1a1a; border-left:4px solid #f59e0b; padding:10px; margin-bottom:10px; border-radius:4px;"><div style="color:#f59e0b; font-size:0.8rem; font-weight:bold;">🕒 ${t.date} | [${t.type}]</div><div style="font-size:0.9rem; margin-top:5px;"><span style="color:#888;">📍 地點:</span> ${t.loc}</div><div style="font-size:0.9rem;"><span style="color:#888;">👤 特徵:</span> ${t.sus}</div><div style="font-size:0.95rem; margin-top:5px; color:#ddd; white-space:pre-wrap;">${t.txt}</div>${isAdmin?`<button onclick="delTip(${i})" style="margin-top:8px; background:#991b1b; border:none; color:white; padding:4px 8px; border-radius:3px; cursor:pointer; font-size:0.75rem;">🗑️ 刪除線索</button>`:''}</div>`).join("") || "<p style='color:#888;'>目前無最新情報</p>";
+            // 渲染情報接收端 (如果該元素存在的話，即在主管辦公室內)
+            if(document.getElementById("area-tips")) {
+                document.getElementById("area-tips").innerHTML = appData.tips.map((t,i)=>`<div style="background:#1a1a1a; border-left:4px solid #f59e0b; padding:10px; margin-bottom:10px; border-radius:4px;"><div style="color:#f59e0b; font-size:0.8rem; font-weight:bold;">🕒 ${t.date} | [${t.type}]</div><div style="font-size:0.9rem; margin-top:5px;"><span style="color:#888;">📍 地點:</span> ${t.loc}</div><div style="font-size:0.9rem;"><span style="color:#888;">👤 特徵:</span> ${t.sus}</div><div style="font-size:0.95rem; margin-top:5px; color:#ddd; white-space:pre-wrap;">${t.txt}</div>${isAdmin?`<button onclick="delTip(${i})" style="margin-top:8px; background:#991b1b; border:none; color:white; padding:4px 8px; border-radius:3px; cursor:pointer; font-size:0.75rem;">🗑️ 刪除線索</button>`:''}</div>`).join("") || "<p style='color:#888;'>目前無最新情報</p>";
+            }
 
             let rTb = ""; for(let k in appData.users){ let u=appData.users[k]; if(u.status==='approved' && (u.role==='police' || u.role==='supervisor')) rTb+=`<tr><td>${u.dept}</td><td>${u.rank}</td><td>${u.name}</td><td>${k} (#${u.badge})</td></tr>`; }
             document.querySelector("#table-roster tbody").innerHTML = rTb || "<tr><td colspan='4' style='text-align:center;'>無資料</td></tr>";
@@ -1043,9 +1023,6 @@
         }
         function editNews(i) { editNewsIdx=i; let n=appData.news[i]; document.getElementById("news-title").value=n.t; document.getElementById("news-text").value=n.c; document.getElementById("news-form-title").innerText="✏️ 編輯新聞"; document.getElementById("btn-news-submit").innerText="💾 儲存修改"; UI.openForm('news-form'); window.scrollTo(0, 0); }
         function delNews(i) { if(confirm("刪除?")){ sysLog("刪除新聞"); appData.news.splice(i,1); renderAll(); saveToCloud(); } }
-
-        function clockIn() { let btn=document.getElementById("btn-clock-in"); btn.disabled=true; if(!appData.roster.includes(currentUser)){ appData.roster.push(currentUser); sysLog("10-8 打卡上線"); renderAll(); saveToCloud().finally(()=>btn.disabled=false); } else btn.disabled=false; }
-        function clockOut() { let btn=document.getElementById("btn-clock-out"); btn.disabled=true; let i=appData.roster.indexOf(currentUser); if(i>-1){ appData.roster.splice(i,1); sysLog("10-7 打卡下線"); renderAll(); saveToCloud().finally(()=>btn.disabled=false); } else btn.disabled=false; }
 
         function initLaws() {
             let catHTML = {1:"", 2:"", 3:"", 4:"", 5:"", 6:"", 7:"", 8:"", 9:""};
